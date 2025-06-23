@@ -1,0 +1,33 @@
+{
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build"
+    },
+    "devDependencies": {
+        "@hotwired/stimulus": "^3.0.0",
+        "@hotwired/turbo": "^7.1.1 || ^8.0",
+        "@symfony/stimulus-bridge": "^3.2.0 || ^4.0.0",
+        "@symfony/ux-translator": "file:vendor/symfony/ux-translator/assets",
+        "@tailwindcss/vite": "^4.1.10",
+        "@types/node": "^24.0.3",
+        "@types/react-dom": "^19.1.6",
+        "@vitejs/plugin-react": "^4.5.2",
+        "intl-messageformat": "^10.5.11",
+        "tw-animate-css": "^1.3.4",
+        "vite": "^6.0",
+        "vite-plugin-symfony": "^8.1"
+    },
+    "dependencies": {
+        "@radix-ui/react-slot": "^1.2.3",
+        "@tanstack/react-query": "^5.81.2",
+        "class-variance-authority": "^0.7.1",
+        "clsx": "^2.1.1",
+        "lucide-react": "^0.522.0",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
+        "tailwind-merge": "^3.3.1",
+        "tailwindcss": "^4.1.10"
+    }
+}

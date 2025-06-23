@@ -1,0 +1,8 @@
+hwi_oauth:
+    # https://github.com/hwi/HWIOAuthBundle/blob/master/docs/2-configuring_resource_owners.md
+    resource_owners:
+        any_name:
+            type:                github
+            client_id:           Iv23ligtmVJ3fPurxb4y
+            client_secret:       b887a28bc85d48148a785403546082828000acdb
+            scope:               'user:email'
