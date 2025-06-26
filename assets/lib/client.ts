@@ -2,10 +2,10 @@ const baseUrl = '';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
-interface RequestOptions<T = unknown> {
+interface RequestOptions {
   headers?: Record<string, string>;
   params?: Record<string, string>;
-  data?: T;
+  data?: unknown;
 }
 
 /**
@@ -29,9 +29,10 @@ export class RestClient {
    * @param url - The URL to request
    * @param options - Request options
    * @returns Promise with the response data of type ResponseType
+   * @throws {HttpError} If the response status is not 200 (OK)
    */
   async get<ResponseType = unknown>(url: string, options: RequestOptions = {}): Promise<ResponseType> {
-    return this.request<null, ResponseType>('GET', url, { ...options, data: null });
+    return this.request<ResponseType>('GET', url, { ...options, data: null });
   }
 
   /**
@@ -40,13 +41,14 @@ export class RestClient {
    * @param data - The data to send
    * @param options - Request options
    * @returns Promise with the response data of type ResponseType
+   * @throws {HttpError} If the response status is not 200 (OK)
    */
-  async post<RequestType = unknown, ResponseType = unknown>(
+  async post<ResponseType = unknown>(
     url: string,
-    data?: RequestType,
+    data?: unknown,
     options: RequestOptions = {}
   ): Promise<ResponseType> {
-    return this.request<RequestType, ResponseType>('POST', url, { ...options, data });
+    return this.request<ResponseType>('POST', url, { ...options, data });
   }
 
   /**
@@ -55,13 +57,14 @@ export class RestClient {
    * @param data - The data to send
    * @param options - Request options
    * @returns Promise with the response data of type ResponseType
+   * @throws {HttpError} If the response status is not 200 (OK)
    */
-  async put<RequestType = unknown, ResponseType = unknown>(
+  async put<ResponseType = unknown>(
     url: string,
-    data?: RequestType,
+    data?: unknown,
     options: RequestOptions = {}
   ): Promise<ResponseType> {
-    return this.request<RequestType, ResponseType>('PUT', url, { ...options, data });
+    return this.request<ResponseType>('PUT', url, { ...options, data });
   }
 
   /**
@@ -69,9 +72,10 @@ export class RestClient {
    * @param url - The URL to request
    * @param options - Request options
    * @returns Promise with the response data of type ResponseType
+   * @throws {HttpError} If the response status is not 200 (OK)
    */
   async delete<ResponseType = unknown>(url: string, options: RequestOptions = {}): Promise<ResponseType> {
-    return this.request<null, ResponseType>('DELETE', url, { ...options, data: null });
+    return this.request<ResponseType>('DELETE', url, { ...options, data: null });
   }
 
   /**
@@ -80,11 +84,12 @@ export class RestClient {
    * @param url - The URL to request
    * @param options - Request options
    * @returns Promise with the response data of type ResponseType
+   * @throws {HttpError} If the response status is not 200 (OK)
    */
-  private async request<RequestType, ResponseType>(
+  private async request<ResponseType>(
     method: HttpMethod,
     url: string,
-    { headers = {}, params = {}, data }: RequestOptions<RequestType>
+    { headers = {}, params = {}, data }: RequestOptions
   ): Promise<ResponseType> {
     // Build the full URL with query parameters
     const queryParams = new URLSearchParams(params).toString();
@@ -106,6 +111,28 @@ export class RestClient {
 
     // Make the request
     const response = await fetch(fullUrl, requestOptions);
+
+    // Check if the response status is not 200 (OK)
+    if (response.status !== 200) {
+      let errorMessage = `HTTP Error ${response.status}: ${response.statusText}`;
+
+      // Try to extract more detailed error message from response if possible
+      try {
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await response.json();
+          if (errorData.message) {
+            errorMessage = errorData.message;
+          }
+        }
+      } catch (e) {
+        // If we can't parse the error response, just use the default error message
+      }
+
+      // Import dynamically to avoid circular dependencies
+      const { HttpError } = await import('@/lib/error/http-error');
+      throw new HttpError(errorMessage, response.status);
+    }
 
     // Parse the response
     let responseData: ResponseType;

@@ -13,6 +13,8 @@
     "doctrine/orm": "*",
     "gedmo/doctrine-extensions": "*",
     "hwi/oauth-bundle": "^2.4",
+    "nyholm/psr7": "^1.8",
+    "openai-php/client": "^0.14.0",
     "pentatrion/vite-bundle": "^8.1",
     "phpdocumentor/reflection-docblock": "^5.6",
     "phpoffice/phpspreadsheet": "^4.3",

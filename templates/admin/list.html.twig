@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin{% endblock %}
+
+{% block javascripts %}
+    {{ vite_entry_script_tags('admin', { dependency: "react" }) }}
+{% endblock %}
+
+
+{% block body %}
+    <div id="root"></div>
+{% endblock %}

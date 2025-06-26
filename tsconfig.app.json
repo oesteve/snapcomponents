@@ -29,5 +29,5 @@
       "@/*": ["./assets/*"]
     }
   },
-  "include": ["assets"]
+  "include": ["assets", "assets/types"]
 }

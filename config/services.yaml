@@ -18,3 +18,23 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+
+    hwi_oauth.user.provider.entity:
+        class: HWI\Bundle\OAuthBundle\Security\Core\User\EntityUserProvider
+        arguments:
+            $class: App\Entity\User
+            $properties:
+                'github': 'github'
+
+
+
+    App\Security\OAuthConnector:
+        arguments:
+            $properties:
+                'github': 'github'
+
+
+    OpenAI\Client:
+        factory: ['OpenAI', 'client']
+        arguments: ['%env(OPENAI_SECRET_KEY)%']

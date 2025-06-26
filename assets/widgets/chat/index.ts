@@ -10,5 +10,6 @@ createWebComponent({
       el.style.position = 'fixed';
       el.style.bottom = '40px';
       el.style.right = '40px';
+      el.style.zIndex = '100';
   }
 });

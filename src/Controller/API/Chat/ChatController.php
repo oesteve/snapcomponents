@@ -20,7 +20,6 @@ class ChatController extends AbstractController
         #[MapRequestPayload]
         CreateMessage         $createMessage,
         ChatService           $chatService,
-
     ): JsonResponse
     {
         $chat = $chatService->createChat($createMessage->content);

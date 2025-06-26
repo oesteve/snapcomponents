@@ -9,10 +9,17 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ChatMessageRepository::class)]
 class ChatMessage extends BaseEntity
 {
+    public const string ROLE_USER = 'user';
+    public const string ROLE_AGENT = 'agent';
+    public const string ROLE_SYSTEM = 'system';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    #[ORM\Column(length: 64)]
+    private string $role;
 
     #[ORM\Column(type: Types::TEXT)]
     private string $content;
@@ -27,11 +34,13 @@ class ChatMessage extends BaseEntity
      */
     public function __construct(
         Chat $chat,
+        string $role,
         string $content,
     )
     {
-        $this->content = $content;
         $this->chat = $chat;
+        $this->role = $role;
+        $this->content = $content;
     }
 
     public function getId(): ?int
@@ -42,6 +51,11 @@ class ChatMessage extends BaseEntity
     public function getContent(): string
     {
         return $this->content;
+    }
+
+    public function getRole(): string
+    {
+        return $this->role;
     }
 
     public function getChat(): Chat

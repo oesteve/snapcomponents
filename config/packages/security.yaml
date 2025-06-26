@@ -14,8 +14,18 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            lazy: true
-            provider: app_user_provider
+            pattern: ^/
+            logout:
+                path: /logout
+            oauth:
+                resource_owners:
+                    github: "/login/check-github"
+                login_path: /login
+                use_forward: false
+                failure_path: hwi_oauth_connect_registration
+
+                oauth_user_provider:
+                    service: hwi_oauth.user.provider.entity
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -28,6 +38,9 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/connect, roles: PUBLIC_ACCESS }
+        # - { path: ^/, roles: ROLE_USER } # force login
 
 when@test:
     security:

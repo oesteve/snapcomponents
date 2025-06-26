@@ -250,6 +250,10 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/stof/doctrine-extensions-bundle" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/ux-translator" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/tales-from-a-dev/twig-tailwind-extra" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/nyholm/psr7" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/openai-php/client" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/php-http/discovery" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/php-http/multipart-stream-builder" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

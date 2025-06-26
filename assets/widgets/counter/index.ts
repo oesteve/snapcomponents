@@ -12,11 +12,7 @@ createWebComponent({
       ? parseInt(el.getAttribute('initial-value')!, 10)
       : 0;
 
-    const label = el.hasAttribute('label')
-      ? el.getAttribute('label')!
-      : 'Counter';
-
-    return { initialValue, label };
+    return { initialValue };
   }
 });
 

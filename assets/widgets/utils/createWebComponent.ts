@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
-import componentStyles from '@/index.css?inline';
+import componentStyles from '@/widgets/index.css?inline';
 
 // Create a single CSSStyleSheet instance for better performance
 const styleSheet = new CSSStyleSheet();
@@ -9,7 +9,7 @@ styleSheet.replaceSync(componentStyles);
 
 // Setup hot module replacement for the CSS
 if (import.meta.hot) {
-  import.meta.hot.accept('@/index.css?inline', (newModule) => {
+  import.meta.hot.accept('@/widgets/index.css?inline', (newModule) => {
     if (newModule) {
       // Update the stylesheet with the new CSS content
       styleSheet.replaceSync(newModule.default);

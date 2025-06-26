@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="h-screen flex flex-col justify-center items-center">
+
+        <div class="w-full max-w-lg border border-border rounded-lg p-4 flex flex-col">
+            <div class="mb-8">
+                <h3 class="text-lg font-medium">
+                    Sign up with GitHub
+                </h3>
+                <p class="text-muted-foreground text-sm">
+                    Register a new account and connect it to your <b
+                        class="font-medium">{{ userInformation.nickname }}</b> GitHub account.
+                </p>
+            </div>
+
+
+            <div class="flex items-center justify-center mb-4">
+                {% if userInformation.profilePicture is not empty %}
+                    <img class="size-20 rounded-full shadow" src="{{ userInformation.profilePicture }}"
+                         alt="User Picture"/>
+                {% endif %}
+            </div>
+
+
+            <div class="row">
+                <div class="span6">
+                    {{ form_start(form, {'action': path('hwi_oauth_connect_registration', {'key': key}), 'attr': {'class': 'hwi_oauth_registration_register'}}) }}
+                    {{ form_widget(form) }}
+                    <div class="mt-8 text-end">
+                        <a href="{{ path('hwi_oauth_connect') }}" class="btn btn-outline">
+                            {{ 'connect.registration.cancel' | trans({}, 'HWIOAuthBundle') }}
+                        </a>
+
+                        <button type="submit" class="btn btn-primary">
+                            {{ 'connect.registration.submit'|trans({}, 'HWIOAuthBundle') }}
+                        </button>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock body %}

@@ -6,6 +6,7 @@ use App\Repository\AgentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\String\ByteString;
 
 #[ORM\Entity(repositoryClass: AgentRepository::class)]
 #[ORM\Table(indexes: [
@@ -24,17 +25,22 @@ class Agent extends BaseEntity
     #[ORM\Column(length: 255)]
     private string $code;
 
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'agents')]
+    #[ORM\JoinColumn(nullable: false)]
+    private User $user;
+
     #[ORM\OneToMany(targetEntity: Chat::class, mappedBy: 'agent', orphanRemoval: true)]
     #[ORM\OrderBy(['createdAt' => 'DESC'])]
     private Collection $chats;
 
     public function __construct(
         string $name,
-        string $code,
+        User $user,
     )
     {
         $this->name = $name;
-        $this->code = $code;
+        $this->code = $this->generateCode();
+        $this->user = $user;
         $this->chats = new ArrayCollection();
     }
 
@@ -51,5 +57,15 @@ class Agent extends BaseEntity
     public function getCode(): string
     {
         return $this->code;
+    }
+
+    private static function generateCode(): string
+    {
+        return ByteString::fromRandom(24);
+    }
+
+    public function update(string $name): void
+    {
+        $this->name = $name;
     }
 }
