@@ -7,21 +7,42 @@ use App\Entity\ChatMessage;
 use App\Repository\ChatMessageRepository;
 use App\Repository\ChatRepository;
 use App\Service\Agent\AgentService;
-use App\Service\Chat\Function\SearchFunction;
+use App\Service\Chat\Function\FunctionInterface;
 use OpenAI;
+use OpenAI\Responses\Chat\CreateResponse;
 use OpenAI\Responses\Chat\CreateResponseToolCall;
 use OpenAI\Responses\Chat\CreateResponseToolCallFunction;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
-readonly class ChatService
+class ChatService
 {
+
+    /**
+     * @var array<string, FunctionInterface>
+     */
+    private array $functions = [];
+
+    /**
+     * @param ChatRepository $chatRepository
+     * @param ChatMessageRepository $chatMessageRepository
+     * @param AgentService $agentService
+     * @param OpenAI\Client $client
+     * @param array<FunctionInterface> $functions
+     */
     public function __construct(
         private ChatRepository        $chatRepository,
         private ChatMessageRepository $chatMessageRepository,
         private AgentService          $agentService,
         private OpenAI\Client         $client,
-        private SearchFunction        $searchFunction,
+        #[AutowireIterator(tag: 'app.chat.function')]
+        iterable        $functions,
     )
     {
+
+        foreach ($functions as $function) {
+            $this->functions[$function->getName()] = $function;
+        }
+
     }
 
     public function createChat(
@@ -43,7 +64,7 @@ readonly class ChatService
         $this->chatMessageRepository->save($message);
         $chat->addMessage($message);
 
-        $this->handleMessage($message);
+        $this->handleChatMessage($message);
         return $chat;
     }
 
@@ -58,11 +79,11 @@ readonly class ChatService
         $this->chatMessageRepository->save($message);
         $chat->addMessage($message);
 
-        $this->handleMessage($message);
+        $this->handleChatMessage($message);
     }
 
 
-    private function handleMessage(ChatMessage $message): void
+    private function handleChatMessage(ChatMessage $message): void
     {
         $messages = $message->getChat()->getMessages()->map(function (ChatMessage $message) {
             return [
@@ -72,12 +93,7 @@ readonly class ChatService
         })->toArray();
 
         $result = $this->processChatInteraction($messages);
-
         $responseMessage = $result->choices[0]->message;
-
-        if ($responseMessage->toolCalls) {
-            $this->handleToolCalls($responseMessage->toolCalls);
-        }
 
         $message = new ChatMessage(
             $message->getChat(),
@@ -101,15 +117,23 @@ readonly class ChatService
 
     private function executeFunction(CreateResponseToolCallFunction $function): string
     {
-        return $this->searchFunction->execute(json_decode($function->arguments, true));
+
+        if (!isset($this->functions[$function->name])) {
+            return '';
+        }
+
+        $parameters = json_decode($function->arguments, true);
+
+        return $this->functions[$function->name]->execute($parameters);
     }
 
     /**
      * @param array $messages
-     * @return OpenAI\Responses\Chat\CreateResponse
+     * @return CreateResponse
      */
-    private function processChatInteraction(array $messages): OpenAI\Responses\Chat\CreateResponse
+    private function processChatInteraction(array $messages): CreateResponse
     {
+        $tools = $this->getFunctionDefinitions();
         $result = $this->client->chat()->create([
             'model' => 'gpt-4o',
             'messages' => [
@@ -119,10 +143,7 @@ readonly class ChatService
                 ],
                 ...$messages
             ],
-            'tools' => [[
-                "type" => "function",
-                "function" => $this->searchFunction->getConfiguration(),
-            ]]
+            'tools' => $tools
         ]);
 
 
@@ -130,6 +151,7 @@ readonly class ChatService
 
         if ($responseMessage->toolCalls) {
             $responses = [];
+
             foreach ($responseMessage->toolCalls as $toolCall) {
                 $responses[] = $this->handleToolCalls($toolCall);
             }
@@ -144,5 +166,22 @@ readonly class ChatService
         }
 
         return $result;
+    }
+
+    /**
+     * @return array[]
+     */
+    private function getFunctionDefinitions(): array
+    {
+        return array_values(array_map(function (FunctionInterface $function) {
+            return [
+                'type' => 'function',
+                'function' => [
+                    'name' => $function->getName(),
+                    'description' => $function->getDescription(),
+                    'parameters' => $function->getParameters(),
+                ]
+            ];
+        }, $this->functions));
     }
 }

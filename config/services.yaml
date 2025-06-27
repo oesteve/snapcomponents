@@ -27,14 +27,15 @@ services:
             $properties:
                 'github': 'github'
 
-
-
     App\Security\OAuthConnector:
         arguments:
             $properties:
                 'github': 'github'
 
-
     OpenAI\Client:
         factory: ['OpenAI', 'client']
         arguments: ['%env(OPENAI_SECRET_KEY)%']
+
+    _instanceof:
+        App\Service\Chat\Function\FunctionInterface:
+            tags: ['app.chat.function']
