@@ -9,7 +9,7 @@ import { FormDescription } from "@/components/form/form-description";
 import { Label } from "@/components/ui/label";
 import { type ComponentProps, type FC } from "react";
 
-import { cn } from "@/lib/utils/cn.ts";
+import { cn } from "@/lib/utils";
 import TextareaInputWidget from "@/components/form/widgets/textarea-input-widget.tsx";
 export interface DimensionWidgetProps extends FormElementProps {
   type?: "email" | "text" | "url" | "https";

@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import React, { type ComponentProps, type FC, useRef } from "react";
 
-import { cn } from "@/lib/utils/cn.ts";
+import { cn } from "@/lib/utils";
 
 export interface TextInputWidgetProps extends FormElementProps {
   type?: "email" | "text" | "url" | "https" | "number" | "password" | "tel";

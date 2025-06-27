@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { cn } from "@/lib/utils/cn.ts";
+import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 type SelectInputWidgetProps = FormElementProps & {

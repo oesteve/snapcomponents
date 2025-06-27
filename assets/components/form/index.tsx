@@ -5,7 +5,7 @@ import { useStoreWithEqualityFn } from "zustand/traditional";
 
 import { type ErrorInterface } from "@/lib/error";
 import { type FieldError, VALIDATION_ERROR_TYPE } from "@/lib/error/validation";
-import { cn } from "@/lib/utils/cn.ts";
+import { cn } from "@/lib/utils";
 import { getNestedObjectValue as getKeyValue } from "@/lib/utils/get-nested-object-value";
 import { setNestedObjectValue } from "@/lib/utils/set-object-value";
 

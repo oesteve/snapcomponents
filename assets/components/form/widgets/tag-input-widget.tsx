@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/popover";
 
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils/cn.ts";
+import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label.tsx";
 import { FormDescription } from "@/components/form/form-description.tsx";
 import { useEffect, useMemo, useState } from "react";

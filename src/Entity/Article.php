@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article extends BaseEntity
 {
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -74,5 +73,17 @@ class Article extends BaseEntity
     public function getUser(): User
     {
         return $this->user;
+    }
+
+    public function update(
+        string $name,
+        string $title,
+        string $description,
+        string $content
+    ): void {
+        $this->name = $name;
+        $this->title = $title;
+        $this->description = $description;
+        $this->content = $content;
     }
 }

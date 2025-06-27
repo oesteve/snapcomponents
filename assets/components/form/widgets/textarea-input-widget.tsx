@@ -10,7 +10,7 @@ import { FormDescription } from "@/components/form/form-description";
 import { Label } from "@/components/ui/label";
 import React, { type ComponentProps, type FC } from "react";
 
-import { cn } from "@/lib/utils/cn.ts";
+import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea.tsx";
 
 export interface TextInputWidgetProps extends FormElementProps {

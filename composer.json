@@ -11,6 +11,7 @@
     "doctrine/doctrine-bundle": "*",
     "doctrine/doctrine-migrations-bundle": "^3.4",
     "doctrine/orm": "*",
+    "friendsofsymfony/elastica-bundle": "^6.6",
     "gedmo/doctrine-extensions": "*",
     "hwi/oauth-bundle": "^2.4",
     "nyholm/psr7": "^1.8",

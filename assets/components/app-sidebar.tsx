@@ -4,6 +4,7 @@ import {
   Command,
   GalleryVerticalEnd,
   SquareTerminal,
+  FileText,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -44,6 +45,11 @@ const data = {
       title: "Agents",
       url: "/admin/agents",
       icon: SquareTerminal,
+    },
+    {
+      title: "Articles",
+      url: "/admin/articles",
+      icon: FileText,
     }
   ],
 }

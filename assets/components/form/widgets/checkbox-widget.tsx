@@ -10,7 +10,7 @@ import { FormDescription } from "@/components/form/form-description";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 
-import { cn } from "@/lib/utils/cn.ts";
+import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useState } from "react";
 
 type SelectInputWidgetProps = FormElementProps & {

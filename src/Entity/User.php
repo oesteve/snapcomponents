@@ -38,7 +38,7 @@ class User implements UserInterface
     /**
      * @var Collection<int, Article>
      */
-    #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'User', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $articles;
 
     /**

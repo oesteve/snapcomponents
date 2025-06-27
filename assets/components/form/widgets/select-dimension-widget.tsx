@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useEffect, useMemo, useState } from "react";
-import { cn } from "@/lib/utils/cn.ts";
+import { cn } from "@/lib/utils";
 import { BadgeCheck, ChevronsUpDown } from "lucide-react";
 import {
   useDefaultFieldData,

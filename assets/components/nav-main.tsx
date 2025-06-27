@@ -17,7 +17,7 @@ import {
     SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 import {NavLink} from "react-router";
-import {cn} from "@/lib/utils/cn";
+import {cn} from "@/lib/utils";
 
 export function NavMain({
                             items,

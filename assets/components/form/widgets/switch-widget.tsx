@@ -11,7 +11,7 @@ import { FormDescription } from "@/components/form/form-description";
 import { Label } from "@/components/ui/label";
 import { type ComponentProps, type FC, useEffect, useState } from "react";
 
-import { cn } from "@/lib/utils/cn.ts";
+import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch.tsx";
 
 export interface TextInputWidgetProps extends FormElementProps {
