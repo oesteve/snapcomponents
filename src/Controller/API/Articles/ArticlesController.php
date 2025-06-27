@@ -6,7 +6,9 @@ use App\Controller\AbstractController;
 use App\Controller\API\Articles\DTO\ArticleData;
 use App\Entity\Article;
 use App\Repository\ArticleRepository;
+use App\Service\Search\ArticleSearchService;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
@@ -20,6 +22,18 @@ class ArticlesController extends AbstractController
     ): JsonResponse
     {
         return $this->json($articleRepository->findAll());
+    }
+
+    #[Route('/search', methods: ['GET'])]
+    public function get(
+        ArticleSearchService $articleService,
+        Request              $request
+    ): JsonResponse
+    {
+        $query = $request->query->get('query');
+        $results = $articleService->search($query);
+
+        return $this->json($results);
     }
 
     #[Route('', methods: ['POST'])]

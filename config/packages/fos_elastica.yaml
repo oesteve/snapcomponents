@@ -3,4 +3,28 @@ fos_elastica:
     clients:
         default: { url: '%env(ELASTICSEARCH_URL)%' }
     indexes:
-        app: null
+        articles:
+            persistence:
+                # the driver can be orm, mongodb or phpcr
+                driver: orm
+                model: App\Entity\Article
+                provider: ~
+                finder: ~
+            properties:
+                id: ~
+                name: ~
+                title: ~
+                description: ~
+                content: ~
+                user_id: ~
+
+                title_vector:
+                    type: dense_vector
+                    dims: 1536
+                    index: true
+                    similarity: cosine
+                content_vector:
+                    type: dense_vector
+                    dims: 1536
+                    index: true
+                    similarity: cosine
