@@ -415,6 +415,7 @@
   <component name="PhpUnit">
     <phpunit_settings>
       <phpunit_by_interpreter interpreter_id="95d441bf-7090-4488-9684-454e801cabc8" load_method="PHPUNIT_PHAR" configuration_file_path="/htdocs/phpunit.dist.xml" custom_loader_path="/htdocs/my_project_directory/vendor/autoload.php" phpunit_phar_path="/htdocs/bin/phpunit" use_configuration_file="true" />
+      <PhpUnitSettings custom_loader_path="$PROJECT_DIR$/vendor/autoload.php" />
     </phpunit_settings>
   </component>
   <component name="Psalm">
