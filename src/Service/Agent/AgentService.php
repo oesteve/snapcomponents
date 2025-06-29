@@ -11,16 +11,16 @@ use Symfony\Component\Routing\RouterInterface;
 readonly class AgentService
 {
     public function __construct(
-        private RequestStack $requestStack,
         private AgentRepository $agentRepository,
         private RouterInterface $router,
+        private AgentIdentifierProvider $agentIdentifierProvider,
     )
     {
     }
 
     public function getAgentOrFail(): Agent
     {
-        $agentCode = $this->requestStack->getCurrentRequest()->cookies->get('agent');
+        $agentCode = $this->agentIdentifierProvider->getCode();
 
         if (!$agentCode){
             throw new AccessDeniedHttpException('Agent not found');

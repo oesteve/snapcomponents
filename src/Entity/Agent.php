@@ -33,6 +33,9 @@ class Agent extends BaseEntity
     #[ORM\OrderBy(['createdAt' => 'DESC'])]
     private Collection $chats;
 
+    #[ORM\OneToOne(targetEntity: ChatConfiguration::class, mappedBy: 'agent', cascade: ['persist', 'remove'])]
+    private ?ChatConfiguration $configuration = null;
+
     public function __construct(
         string $name,
         User $user,
@@ -42,6 +45,16 @@ class Agent extends BaseEntity
         $this->code = $this->generateCode();
         $this->user = $user;
         $this->chats = new ArrayCollection();
+    }
+
+    public function update(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function setChatConfiguration(ChatConfiguration $configuration): void
+    {
+        $this->configuration = $configuration;
     }
 
     public function getId(): ?int
@@ -64,8 +77,18 @@ class Agent extends BaseEntity
         return ByteString::fromRandom(24);
     }
 
-    public function update(string $name): void
+    public function getUser(): User
     {
-        $this->name = $name;
+        return $this->user;
+    }
+
+    public function getChats(): Collection
+    {
+        return $this->chats;
+    }
+
+    public function getConfiguration(): ?ChatConfiguration
+    {
+        return $this->configuration;
     }
 }

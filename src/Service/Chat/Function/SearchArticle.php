@@ -2,11 +2,14 @@
 
 namespace App\Service\Chat\Function;
 
+use App\Entity\ChatMessage;
 use App\Service\Search\ArticleSearchService;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class SearchArticle implements FunctionInterface
 {
+
+    public const NAME = "search_article";
 
 
     public function __construct(
@@ -18,10 +21,12 @@ class SearchArticle implements FunctionInterface
 
     public function getName(): string
     {
-        return "search_article";
+        return self::NAME;
     }
 
-    public function getParameters(): array
+    public function getParameters(
+        ChatMessage $message,
+    ): array
     {
         return [
             "type" => "object",
@@ -36,13 +41,17 @@ class SearchArticle implements FunctionInterface
         ];
     }
 
-    public function getDescription(): string
+    public function getDescription(
+        ChatMessage $message,
+    ): string
     {
         return "Search in the database of articles";
     }
 
-    public function execute(array $parameters): string
-    {
+    public function execute(
+        ChatMessage $message,
+        array $parameters
+    ): string {
         $articles = $this->searchService->search($parameters["query"]);
 
         return $this->serializer->serialize($articles, 'json');

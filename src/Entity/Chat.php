@@ -25,13 +25,26 @@ class Chat extends BaseEntity
     #[ORM\JoinColumn(nullable: false)]
     private Agent $agent;
 
+    #[ORM\ManyToOne]
+    private ?ChatIntent $intent = null;
+
+    #[ORM\ManyToOne(targetEntity: ChatConfiguration::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ChatConfiguration $configuration;
+
     public function __construct(
         Agent $agent,
         array $messages = [],
     )
     {
         $this->agent = $agent;
+        $this->configuration = $agent->getConfiguration();
         $this->messages = new ArrayCollection($messages);
+    }
+
+    public function setIntent(ChatIntent $intent): void
+    {
+        $this->intent = $intent;
     }
 
     public function getId(): ?int
@@ -56,4 +69,15 @@ class Chat extends BaseEntity
     {
         $this->messages->add($message);
     }
+
+    public function getConfiguration(): ChatConfiguration
+    {
+        return $this->configuration;
+    }
+
+    public function getIntent(): ?ChatIntent
+    {
+        return $this->intent;
+    }
+
 }

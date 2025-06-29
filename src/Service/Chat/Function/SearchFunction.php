@@ -2,6 +2,8 @@
 
 namespace App\Service\Chat\Function;
 
+use App\Entity\Chat;
+use App\Entity\ChatMessage;
 use OpenAI\Responses\Chat\CreateResponseToolCallFunction;
 
 class SearchFunction implements FunctionInterface
@@ -11,12 +13,16 @@ class SearchFunction implements FunctionInterface
         return "get_weather";
     }
 
-    public function getDescription(): string
+    public function getDescription(
+        ChatMessage $message,
+    ): string
     {
         return "Get current temperature for a given location.";
     }
 
-    public function getParameters(): array
+    public function getParameters(
+        ChatMessage $message,
+    ): array
     {
         return [
             "type" => "object",
@@ -31,7 +37,7 @@ class SearchFunction implements FunctionInterface
         ];
     }
 
-    public function execute(array $parameters): string
+    public function execute(ChatMessage $message, array $parameters): string
     {
         return "25º raining";
     }

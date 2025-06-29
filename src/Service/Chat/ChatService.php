@@ -7,11 +7,11 @@ use App\Entity\ChatMessage;
 use App\Repository\ChatMessageRepository;
 use App\Repository\ChatRepository;
 use App\Service\Agent\AgentService;
+use App\Service\Chat\Function\DefineIntent;
 use App\Service\Chat\Function\FunctionInterface;
 use OpenAI;
 use OpenAI\Responses\Chat\CreateResponse;
 use OpenAI\Responses\Chat\CreateResponseToolCall;
-use OpenAI\Responses\Chat\CreateResponseToolCallFunction;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 class ChatService
@@ -85,14 +85,7 @@ class ChatService
 
     private function handleChatMessage(ChatMessage $message): void
     {
-        $messages = $message->getChat()->getMessages()->map(function (ChatMessage $message) {
-            return [
-                'role' => $message->getRole(),
-                'content' => $message->getContent(),
-            ];
-        })->toArray();
-
-        $result = $this->processChatInteraction($messages);
+        $result = $this->processChatInteraction($message);
         $responseMessage = $result->choices[0]->message;
 
         $message = new ChatMessage(
@@ -106,82 +99,157 @@ class ChatService
         $this->chatMessageRepository->save($message);
     }
 
-    private function handleToolCalls(CreateResponseToolCall $responseToolCall): array
+    private function handleToolCalls(
+        ChatMessage            $message,
+        CreateResponseToolCall $responseToolCall
+    ): array
     {
-        return [
-            'role' => 'tool',
-            'tool_call_id' => $responseToolCall->id,
-            'content' => $this->executeFunction($responseToolCall->function)
-        ];
-    }
 
-    private function executeFunction(CreateResponseToolCallFunction $function): string
-    {
+        $function = $responseToolCall->function;
 
         if (!isset($this->functions[$function->name])) {
-            return '';
+            return [];
         }
 
         $parameters = json_decode($function->arguments, true);
 
-        return $this->functions[$function->name]->execute($parameters);
+        $executionResult = $this->functions[$function->name]->execute(
+            $message,
+            $parameters
+        );
+
+        return [
+            'role' => 'tool',
+            'tool_call_id' => $responseToolCall->id,
+            'content' => $executionResult
+        ];
     }
 
     /**
-     * @param array $messages
      * @return CreateResponse
      */
-    private function processChatInteraction(array $messages): CreateResponse
+    private function processChatInteraction(ChatMessage $message): CreateResponse
     {
-        $tools = $this->getFunctionDefinitions();
-        $result = $this->client->chat()->create([
-            'model' => 'gpt-4o',
-            'messages' => [
-                [
-                    "role" => "developer",
-                    "content" => 'You are a helpful assistant. Yo can send responses using mdx with the components: <wg-counter initial-value=\"100\" />'
-                ],
-                ...$messages
-            ],
-            'tools' => $tools
-        ]);
+        $context = $message->getChat()->getMessages()
+            ->map(function (ChatMessage $message) {
+                return [
+                    'role' => $message->getRole(),
+                    'content' => $message->getContent(),
+                ];
+            })
+            ->toArray();
 
-
-        $responseMessage = $result->choices[0]->message;
-
-        if ($responseMessage->toolCalls) {
-            $responses = [];
-
-            foreach ($responseMessage->toolCalls as $toolCall) {
-                $responses[] = $this->handleToolCalls($toolCall);
-            }
-
-            if ($responses) {
-                $result = $this->processChatInteraction([
-                    ...$messages,
-                    $responseMessage->toArray(),
-                    ...$responses,
-                ]);
-            }
-        }
-
-        return $result;
+        return $this->getResponse(
+            $message,
+            $context
+        );
     }
 
     /**
      * @return array[]
      */
-    private function getFunctionDefinitions(): array
+    private function getToolsDefinitions(ChatMessage $message): array
     {
-        return array_values(array_map(function (FunctionInterface $function) {
-            return [
-                'type' => 'function',
-                'function' => [
-                    'name' => $function->getName(),
-                    'description' => $function->getDescription(),
-                    'parameters' => $function->getParameters(),
-                ]
-            ];
-        }, $this->functions));
+
+        $supportedTools = [
+            DefineIntent::NAME,
+            ...$message->getChat()->getIntent()?->getTools() ?? [],
+        ];
+
+        return array_reduce($this->functions, function ($carry,FunctionInterface $function) use ($supportedTools, $message) {
+                if (!in_array($function->getName(), $supportedTools, true)) {
+                    return $carry;
+                }
+
+                $carry[] = [
+                    'type' => 'function',
+                    'function' => [
+                        'name' => $function->getName(),
+                        'description' => $function->getDescription($message),
+                        'parameters' => $function->getParameters($message),
+                    ]
+                ];
+
+                return $carry;
+        }, []);
+    }
+
+    /**
+     * @return string
+     */
+    private function getInstructions(ChatMessage $message): string
+    {
+
+        // Chat instructions
+        $prompt = $message->getChat()->getConfiguration()->getPrompt() . ".\n\n";
+
+        // Context definition instructions
+        if ($message->getChat()->getConfiguration()->getIntents()) {
+            $prompt .= "You can assist about the following topics:\n";
+            foreach ($message->getChat()->getConfiguration()->getIntents() as $intent) {
+                $prompt .= "- {$intent->getName()} : {$intent->getDescription()}\n";
+            }
+            $prompt .= "\n";
+
+            if ($intent = $message->getChat()->getIntent()) {
+                $prompt .= "The user's intent is '{$intent->getName()}', if the user change their intent notify it to the system.\n\n";
+
+                // Add Intent instructions
+                $prompt .= $intent->getInstructions();
+            } else {
+                $prompt .= "Try to determine de user intent and notify it to the system.\n";
+            }
+        }
+
+
+        return $prompt;
+    }
+
+    /**
+     * @param ChatMessage $message
+     * @param array $context
+     * @return CreateResponse
+     */
+    private function getResponse(ChatMessage $message, array $context): CreateResponse
+    {
+        $parameters = [
+            'model' => 'gpt-4o',
+            'messages' => [
+                [
+                    "role" => "developer",
+                    "content" => $this->getInstructions($message)
+                ],
+                ...$context
+            ],
+            'tools' => $this->getToolsDefinitions($message)
+        ];
+
+        $result = $this->client->chat()->create($parameters);
+
+
+        $responseMessage = $result->choices[0]->message;
+
+        if ($responseMessage->toolCalls) {
+            $toolCallsResults = [];
+
+            foreach ($responseMessage->toolCalls as $toolCall) {
+                $toolCallsResults[] = $this->handleToolCalls(
+                    $message,
+                    $toolCall
+                );
+            }
+
+            if ($toolCallsResults) {
+                return $this->getResponse(
+                    $message,
+                    [
+                        ...$context,
+                        $responseMessage->toArray(),
+                        ...$toolCallsResults,
+                    ]
+                );
+            }
+        }
+        return $result;
     }
 }

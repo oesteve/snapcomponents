@@ -12,6 +12,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 class User implements UserInterface
 {
+    public const string ROLE_USER = 'ROLE_USER';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -41,14 +43,17 @@ class User implements UserInterface
     #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $articles;
 
+    #[ORM\OneToMany(targetEntity: ChatConfiguration::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $chatConfigurations;
+
     /**
      * @param string[] $roles
      */
     public function __construct(
         string $email,
         array $roles,
-        ?string $picture,
-        ?string $github,
+        ?string $picture = null,
+        ?string $github = null,
     )
     {
         $this->email = $email;
