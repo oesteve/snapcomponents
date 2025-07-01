@@ -81,7 +81,7 @@ ADD --chown=apache:apache package.json package-lock.json /htdocs/
 RUN npm ci
 
 # Add the rest of the files
-ADD --chown=apache:apache src /htdocs
+ADD --chown=apache:apache ./src /htdocs/
 
 # Build the assets
 RUN composer dump-autoload --optimize && \
