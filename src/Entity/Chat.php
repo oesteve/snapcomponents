@@ -32,13 +32,20 @@ class Chat extends BaseEntity
     #[ORM\JoinColumn(nullable: false)]
     private ChatConfiguration $configuration;
 
+
+    /**
+     * @param Agent $agent
+     * @param ChatConfiguration $configuration
+     * @param array<ChatMessage> $messages
+     */
     public function __construct(
         Agent $agent,
+        ChatConfiguration $configuration,
         array $messages = [],
     )
     {
         $this->agent = $agent;
-        $this->configuration = $agent->getConfiguration();
+        $this->configuration = $configuration;
         $this->messages = new ArrayCollection($messages);
     }
 
@@ -79,5 +86,4 @@ class Chat extends BaseEntity
     {
         return $this->intent;
     }
-
 }

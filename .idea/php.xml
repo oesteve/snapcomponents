@@ -27,7 +27,7 @@
   <component name="PhpCSFixer">
     <phpcsfixer_settings>
       <PhpCSFixerConfiguration tool_path="$PROJECT_DIR$/vendor/bin/php-cs-fixer" />
-      <phpcs_fixer_by_interpreter asDefaultInterpreter="true" deletedFromTheList="true" interpreter_id="95d441bf-7090-4488-9684-454e801cabc8" tool_path="/htdocs/vendor/bin/php-cs-fixer" timeout="30000" />
+      <phpcs_fixer_by_interpreter asDefaultInterpreter="true" deletedFromTheList="true" interpreter_id="95d441bf-7090-4488-9684-454e801cabc8" standards="PSR1;PSR2;Symfony;DoctrineAnnotation;PHP70Migration;PHP71Migration" tool_path="/htdocs/vendor/bin/php-cs-fixer" timeout="30000" />
     </phpcsfixer_settings>
   </component>
   <component name="PhpCodeSniffer">
@@ -321,6 +321,12 @@
       <path value="$PROJECT_DIR$/vendor/phpunit/php-code-coverage" />
       <path value="$PROJECT_DIR$/vendor/phpunit/php-timer" />
       <path value="$PROJECT_DIR$/vendor/phpunit/phpunit" />
+      <path value="$PROJECT_DIR$/vendor/nette/schema" />
+      <path value="$PROJECT_DIR$/vendor/nette/utils" />
+      <path value="$PROJECT_DIR$/vendor/twig/markdown-extra" />
+      <path value="$PROJECT_DIR$/vendor/league/commonmark" />
+      <path value="$PROJECT_DIR$/vendor/league/config" />
+      <path value="$PROJECT_DIR$/vendor/dflydev/dot-access-data" />
     </include_path>
   </component>
   <component name="PhpInterpreters">
@@ -410,6 +416,7 @@
     </PhpStan_settings>
   </component>
   <component name="PhpStanOptionsConfiguration">
+    <option name="config" value="/htdocs/phpstan.neon" />
     <option name="transferred" value="true" />
   </component>
   <component name="PhpUnit">

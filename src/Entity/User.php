@@ -43,8 +43,11 @@ class User implements UserInterface
     #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $articles;
 
-    #[ORM\OneToMany(targetEntity: ChatConfiguration::class, mappedBy: 'user', orphanRemoval: true)]
-    private Collection $chatConfigurations;
+    /**
+     * @var Collection<int, Product>
+    */
+    #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $products;
 
     /**
      * @param string[] $roles
@@ -63,6 +66,7 @@ class User implements UserInterface
 
         $this->agents = new ArrayCollection();
         $this->articles = new ArrayCollection();
+        $this->products = new ArrayCollection();
     }
 
 
@@ -74,6 +78,7 @@ class User implements UserInterface
     public function getEmail(): ?string
     {
         return $this->email;
+
     }
 
     public function getPicture(): ?string
@@ -165,5 +170,13 @@ class User implements UserInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Product>
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
     }
 }

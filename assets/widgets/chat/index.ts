@@ -1,4 +1,4 @@
-import ChatComponent from './ChatComponent';
+import ChatComponent from './components/ChatComponent.tsx';
 import { createWebComponent } from '@/widgets/utils/createWebComponent.ts';
 
 // Register the chat component as a web component

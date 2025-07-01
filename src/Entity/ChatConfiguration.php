@@ -23,9 +23,10 @@ class ChatConfiguration
     private string $description;
 
     #[ORM\Column(type: Types::TEXT)]
-    private string $prompt;
+    private string $instructions;
 
     #[ORM\OneToOne(targetEntity: Agent::class, inversedBy: 'configuration')]
+    #[ORM\JoinColumn(nullable: false)]
     private Agent $agent;
 
     /**
@@ -37,18 +38,19 @@ class ChatConfiguration
     /**
      * @param string $name
      * @param string $description
+     * @param string $instructions
      * @param Agent $agent
      */
     public function __construct(
         string $name,
         string $description,
-        string $prompt,
+        string $instructions,
         Agent  $agent
     )
     {
         $this->name = $name;
         $this->description = $description;
-        $this->prompt = $prompt;
+        $this->instructions = $instructions;
         $this->agent = $agent;
         $this->intents = new ArrayCollection([]);
     }
@@ -64,9 +66,9 @@ class ChatConfiguration
         return $this->description;
     }
 
-    public function getPrompt(): string
+    public function getInstructions(): string
     {
-        return $this->prompt;
+        return $this->instructions;
     }
 
     public function getAgent(): Agent
@@ -75,7 +77,7 @@ class ChatConfiguration
     }
 
     /**
-     * @return Collection<ChatIntent>
+     * @return Collection<int, ChatIntent>
      */
     public function getIntents(): Collection
     {
@@ -86,4 +88,5 @@ class ChatConfiguration
     {
         $this->intents->add($intent);
     }
+
 }

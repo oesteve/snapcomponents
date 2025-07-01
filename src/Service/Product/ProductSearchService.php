@@ -1,18 +1,20 @@
 <?php
 
-namespace App\Service\Search;
+namespace App\Service\Product;
 
 use App\Entity\Article;
+use App\Entity\Product;
+use App\Service\Search\EmbeddingsService;
 use Elastica\Document;
 use FOS\ElasticaBundle\Event\PostTransformEvent;
 use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
-readonly class ArticleSearchService
+readonly class ProductSearchService
 {
     public function __construct(
-        #[Autowire(service: 'fos_elastica.finder.articles')]
+        #[Autowire(service: 'fos_elastica.finder.products')]
         private PaginatedFinderInterface $finder,
         private EmbeddingsService        $searchService,
     ) {
@@ -22,7 +24,7 @@ readonly class ArticleSearchService
      * Search for articles using Elasticsearch
      *
      * @param string|null $query The search query
-     * @return Article[] The search results
+     * @return Product[] The search results
      */
     public function search(?string $query): array
     {
@@ -42,7 +44,7 @@ readonly class ArticleSearchService
     #[AsEventListener(event: PostTransformEvent::class)]
     public function onPostTransform(PostTransformEvent $event)
     {
-        if ($event->getObject() instanceof Article === false) {
+        if ($event->getObject() instanceof Product === false) {
             return;
         }
 
@@ -52,9 +54,9 @@ readonly class ArticleSearchService
     private function setEmbeddings(Document $document): void
     {
         $title = $this->searchService->createEmbeddings($document->get('title'));
-        $content = $this->searchService->createEmbeddings($document->get('content'));
+        $content = $this->searchService->createEmbeddings($document->get('description'));
 
         $document->set('title_vector', $title);
-        $document->set('content_vector', $content);
+        $document->set('description_vector', $content);
     }
 }

@@ -10,25 +10,23 @@ use App\Repository\AgentRepository;
 use App\Repository\ChatConfigurationRepository;
 use App\Repository\UserRepository;
 use App\Service\Agent\AgentIdentifierProvider;
+use App\Tests\BaseTestCase;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-abstract class AbstractChatServiceTest extends KernelTestCase
+abstract class AbstractChatServiceTest extends BaseTestCase
 {
 
     protected function setUp(): void
     {
         parent::setUp();
+        $this->setUpDatabase(static::$kernel);
 
-        $kernel = self::bootKernel();
-        $this->setUpDatabase($kernel);
         $user = $this->createTestUser();
         $agent = $this->createTestAgent($user);
         $configuration = $this->createTestConfiguration($agent);
-
 
         $em = $this->getService(EntityManagerInterface::class);
 
@@ -121,20 +119,4 @@ abstract class AbstractChatServiceTest extends KernelTestCase
         return [];
     }
 
-    /**
-     * @template T
-     * @param class-string<T> $class
-     * @return T
-     * @throws \LogicException
-     */
-    protected function getService(string $class): mixed
-    {
-        $service = static::getContainer()->get($class);
-
-        if (!$service) {
-            throw new \LogicException(sprintf('Service "%s" not found in container', $class));
-        }
-
-        return $service;
-    }
 }

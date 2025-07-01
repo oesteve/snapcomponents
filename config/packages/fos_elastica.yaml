@@ -28,3 +28,29 @@ fos_elastica:
                     dims: 1536
                     index: true
                     similarity: cosine
+        products:
+            persistence:
+                # the driver can be orm, mongodb or phpcr
+                driver: orm
+                model: App\Entity\Product
+                provider: ~
+                finder: ~
+            properties:
+                id: ~
+                name: ~
+                title: ~
+                description: ~
+                image: ~
+                price: ~
+                user_id: ~
+
+                title_vector:
+                    type: dense_vector
+                    dims: 1536
+                    index: true
+                    similarity: cosine
+                description_vector:
+                    type: dense_vector
+                    dims: 1536
+                    index: true
+                    similarity: cosine

@@ -7,12 +7,15 @@ use App\Entity\ChatMessage;
 use App\Repository\ChatMessageRepository;
 use App\Repository\ChatRepository;
 use App\Service\Agent\AgentService;
+use App\Service\Chat\Widget\WidgetProvider;
 use App\Service\Chat\Function\DefineIntent;
 use App\Service\Chat\Function\FunctionInterface;
 use OpenAI;
 use OpenAI\Responses\Chat\CreateResponse;
 use OpenAI\Responses\Chat\CreateResponseToolCall;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
+use Symfony\Component\HttpKernel\Log\DebugLoggerInterface;
 
 class ChatService
 {
@@ -30,12 +33,14 @@ class ChatService
      * @param array<FunctionInterface> $functions
      */
     public function __construct(
-        private ChatRepository        $chatRepository,
-        private ChatMessageRepository $chatMessageRepository,
-        private AgentService          $agentService,
-        private OpenAI\Client         $client,
+        private readonly ChatRepository        $chatRepository,
+        private readonly ChatMessageRepository $chatMessageRepository,
+        private readonly AgentService          $agentService,
+        private readonly OpenAI\Client         $client,
         #[AutowireIterator(tag: 'app.chat.function')]
-        iterable        $functions,
+        iterable                               $functions,
+        private readonly WidgetProvider        $widgetProvider,
+        private readonly LoggerInterface $logger
     )
     {
 
@@ -49,8 +54,16 @@ class ChatService
         string $content,
     ): Chat
     {
+        $agent = $this->agentService->getAgentOrFail();
+        $chatConfiguration = $agent->getConfiguration();
+
+        if (!$chatConfiguration) {
+            throw new \Exception("Chat configuration not found");
+        }
+
         $chat = new Chat(
-            $this->agentService->getAgentOrFail(),
+            $agent,
+            $chatConfiguration
         );
 
         $this->chatRepository->save($chat);
@@ -121,7 +134,7 @@ class ChatService
         return [
             'role' => 'tool',
             'tool_call_id' => $responseToolCall->id,
-            'content' => $executionResult
+            'content' => json_encode($executionResult)
         ];
     }
 
@@ -156,21 +169,21 @@ class ChatService
             ...$message->getChat()->getIntent()?->getTools() ?? [],
         ];
 
-        return array_reduce($this->functions, function ($carry,FunctionInterface $function) use ($supportedTools, $message) {
-                if (!in_array($function->getName(), $supportedTools, true)) {
-                    return $carry;
-                }
-
-                $carry[] = [
-                    'type' => 'function',
-                    'function' => [
-                        'name' => $function->getName(),
-                        'description' => $function->getDescription($message),
-                        'parameters' => $function->getParameters($message),
-                    ]
-                ];
-
+        return array_reduce($this->functions, function ($carry, FunctionInterface $function) use ($supportedTools, $message) {
+            if (!in_array($function->getName(), $supportedTools, true)) {
                 return $carry;
+            }
+
+            $carry[] = [
+                'type' => 'function',
+                'function' => [
+                    'name' => $function->getName(),
+                    'description' => $function->getDescription($message),
+                    'parameters' => $function->getParameters($message),
+                ]
+            ];
+
+            return $carry;
         }, []);
     }
 
@@ -181,12 +194,13 @@ class ChatService
     {
 
         // Chat instructions
-        $prompt = $message->getChat()->getConfiguration()->getPrompt() . ".\n\n";
+        $configuration = $message->getChat()->getConfiguration();
+        $prompt = $configuration->getInstructions() . ".\n\n";
 
         // Context definition instructions
-        if ($message->getChat()->getConfiguration()->getIntents()) {
+        if (!$configuration->getIntents()->isEmpty()) {
             $prompt .= "You can assist about the following topics:\n";
-            foreach ($message->getChat()->getConfiguration()->getIntents() as $intent) {
+            foreach ($configuration->getIntents() as $intent) {
                 $prompt .= "- {$intent->getName()} : {$intent->getDescription()}\n";
             }
             $prompt .= "\n";
@@ -196,8 +210,17 @@ class ChatService
 
                 // Add Intent instructions
                 $prompt .= $intent->getInstructions();
+
+                // Add widget
+                if ($intent->getWidgets()) {
+                    $prompt .= "You ara able to use html element en your response. These are the available elements: \n";
+                    foreach ($intent->getWidgets() as $widget) {
+                        $prompt .= $this->widgetProvider->getDefinition($widget);
+                    }
+                }
+
             } else {
-                $prompt .= "Try to determine de user intent and notify it to the system.\n";
+                $prompt .= "Try to determine the user intent and notify it to the system.\n";
             }
         }
 
@@ -207,7 +230,7 @@ class ChatService
 
     /**
      * @param ChatMessage $message
-     * @param array $context
+     * @param array<int,array<string,mixed>> $context
      * @return CreateResponse
      */
     private function getResponse(ChatMessage $message, array $context): CreateResponse
@@ -224,10 +247,20 @@ class ChatService
             'tools' => $this->getToolsDefinitions($message)
         ];
 
-        $result = $this->client->chat()->create($parameters);
+
+        $start = microtime(true);
+        $response = $this->client->chat()->create($parameters);
+        $this->logger->notice(
+            'OpenAI Request',
+            [
+                'duration' => (int) ((microtime(true) - $start) * 1000),
+                'parameters' => $parameters,
+                'response' => $response,
+            ]
+        );
 
 
-        $responseMessage = $result->choices[0]->message;
+        $responseMessage = $response->choices[0]->message;
 
         if ($responseMessage->toolCalls) {
             $toolCallsResults = [];
@@ -239,7 +272,7 @@ class ChatService
                 );
             }
 
-            if ($toolCallsResults) {
+            if (count($toolCallsResults)) {
                 return $this->getResponse(
                     $message,
                     [
@@ -250,6 +283,6 @@ class ChatService
                 );
             }
         }
-        return $result;
+        return $response;
     }
 }

@@ -29,15 +29,31 @@ class ChatIntent
     #[ORM\Column]
     private array $tools;
 
-    #[ORM\ManyToOne(inversedBy: 'chatIntents')]
+    /**
+     * @var string[]
+     */
+    #[ORM\Column]
+    private array $widgets;
+
+    #[ORM\ManyToOne(inversedBy: 'intents')]
+    #[ORM\JoinColumn(nullable: false)]
     private ChatConfiguration $configuration;
 
 
+    /**
+     * @param string $name
+     * @param string $description
+     * @param string $instructions
+     * @param array<string> $tools
+     * @param array<string> $widgets
+     * @param ChatConfiguration $configuration
+     */
     public function __construct(
         string            $name,
         string            $description,
         string            $instructions,
         array             $tools,
+        array             $widgets,
         ChatConfiguration $configuration
     ) {
         $this->name = $name;
@@ -45,6 +61,7 @@ class ChatIntent
         $this->instructions = $instructions;
         $this->tools = $tools;
         $this->configuration = $configuration;
+        $this->widgets = $widgets;
     }
 
     public function getId(): ?int
@@ -67,9 +84,20 @@ class ChatIntent
         return $this->instructions;
     }
 
+    /**
+     * @return string[]
+     */
     public function getTools(): array
     {
         return $this->tools;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getWidgets(): array
+    {
+        return $this->widgets;
     }
 
     public function getConfiguration(): ChatConfiguration

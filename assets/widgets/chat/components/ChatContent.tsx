@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Button} from "@/components/ui/button.tsx";
 import {MessageCircle} from "lucide-react";
-import ChatCard from './ChatCard';
+import Card from './Card.tsx';
 
 
 const ChatContent: React.FC = () => {
@@ -14,7 +14,7 @@ const ChatContent: React.FC = () => {
                     <MessageCircle className="size-8" />
                 </Button>)
                 : (
-                    <ChatCard
+                    <Card
                         onClose={() => setOpen(false)}
                     />
                 )

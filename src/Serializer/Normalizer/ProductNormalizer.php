@@ -2,51 +2,45 @@
 
 namespace App\Serializer\Normalizer;
 
-use App\Entity\Chat;
-use App\Entity\ChatMessage;
+use App\Entity\Article;
+use App\Entity\Product;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-
-class ChatNormalizer implements NormalizerInterface
+class ProductNormalizer implements NormalizerInterface
 {
     public function __construct(
         #[Autowire(service: 'serializer.normalizer.object')]
         private NormalizerInterface $normalizer
-    )
-    {
+    ) {
     }
 
-    /**
-     * @param Chat $object
-     * @return array<string, mixed>
-     */
     public function normalize($object, ?string $format = null, array $context = []): array
     {
+
+        $context[AbstractNormalizer::IGNORED_ATTRIBUTES] ??= [
+            'user'
+        ];
 
         $data = $this->normalizer->normalize(
             $object,
             $format,
-            [
-                ...$context,
-                AbstractNormalizer::IGNORED_ATTRIBUTES => [
-                    'agent',
-                    'configuration'
-                ],
-            ]
+            $context
         );
+
+        // TODO: add, edit, or delete some data
 
         return $data;
     }
 
     public function supportsNormalization($data, ?string $format = null, array $context = []): bool
     {
-        return $data instanceof Chat;
+        return $data instanceof Product;
     }
 
     public function getSupportedTypes(?string $format): array
     {
-        return [Chat::class => true];
+        return [Product::class => true];
     }
 }

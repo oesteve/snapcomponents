@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Availabel Components{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="http://localhost:8000/agent-YWmx9u6btY3LMBcgVYNeZuFq.js" type="module"></script>
+{% endblock %}
+
+
+{% block body %}
+
+    <div class="py-12">
+        <div class="prose max-w-4xl mx-auto">
+            <h1>Available Components</h1>
+            {{ widget_doc('chat') | markdown_to_html }}
+            {{ widget_doc('cart-indicator') | markdown_to_html }}
+            {{ widget_doc('counter') | markdown_to_html }}
+            {{ widget_doc('product-card') | markdown_to_html }}
+        </div>
+    </div>
+{% endblock %}

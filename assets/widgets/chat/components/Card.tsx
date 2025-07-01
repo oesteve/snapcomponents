@@ -1,30 +1,52 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useMemo} from 'react';
 import {Button} from "@/components/ui/button.tsx";
 import {X} from "lucide-react";
 import {Input} from "@/components/ui/input.tsx";
 import {type Chat, createChat, sendMessage} from "@/widgets/chat/lib/chat.ts";
 import {useMutation} from "@tanstack/react-query";
-import Markdown from "react-markdown";
-import ProductCard from "@/widgets/product-card/ProductCard.tsx";
-import rehypeRaw from "rehype-raw";
+import {Message} from "@/widgets/chat/components/Message.tsx";
 
 interface ChatCardProps {
     onClose: () => void;
 }
 
 
-const ChatCard: React.FC<ChatCardProps> = ({
-                                               onClose
-                                           }) => {
+const Card: React.FC<ChatCardProps> = ({ onClose }) => {
     const [chat, setChat] = useState<Chat>();
     const [message, setMessage] = useState('');
     const messagesContainerRef = useRef<HTMLDivElement>(null);
+    const chatContainerRef = useRef<HTMLDivElement>(null)
+
+    function scrollToBottom() {
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTo({
+                top: chatContainerRef.current.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+    }
+
+
+
+    const resizeObserver = useMemo(() => {
+        return new ResizeObserver(() => {
+            console.log("Size changed");
+            scrollToBottom()
+        });
+    },[])
+
 
     useEffect(() => {
-        if (messagesContainerRef.current) {
-            messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+        if (!messagesContainerRef.current){
+            resizeObserver.disconnect();
+            return;
         }
-    }, [chat?.messages]);
+
+        resizeObserver.observe(messagesContainerRef.current);
+
+    }, [messagesContainerRef.current, resizeObserver]);
+
+
 
     const createChatMutation = useMutation({
         mutationFn: createChat,
@@ -99,27 +121,12 @@ const ChatCard: React.FC<ChatCardProps> = ({
 
             <div className="p-4 flex-col gap-4 flex flex-1 h-full">
                 <h2 className="text-2xl font-medium mb-4">Chat Widget</h2>
-                <div ref={messagesContainerRef} className="grow overflow-y-auto flex flex-col gap-6 text-sm">
-                    {chat?.messages.map(({content, role}, index) => {
-
-                        if (role === 'assistant'){
-
-                            console.log(content)
-
-                            return <div className="prose">
-                                <Markdown
-                                    skipHtml={false}
-                                    rehypePlugins={[rehypeRaw]}
-                                >{content}</Markdown>
-                            </div>
-                        }
-
-                        return (
-                            <p key={index} className="bg-primary text-background p-2 px-4 rounded-lg self-end">
-                                {content}
-                            </p>
-                        );
-                    })}
+                <div className="grow overflow-y-auto" ref={chatContainerRef}>
+                    <div ref={messagesContainerRef} className="flex flex-col gap-6 text-sm">
+                        {chat?.messages.map((message) =>
+                            <Message {...message} key={message.id}/>
+                        )}
+                    </div>
                 </div>
                 <div className="flex gap-2">
                     <Input
@@ -140,4 +147,4 @@ const ChatCard: React.FC<ChatCardProps> = ({
     );
 };
 
-export default ChatCard;
+export default Card;

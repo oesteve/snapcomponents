@@ -39,3 +39,8 @@ services:
     _instanceof:
         App\Service\Chat\Function\FunctionInterface:
             tags: ['app.chat.function']
+
+
+    League\CommonMark\Extension\Table\TableExtension:
+        class: League\CommonMark\Extension\Table\TableExtension
+        tags: ['twig.markdown.league_extension']
