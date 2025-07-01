@@ -22,6 +22,7 @@ function show_usage {
     echo "  restart   Restart the production environment"
     echo "  status    Check the status of the production environment"
     echo "  logs      Show logs from the production environment"
+    echo "  build     Rebuild the Docker images"
     echo "  help      Show this help message"
     echo ""
     echo "If no command is provided, 'up' will be used."
@@ -64,6 +65,13 @@ function show_logs {
     $DOCKER_COMPOSE logs -f
 }
 
+# Function to build the Docker images
+function build_env {
+    echo -e "${YELLOW}Building Docker images for production...${NC}"
+    $DOCKER_COMPOSE build
+    echo -e "${GREEN}Docker images built successfully.${NC}"
+}
+
 # Check if the compose.prod.yml file exists
 if [ ! -f "compose.prod.yml" ]; then
     echo -e "${RED}Error: compose.prod.yml file not found.${NC}"
@@ -88,6 +96,9 @@ case $COMMAND in
         ;;
     logs)
         show_logs
+        ;;
+    build)
+        build_env
         ;;
     help)
         show_usage
