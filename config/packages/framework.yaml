@@ -8,6 +8,10 @@ framework:
     #esi: true
     #fragments: true
 
+    # Configure trusted proxies to properly handle X-Forwarded-Proto header
+    trusted_proxies: '%env(TRUSTED_PROXIES)%'
+    trusted_headers: ['x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-forwarded-port']
+
 when@test:
     framework:
         test: true
