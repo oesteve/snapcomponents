@@ -1,0 +1,102 @@
+#!/bin/bash
+
+# Exit on error
+set -e
+
+# Define colors for output
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[0;33m'
+NC='\033[0m' # No Color
+
+# Define the docker compose command
+DOCKER_COMPOSE="docker compose -f compose.prod.yml"
+
+# Function to display usage information
+function show_usage {
+    echo -e "${YELLOW}Usage: $0 [command]${NC}"
+    echo ""
+    echo "Commands:"
+    echo "  up        Start the production environment"
+    echo "  down      Stop the production environment"
+    echo "  restart   Restart the production environment"
+    echo "  status    Check the status of the production environment"
+    echo "  logs      Show logs from the production environment"
+    echo "  help      Show this help message"
+    echo ""
+    echo "If no command is provided, 'up' will be used."
+}
+
+# Function to start the production environment
+function start_env {
+    echo -e "${GREEN}Starting production environment...${NC}"
+    $DOCKER_COMPOSE up -d
+    echo -e "${GREEN}Production environment started.${NC}"
+    echo -e "${YELLOW}Services:${NC}"
+    $DOCKER_COMPOSE ps
+}
+
+# Function to stop the production environment
+function stop_env {
+    echo -e "${YELLOW}Stopping production environment...${NC}"
+    $DOCKER_COMPOSE down
+    echo -e "${GREEN}Production environment stopped.${NC}"
+}
+
+# Function to restart the production environment
+function restart_env {
+    echo -e "${YELLOW}Restarting production environment...${NC}"
+    $DOCKER_COMPOSE restart
+    echo -e "${GREEN}Production environment restarted.${NC}"
+    echo -e "${YELLOW}Services:${NC}"
+    $DOCKER_COMPOSE ps
+}
+
+# Function to check the status of the production environment
+function check_status {
+    echo -e "${YELLOW}Production environment status:${NC}"
+    $DOCKER_COMPOSE ps
+}
+
+# Function to show logs
+function show_logs {
+    echo -e "${YELLOW}Production environment logs:${NC}"
+    $DOCKER_COMPOSE logs -f
+}
+
+# Check if the compose.prod.yml file exists
+if [ ! -f "compose.prod.yml" ]; then
+    echo -e "${RED}Error: compose.prod.yml file not found.${NC}"
+    exit 1
+fi
+
+# Parse command line arguments
+COMMAND=${1:-up}
+
+case $COMMAND in
+    up)
+        start_env
+        ;;
+    down)
+        stop_env
+        ;;
+    restart)
+        restart_env
+        ;;
+    status)
+        check_status
+        ;;
+    logs)
+        show_logs
+        ;;
+    help)
+        show_usage
+        ;;
+    *)
+        echo -e "${RED}Error: Unknown command '$COMMAND'${NC}"
+        show_usage
+        exit 1
+        ;;
+esac
+
+exit 0
