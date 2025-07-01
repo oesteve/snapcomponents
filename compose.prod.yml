@@ -8,7 +8,9 @@ services:
       APP_ENV: prod
     ports:
       - "8000:80"
-
+    volumes:
+        - ./var/data_prod.db:/htdocs/var/data_prod.db
+        - ./env.local:/htdocs/.env
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.8.0
     environment:
