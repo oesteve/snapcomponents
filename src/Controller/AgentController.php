@@ -4,9 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Agent;
 use App\Repository\AgentRepository;
+
 use Pentatrion\ViteBundle\Service\EntrypointRenderer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -16,6 +18,7 @@ final class AgentController extends AbstractController
     public function index(
         Agent              $agent,
         EntrypointRenderer $entrypointRenderer,
+        Request            $request,
     ): Response
     {
 
@@ -36,6 +39,12 @@ console.log('Agent {$agent->getId()} loaded');
             const newScript = document.createElement('script');
 
             for (const attr of script.attributes) {
+
+                if (attr.name === 'src') {
+                    newScript.src = '{$request->getSchemeAndHttpHost()}'+attr.value;
+                    continue;
+                }
+
                 newScript.setAttribute(attr.name, attr.value);
             }
 
