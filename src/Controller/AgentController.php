@@ -24,12 +24,19 @@ final class AgentController extends AbstractController
 
 
         $scripts = $entrypointRenderer->renderScripts('widgets', ['dependency' => "react"]);
-
+        $schemeAndHttpHost = $request->getSchemeAndHttpHost();
         $content = <<<JS
 console.log('Agent {$agent->getId()} loaded');
 
 // Inject scripts defined in the \$scripts string
 (() => {
+
+    function setUpEnvironment() {
+        window._snapcomponents = {
+            baseUrl: '{$schemeAndHttpHost}'
+        }
+    }
+
     function injectScripts(scriptsHtml) {
         const template = document.createElement('template');
         template.innerHTML = scriptsHtml;
@@ -41,7 +48,7 @@ console.log('Agent {$agent->getId()} loaded');
             for (const attr of script.attributes) {
 
                 if (attr.name === 'src') {
-                    newScript.src = '{$request->getSchemeAndHttpHost()}'+attr.value;
+                    newScript.src = '{$schemeAndHttpHost}'+attr.value;
                     continue;
                 }
 
@@ -56,6 +63,7 @@ console.log('Agent {$agent->getId()} loaded');
         });
     }
 
+    setUpEnvironment();
     injectScripts(`{$scripts}`);
 })();
 JS;

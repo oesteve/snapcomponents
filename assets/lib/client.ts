@@ -1,4 +1,4 @@
-const baseUrl = '';
+const baseUrl = window.__snapComponents?.baseUrl || '';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
