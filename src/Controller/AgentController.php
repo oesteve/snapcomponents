@@ -32,7 +32,7 @@ console.log('Agent {$agent->getId()} loaded');
 (() => {
 
     function setUpEnvironment() {
-        window._snapcomponents = {
+        window.__snapComponents = {
             baseUrl: '{$schemeAndHttpHost}'
         }
     }
