@@ -21,4 +21,4 @@ jobs:
             git pull
             docker compose -f compose.prod.yml build php
             docker compose -f compose.prod.yml down php
-            docker compose -f compose.prod.yml up php
+            docker compose -f compose.prod.yml up php -d
