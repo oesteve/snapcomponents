@@ -41,7 +41,7 @@ abstract class AbstractChatServiceTest extends BaseTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mock->method('getCode')->willReturn($agent->getCode());
+        $mock->method('getToken')->willReturn($agent->getCode());
         static::getContainer()->set(AgentIdentifierProvider::class, $mock);
 
         $em->flush();

@@ -40,6 +40,7 @@ RUN apk --no-cache --update \
         php84-opcache \
         php84-pecl-apcu \
         php84-zip \
+        php84-sodium \
         nodejs \
         ghostscript \
         poppler-utils \

@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Agent;
 use App\Repository\AgentRepository;
 
+use App\Service\Agent\AgentIdentifierProvider;
+use App\Service\Agent\AgentService;
 use Pentatrion\ViteBundle\Service\EntrypointRenderer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -18,6 +20,7 @@ final class AgentController extends AbstractController
     public function index(
         Agent              $agent,
         EntrypointRenderer $entrypointRenderer,
+        AgentService $agentService,
         Request            $request,
     ): Response
     {
@@ -26,14 +29,12 @@ final class AgentController extends AbstractController
         $scripts = $entrypointRenderer->renderScripts('widgets', ['dependency' => "react"]);
         $schemeAndHttpHost = $request->getSchemeAndHttpHost();
         $content = <<<JS
-console.log('Agent {$agent->getId()} loaded');
-
-// Inject scripts defined in the \$scripts string
 (() => {
 
     function setUpEnvironment() {
         window.__snapComponents = {
-            baseUrl: '{$schemeAndHttpHost}'
+            baseUrl: '{$schemeAndHttpHost}',
+            token: '{$agentService->generateAgentToken($agent)}',
         }
     }
 
@@ -47,7 +48,7 @@ console.log('Agent {$agent->getId()} loaded');
 
             for (const attr of script.attributes) {
 
-                if (attr.name === 'src') {
+                if (attr.name === 'src' && !attr.value.startsWith('http')) {
                     newScript.src = '{$schemeAndHttpHost}'+attr.value;
                     continue;
                 }

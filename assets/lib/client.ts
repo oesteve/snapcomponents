@@ -1,4 +1,11 @@
-const baseUrl = window.__snapComponents?.baseUrl || '';
+
+const {baseUrl, token} = window.__snapComponents;
+
+
+console.log({
+    baseUrl,
+    token,
+})
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
@@ -13,10 +20,12 @@ interface RequestOptions {
  */
 export class RestClient {
   private baseUrl: string;
+  private token?: string;
   private defaultHeaders: Record<string, string>;
 
-  constructor(baseUrl: string, defaultHeaders: Record<string, string> = {}) {
-    this.baseUrl = baseUrl;
+  constructor(baseUrl?: string, defaultHeaders: Record<string, string> = {}, token?: string) {
+    this.baseUrl = baseUrl || '';
+    this.token = token;
     this.defaultHeaders = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -95,12 +104,15 @@ export class RestClient {
     const queryParams = new URLSearchParams(params).toString();
     const fullUrl = `${this.baseUrl}${url}${queryParams ? `?${queryParams}` : ''}`;
 
+    console.log(this.token)
+
     // Prepare request options
     const requestOptions: RequestInit = {
       method,
       headers: {
         ...this.defaultHeaders,
-        ...headers
+        ...headers,
+        ...(this.token ? { 'Authorization': `Bearer ${this.token}` } : {})
       }
     };
 
@@ -155,5 +167,5 @@ export class RestClient {
 }
 
 // Create and export a default client instance
-const client = new RestClient(baseUrl);
+const client = new RestClient(baseUrl, {}, token);
 export default client;

@@ -7,6 +7,7 @@ declare global {
     interface Window {
         __snapComponents: {
             baseUrl: string;
+            token: string;
         };
     }
 }

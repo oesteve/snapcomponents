@@ -29,5 +29,7 @@
       "@/*": ["./assets/*"]
     }
   },
-  "include": ["assets", "assets/types"]
+  "include": ["assets",
+      "assets/global"
+  ]
 }

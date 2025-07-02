@@ -6,18 +6,28 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 readonly class AgentIdentifierProvider
 {
-
     public function __construct(
         private RequestStack $requestStack,
     )
     {
     }
 
-    public function getCode(): ?string
+    public function getToken(): ?string
     {
-        return $this->requestStack
+        $headerValue = $this->requestStack
             ->getCurrentRequest()
-            ->cookies->get('agent');
+            ->headers->get('Authorization');
+
+
+        if (empty($headerValue)) {
+            return null;
+        }
+
+        if (!str_contains($headerValue, 'Bearer')) {
+            return null;
+        }
+
+        return explode(' ', $headerValue)[1];
     }
 
 }

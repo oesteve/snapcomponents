@@ -25,7 +25,6 @@ if [ ! -z "$PHP_XDEBUG_ENABLED" ]
     echo 'zend_extension=xdebug.so' > $PHP_XDEBUG_CONFIG_PATH;
     echo 'xdebug.mode=debug' >> $PHP_XDEBUG_CONFIG_PATH;
     echo "xdebug.client_host=${PHP_XDEBUG_HOST}" >> $PHP_XDEBUG_CONFIG_PATH;
-    echo 'xdebug.client_port=9000' >> $PHP_XDEBUG_CONFIG_PATH;
     echo 'xdebug.start_with_request=trigger' >> $PHP_XDEBUG_CONFIG_PATH;
 else
     rm -f $PHP_XDEBUG_CONFIG_PATH;
