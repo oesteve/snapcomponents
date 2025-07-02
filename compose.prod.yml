@@ -9,7 +9,7 @@ services:
     ports:
       - "8000:80"
     volumes:
-        - ./var/data_prod.db:/htdocs/var/data_prod.db
+        - ./var/log/:/htdocs/var/log/
         - ./.env.local:/htdocs/.env.local
     depends_on:
       - mysql

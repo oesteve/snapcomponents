@@ -8,7 +8,7 @@ use App\Service\Search\ArticleSearchService;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class SearchProduct implements FunctionInterface
+readonly class SearchProduct implements FunctionInterface
 {
 
     public const string NAME = "search_product";
@@ -16,7 +16,6 @@ class SearchProduct implements FunctionInterface
 
     public function __construct(
         private ProductSearchService $productSearch,
-        private SerializerInterface  $serializer,
     )
     {
     }
@@ -26,6 +25,10 @@ class SearchProduct implements FunctionInterface
         return self::NAME;
     }
 
+    /**
+     * @param ChatMessage $message
+     * @return array<string, mixed>
+     */
     public function getParameters(
         ChatMessage $message,
     ): array

@@ -2,3 +2,4 @@
 
 
 var/mysql_data
+var/log
