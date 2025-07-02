@@ -5,6 +5,7 @@ namespace App\Serializer\Normalizer;
 use App\Entity\Agent;
 use App\Service\Agent\AgentService;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class AgentNormalizer implements NormalizerInterface
@@ -21,7 +22,16 @@ class AgentNormalizer implements NormalizerInterface
      */
     public function normalize($object, ?string $format = null, array $context = []): array
     {
-        $data = $this->normalizer->normalize($object, $format, $context);
+        $data = $this->normalizer->normalize(
+            $object,
+            $format,
+            [
+                ...$context,
+                AbstractNormalizer::IGNORED_ATTRIBUTES => [
+                    'user',
+                ],
+            ]
+        );
 
         $data['url'] = $this->agentService->getAgentUrl($object);
 

@@ -2,6 +2,9 @@ twig:
     file_name_pattern: '*.twig'
     form_themes: [ 'form/default.html.twig' ]
 
+    globals:
+       agent_demo_code: '%agent_demo_code%'
+
 when@test:
     twig:
         strict_variables: true
