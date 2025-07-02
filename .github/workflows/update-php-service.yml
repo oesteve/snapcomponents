@@ -1,0 +1,33 @@
+name: Update PHP Service
+
+on:
+  push:
+    branches:
+      - main  # or master, depending on your default branch name
+    paths:
+      - 'src/**'
+      - 'templates/**'
+      - 'config/**'
+      - 'composer.*'
+      - 'Dockerfile'
+      - 'compose.prod.yml'
+
+jobs:
+  update-php:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to server and update PHP service
+        uses: appleboy/ssh-action@master
+        with:
+          host: snapcomponents.com
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: |
+            cd snapcomponents
+            git pull
+            # Build the Docker images
+            ./snap build
+            # Restart only the PHP service (using direct Docker Compose command since snap script doesn't support restarting individual services)
+            docker compose -f compose.prod.yml restart php
+            echo "PHP service updated successfully"
