@@ -19,6 +19,6 @@ jobs:
           script: |
             cd snapcomponents
             git pull
-            ./snap build
-            ./snap down
-            ./snap up
+            docker compose -f compose.prod.yml build php
+            docker compose -f compose.prod.yml down php
+            docker compose -f compose.prod.yml up php
