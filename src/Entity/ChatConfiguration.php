@@ -25,7 +25,7 @@ class ChatConfiguration
     #[ORM\Column(type: Types::TEXT)]
     private string $instructions;
 
-    #[ORM\OneToOne(targetEntity: Agent::class, inversedBy: 'configuration')]
+    #[ORM\OneToOne(targetEntity: Agent::class, inversedBy: 'chatConfiguration')]
     #[ORM\JoinColumn(nullable: false)]
     private Agent $agent;
 
