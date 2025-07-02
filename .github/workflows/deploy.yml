@@ -20,4 +20,5 @@ jobs:
             cd snapcomponents
             git pull
             ./snap build
-            ./snap restart
+            ./snap down
+            ./snap up
