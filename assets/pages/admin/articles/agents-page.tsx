@@ -1,5 +1,5 @@
 import {AgentList} from "@/components/admin/agents/agent-list.tsx";
-import { useBreadcrumb } from "@/hooks/use-breadcrumb";
+import { useBreadcrumb } from "@/hooks/use-breadcrumb.ts";
 
 export function AgentsPage() {
     // Set breadcrumbs for this page

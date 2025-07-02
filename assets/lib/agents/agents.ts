@@ -26,3 +26,7 @@ export function removeAgent(id: Agent["id"]) {
 export function updateAgent({id, name}: { id: Agent["id"], name: Agent["name"] }) {
     return client.put<Agent>(`/api/agents/${id}`, {name});
 }
+
+export function getAgent(id: Agent["id"]) {
+    return client.get<Agent>(`/api/agents/${id}`);
+}

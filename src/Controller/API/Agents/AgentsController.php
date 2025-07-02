@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 
 #[Route('/api/agents', format: 'json')]
@@ -41,6 +42,23 @@ class AgentsController extends AbstractController
         $agentRepository->save($agent);
 
         return $this->json($agent);
+    }
+
+    #[Route('/{id}', methods: ['GET'])]
+    public function get(
+        Agent $agent,
+    ): JsonResponse
+    {
+        return $this->json(
+            $agent,
+            Response::HTTP_OK,
+            [],
+            [
+                AbstractNormalizer::ALLOW_EXTRA_ATTRIBUTES => [
+                    'chatConfiguration'
+                ]
+            ]
+        );
     }
 
     #[Route('/{id}', methods: ['PUT'])]

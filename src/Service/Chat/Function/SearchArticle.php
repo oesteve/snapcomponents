@@ -9,8 +9,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class SearchArticle implements FunctionInterface
 {
 
-    public const NAME = "search_article";
-
+    public const string NAME = "search_article";
 
     public function __construct(
         private ArticleSearchService $searchService,
@@ -24,6 +23,11 @@ class SearchArticle implements FunctionInterface
         return self::NAME;
     }
 
+
+    /**
+     * @param ChatMessage $message
+     * @return array<string, mixed>
+     */
     public function getParameters(
         ChatMessage $message,
     ): array
@@ -45,9 +49,15 @@ class SearchArticle implements FunctionInterface
         ChatMessage $message,
     ): string
     {
-        return "Search in the database of articles";
+        return "Search in the FAQ database";
     }
 
+
+    /**
+     * @param ChatMessage $message
+     *
+     * @param array{query: string} $parameters
+     */
     public function execute(
         ChatMessage $message,
         array $parameters

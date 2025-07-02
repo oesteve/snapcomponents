@@ -55,7 +55,7 @@ class ChatService
     ): Chat
     {
         $agent = $this->agentService->getAgentOrFail();
-        $chatConfiguration = $agent->getConfiguration();
+        $chatConfiguration = $agent->getChatConfiguration();
 
         if (!$chatConfiguration) {
             throw new \Exception("Chat configuration not found");

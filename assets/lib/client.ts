@@ -1,11 +1,5 @@
 
-const {baseUrl, token} = window.__snapComponents;
-
-
-console.log({
-    baseUrl,
-    token,
-})
+const {baseUrl, token} = window.__snapComponents || {};
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 

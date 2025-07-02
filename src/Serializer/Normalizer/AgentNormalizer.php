@@ -29,6 +29,7 @@ class AgentNormalizer implements NormalizerInterface
                 ...$context,
                 AbstractNormalizer::IGNORED_ATTRIBUTES => [
                     'user',
+                    'chatConfiguration'
                 ],
             ]
         );

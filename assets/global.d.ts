@@ -5,7 +5,7 @@ declare module "*.jpg";
 declare module "*.css";
 declare global {
     interface Window {
-        __snapComponents: {
+        __snapComponents?: {
             baseUrl: string;
             token: string;
         };

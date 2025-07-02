@@ -34,7 +34,7 @@ class Agent extends BaseEntity
     private Collection $chats;
 
     #[ORM\OneToOne(targetEntity: ChatConfiguration::class, mappedBy: 'agent', cascade: ['persist', 'remove'])]
-    private ?ChatConfiguration $configuration = null;
+    private ?ChatConfiguration $chatConfiguration = null;
 
     public function __construct(
         string $name,
@@ -54,7 +54,7 @@ class Agent extends BaseEntity
 
     public function setChatConfiguration(ChatConfiguration $configuration): void
     {
-        $this->configuration = $configuration;
+        $this->chatConfiguration = $configuration;
     }
 
     public function getId(): ?int
@@ -87,8 +87,8 @@ class Agent extends BaseEntity
         return $this->chats;
     }
 
-    public function getConfiguration(): ?ChatConfiguration
+    public function getChatConfiguration(): ?ChatConfiguration
     {
-        return $this->configuration;
+        return $this->chatConfiguration;
     }
 }
