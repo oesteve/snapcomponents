@@ -34,19 +34,11 @@ readonly class ArticleSearchService
         );
 
         return $this->finder->find([
-            'query' => [
-                'bool' => [
-                    'must' => [
-                        [
-                            'knn' => [
-                                'field' => 'title_vector',
-                                'query_vector' => $query,
-                                'k' => 10,
-                                "num_candidates" => 100,
-                            ]
-                        ]
-                    ]
-                ]
+            'knn' => [
+                'field' => 'title_vector',
+                'query_vector' => $query,
+                'k' => 10,
+                "num_candidates" => 100,
             ]
         ]);
     }
