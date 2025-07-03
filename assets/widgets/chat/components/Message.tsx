@@ -13,7 +13,7 @@ export function Message(
 
     if (role === 'assistant') {
         // prevent interpretation as MD Quote
-        content = content.replace(/"\n+>/, '">');
+        content = content.replace(/"\n+>/g, '">');
 
         if(content.includes('<wg-')){
             console.log(content);
