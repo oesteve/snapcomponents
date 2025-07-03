@@ -17,28 +17,66 @@ readonly class ProductSearchService
         #[Autowire(service: 'fos_elastica.finder.products')]
         private PaginatedFinderInterface $finder,
         private EmbeddingsService        $searchService,
-    ) {
+    )
+    {
     }
 
     /**
      * Search for articles using Elasticsearch
      *
      * @param string|null $query The search query
+     * @param array<string,array{
+     *     field: string,
+     *     operator: string,
+     *     value: string
+     * }>|null $filters
      * @return Product[] The search results
      */
-    public function search(?string $query): array
+    public function search(
+        ?string $query,
+        ?array  $filters = null,
+    ): array
     {
+        $request = [];
 
-        $query = $this->searchService->createEmbeddings($query);
+        if ($query) {
+            $queryVector = $this->searchService->createEmbeddings($query);
+            $request = [
+                'knn' => [
+                    'field' => 'title_vector',
+                    'query_vector' => $queryVector,
+                    'k' => 10,
+                    "num_candidates" => 100,
+                ]
+            ];
+        }
 
-        return $this->finder->find([
-            'knn' => [
-                'field' => 'title_vector',
-                'query_vector' => $query,
-                'k' => 10,
-                "num_candidates" => 100,
-            ]
-        ]);
+        $must = [];
+        foreach ($filters ?? [] as $filter) {
+            $term = match ($filter['operator']) {
+                'eq' => ['term' => [$filter['field'] => $filter['value']]],
+                'lt' => ['range' => [$filter['field'] => ['lt' => $filter['value']]]],
+                'lte' => ['range' => [$filter['field'] => ['lte' => $filter['value']]]],
+                'gt' => ['range' => [$filter['field'] => ['gt' => $filter['value']]]],
+                'gte' => ['range' => [$filter['field'] => ['gte' => $filter['value']]]],
+                'match' => ['match' => [$filter['field'] => $filter['value']]],
+                default => null
+            };
+
+            if ($term) {
+                $must[] = $term;
+            }
+        }
+
+        if (count($must)) {
+            $request['query'] = [
+                'bool' => [
+                    'must' => $must,
+                ]
+            ];
+        }
+
+        return $this->finder->find($request);
     }
 
     #[AsEventListener(event: PostTransformEvent::class)]

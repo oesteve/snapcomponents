@@ -15,7 +15,8 @@ readonly class ArticleSearchService
         #[Autowire(service: 'fos_elastica.finder.articles')]
         private PaginatedFinderInterface $finder,
         private EmbeddingsService        $searchService,
-    ) {
+    )
+    {
     }
 
     /**
@@ -24,17 +25,28 @@ readonly class ArticleSearchService
      * @param string|null $query The search query
      * @return Article[] The search results
      */
-    public function search(?string $query): array
+    public function search(
+        ?string $query
+    ): array
     {
-
-        $query = $this->searchService->createEmbeddings($query);
+        $query = $this->searchService->createEmbeddings(
+            $query,
+        );
 
         return $this->finder->find([
-            'knn' => [
-                'field' => 'title_vector',
-                'query_vector' => $query,
-                'k' => 10,
-                "num_candidates" => 100,
+            'query' => [
+                'bool' => [
+                    'must' => [
+                        [
+                            'knn' => [
+                                'field' => 'title_vector',
+                                'query_vector' => $query,
+                                'k' => 10,
+                                "num_candidates" => 100,
+                            ]
+                        ]
+                    ]
+                ]
             ]
         ]);
     }

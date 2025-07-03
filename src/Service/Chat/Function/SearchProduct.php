@@ -5,6 +5,7 @@ namespace App\Service\Chat\Function;
 use App\Entity\ChatMessage;
 use App\Service\Product\ProductSearchService;
 use App\Service\Search\ArticleSearchService;
+use phpDocumentor\Reflection\Type;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -39,9 +40,31 @@ readonly class SearchProduct implements FunctionInterface
                 "query" => [
                     "type" => "string",
                     "description" => "Terms to search about"
-                ]
+                ],
+                "filters" => [
+                    "type" => "array",
+                    "items" => [
+                        "type" => "object",
+                        "required" => ["field", "operator", "value"],
+                        "properties" => [
+                            "field" => [
+                                "type" => "string",
+                                "enum" => ["price"],
+                                "minLength" => 1
+                            ],
+                            "operator" => [
+                                "type" => "string",
+                                "enum" => ["eq", "lt", "lte", "gt", "gte", "match"]
+                            ],
+                            "value" => [
+                                "type" => ["number", "string"]
+                            ]
+                        ],
+                        "additionalProperties" => false
+                    ]
+                ],
             ],
-            "required" => ["query"],
+            "required" => [],
             "additionalProperties" => false
         ];
     }
@@ -50,30 +73,34 @@ readonly class SearchProduct implements FunctionInterface
         ChatMessage $message,
     ): string
     {
-        return "Search in the database of articles";
+        return "Search in the product database, with filter for price.";
     }
 
     /**
      * @param ChatMessage $message
-     * @param array{query:string} $parameters
+     * @param array{query:string|null, filters:array|null} $parameters
      * @return string
      * @throws ExceptionInterface
      */
     public function execute(
         ChatMessage $message,
-        array $parameters
-    ): string {
+        array       $parameters
+    ): string
+    {
 
-        $products = $this->productSearch->search($parameters["query"]);
+        $products = $this->productSearch->search(
+            $parameters["query"] ?? null,
+            $parameters["filters"] ?? null,
+        );
 
 
-        if(!count($products)){
+        if (!count($products)) {
             return "No products found";
         }
 
         $result = "These are the products that match your search: \n";
 
-        foreach ($products as $product){
+        foreach ($products as $product) {
             $result .= "<wg-product-card title=\"{$product->getTitle()}\" image=\"{$product->getImage()}\" price=\"{$product->getPrice()}\" ></wg-product-card>\n";
         }
 
