@@ -3,6 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import {defineConfig} from "vite";
 import react from "@vitejs/plugin-react";
 import symfonyPlugin from "vite-plugin-symfony";
+import { tanstackRouter } from '@tanstack/router-plugin/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -22,7 +23,18 @@ export default defineConfig({
             ],
         },
     },
-    plugins: [symfonyPlugin(), react(), tailwindcss()],
+    plugins: [
+        symfonyPlugin(),
+        tailwindcss(),
+        // Please make sure that '@tanstack/router-plugin' is passed before '@vitejs/plugin-react'
+        tanstackRouter({
+            target: 'react',
+            autoCodeSplitting: true,
+            routesDirectory: 'assets/admin/routes',
+            generatedRouteTree: 'assets/admin/routeTree.gen.ts'
+        }),
+        react(),
+    ],
     resolve: {
         alias: {
             "@/translations": path.resolve(__dirname, "var/translations"),
@@ -35,7 +47,7 @@ export default defineConfig({
             input: {
                 app: "./assets/index.ts",
                 widgets: "./assets/widgets/index.ts",
-                admin: "./assets/pages/admin/index.tsx",
+                admin: "./assets/admin/main.tsx",
             },
         },
     },
