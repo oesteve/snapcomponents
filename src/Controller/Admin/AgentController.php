@@ -10,8 +10,9 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/admin/agents')]
 final class AgentController extends AbstractController
 {
-    #[Route('', name: 'app_admin_agent_list')]
-    #[Route('/{id}/settings', name: 'app_admin_agent_settings')]
+    #[Route('{path}', name: 'app_admin_agent_list', requirements: [
+        'path' => '.*'
+    ])]
     public function list(
         AgentRepository $agentRepository,
     ): Response

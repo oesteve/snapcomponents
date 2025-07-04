@@ -34,7 +34,6 @@ export function AgentSettings({agent}: AgentSettingsProps) {
 
     return (
         <Form className="grid gap-4" onSubmit={editAgentMutation.mutateAsync} defaultData={defaultData}>
-
             <div>
                 <div className="flex gap-4 mb-8">
                     <div>
@@ -61,8 +60,6 @@ export function AgentSettings({agent}: AgentSettingsProps) {
                         description={"Name used to identify the agent"}
                     />
                 </div>
-
-
             </div>
         </Form>
     )

@@ -9,9 +9,8 @@ import {
 import {type Agent} from "@/lib/agents/agents.ts";
 import {useState} from "react";
 import {Button} from "@/components/ui/button";
-import {Code, Copy} from "lucide-react";
-import {toast} from "sonner";
-import {InstallAgent} from "@/components/admin/agents/install-agent.tsx";
+import {Code} from "lucide-react";
+import {AgentInstall} from "@/components/admin/agents/agent-install.tsx";
 
 interface AgentInstallationDialogProps {
     agent: Agent;
@@ -41,7 +40,7 @@ export function AgentInstallationDialog({agent, trigger}: AgentInstallationDialo
                         Follow these instructions to add the agent "{agent.name}" to your website.
                     </DialogDescription>
                 </DialogHeader>
-                <InstallAgent agent={agent} />
+                <AgentInstall agent={agent} />
                 <div className="flex justify-end space-x-2 pt-4">
                     <Button onClick={() => setOpen(false)}>
                         Close

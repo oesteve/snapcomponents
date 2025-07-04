@@ -8,9 +8,7 @@ interface InstallAgentProps {
     agent: Agent;
 }
 
-export function InstallAgent({
-                                 agent
-                             }: InstallAgentProps) {
+export function AgentInstall({agent}: InstallAgentProps) {
 
     // Mock installation code snippet
     const installationCode = `
@@ -34,17 +32,14 @@ export function InstallAgent({
                 <p className="text-sm text-muted-foreground">
                     Add this code snippet to the <code>&lt;head&gt;</code> section of your HTML.
                 </p>
-
-                <div className="relative max-w-full sm:max-w-[550px]">
+                <div className="relative max-w-full w-full">
                     <div className="bg-secondary p-4 pt-14 rounded-md overflow-x-auto">
                         <div>
-                                    <pre className="text-sm whitespace-nowrap">
-                                        {installationCode}
-                                    </pre>
+                            <pre className="text-sm whitespace-nowrap">
+                                {installationCode}
+                            </pre>
                         </div>
                     </div>
-
-
                     <Button
                         variant="outline"
                         size="icon"
@@ -55,7 +50,6 @@ export function InstallAgent({
                     </Button>
                 </div>
             </div>
-
             <div className="space-y-2">
                 <h3 className="text-lg font-medium">Step 2: Customize the widget (optional)</h3>
                 <p className="text-sm text-muted-foreground">
@@ -70,7 +64,6 @@ export function InstallAgent({
                     <li><code>initialMessage</code>: A message to show when the chat first opens</li>
                 </ul>
             </div>
-
             <div className="space-y-2">
                 <h3 className="text-lg font-medium">Step 3: Test your integration</h3>
                 <p className="text-sm text-muted-foreground">
