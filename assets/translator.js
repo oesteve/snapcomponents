@@ -1,7 +1,5 @@
 import {
     trans,
-    getLocale,
-    setLocale,
     setLocaleFallbacks,
 } from "@symfony/ux-translator";
 /*

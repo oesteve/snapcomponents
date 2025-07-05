@@ -6,6 +6,12 @@ This project uses ESLint for linting JavaScript and TypeScript code, and Prettie
 
 ESLint is configured in the `eslint.config.js` file in the root of the project. It is set up to lint JavaScript, TypeScript, and React code.
 
+### Plugins
+
+The ESLint configuration includes the following plugins:
+
+- **eslint-plugin-unused-imports**: Detects and automatically removes unused imports. This helps keep the codebase clean and reduces bundle size.
+
 ### Running ESLint
 
 To run ESLint on the project, use the following npm scripts:
