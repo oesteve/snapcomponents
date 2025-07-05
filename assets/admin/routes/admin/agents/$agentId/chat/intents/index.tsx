@@ -74,72 +74,70 @@ function CreateIntent() {
     };
 
     return (
-        <div className="p-2">
-            <Form
-                onSubmit={createIntentMutation.mutateAsync}
-                defaultData={defaultData}
-                className="w-full items-center"
-            >
-                <Card className="w-full max-w-4xl">
-                    <CardHeader>
-                        <CardTitle>Create Intent</CardTitle>
-                        <CardDescription>
-                            Create a new intent for your agent to handle
-                            specific user requests
-                        </CardDescription>
-                        <CardAction>
-                            <Submit>Create Intent</Submit>
-                        </CardAction>
-                    </CardHeader>
-                    <CardContent className="grid gap-4">
-                        <FormError />
-                        <DevFormData />
+        <Form
+            onSubmit={createIntentMutation.mutateAsync}
+            defaultData={defaultData}
+            className="w-full items-center"
+        >
+            <Card className="w-full max-w-4xl">
+                <CardHeader>
+                    <CardTitle>Create Intent</CardTitle>
+                    <CardDescription>
+                        Create a new intent for your agent to handle specific
+                        user requests
+                    </CardDescription>
+                    <CardAction>
+                        <Submit>Create Intent</Submit>
+                    </CardAction>
+                </CardHeader>
+                <CardContent className="grid gap-4">
+                    <FormError />
+                    <DevFormData />
 
-                        <TextInputWidget
-                            name={"name"}
-                            label={"Name"}
-                            description={"Name used to identify the intent"}
-                        />
+                    <TextInputWidget
+                        name={"name"}
+                        label={"Name"}
+                        description={"Name used to identify the intent"}
+                    />
 
-                        <TextInputWidget
-                            name={"description"}
-                            label={"Description"}
-                            description={"Description about the user intent"}
-                        />
+                    <TextInputWidget
+                        name={"description"}
+                        label={"Description"}
+                        description={"Description about the user intent"}
+                    />
 
-                        <TextareaInputWidget
-                            name={"instructions"}
-                            label={"Instructions"}
-                            description="The indication for the model when the user is in this intent."
-                            className="font-mono"
-                        />
+                    <TextareaInputWidget
+                        name={"instructions"}
+                        label={"Instructions"}
+                        description="The indication for the model when the user is in this intent."
+                        className="font-mono"
+                    />
 
-                        <TagInputWidget
-                            name={"tools"}
-                            label={"Tools"}
-                            description={
-                                isLoadingTools
-                                    ? "Loading tools..."
-                                    : "Select the tools that can be used in this intent."
-                            }
-                            options={toolOptions}
-                            placeholder="Search for a tool..."
-                        />
+                    <TagInputWidget
+                        name={"tools"}
+                        label={"Tools"}
+                        description={
+                            isLoadingTools
+                                ? "Loading tools..."
+                                : "Select the tools that can be used in this intent."
+                        }
+                        options={toolOptions}
+                        placeholder="Search for a tool..."
+                    />
 
-                        <TagInputWidget
-                            name={"widgets"}
-                            label={"Components"}
-                            description={
-                                isLoadingComponents
-                                    ? "Loading components..."
-                                    : "Select the UI components that can be used in this intent."
-                            }
-                            options={componentOptions}
-                            placeholder="Search for a component..."
-                        />
-                    </CardContent>
-                </Card>
-            </Form>
-        </div>
+                    <TagInputWidget
+                        name={"widgets"}
+                        label={"Components"}
+                        description={
+                            isLoadingComponents
+                                ? "Loading components..."
+                                : "Select the UI components that can be used in this intent."
+                        }
+                        options={componentOptions}
+                        placeholder="Search for a component..."
+                    />
+                </CardContent>
+            </Card>
+        </Form>
     );
 }
