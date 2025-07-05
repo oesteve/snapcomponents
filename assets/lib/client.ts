@@ -6,6 +6,7 @@ interface RequestOptions {
     headers?: Record<string, string>;
     params?: Record<string, string>;
     data?: unknown;
+    isFormData?: boolean;
 }
 
 /**
@@ -64,6 +65,26 @@ export class RestClient {
     }
 
     /**
+     * Make a POST request with FormData
+     * @param url - The URL to request
+     * @param formData - The FormData object to send
+     * @param options - Request options
+     * @returns Promise with the response data of type ResponseType
+     * @throws {HttpError} If the response status is not 200 (OK)
+     */
+    async postFormData<ResponseType = unknown>(
+        url: string,
+        formData: FormData,
+        options: RequestOptions = {},
+    ): Promise<ResponseType> {
+        return this.request<ResponseType>("POST", url, {
+            ...options,
+            data: formData,
+            isFormData: true
+        });
+    }
+
+    /**
      * Make a PUT request
      * @param url - The URL to request
      * @param data - The data to send
@@ -107,7 +128,7 @@ export class RestClient {
     private async request<ResponseType>(
         method: HttpMethod,
         url: string,
-        { headers = {}, params = {}, data }: RequestOptions,
+        { headers = {}, params = {}, data, isFormData = false }: RequestOptions,
     ): Promise<ResponseType> {
         // Build the full URL with query parameters
         const queryParams = new URLSearchParams(params).toString();
@@ -119,7 +140,7 @@ export class RestClient {
         const requestOptions: RequestInit = {
             method,
             headers: {
-                ...this.defaultHeaders,
+                ...(isFormData ? {} : this.defaultHeaders),
                 ...headers,
                 ...(this.token
                     ? { Authorization: `Bearer ${this.token}` }
@@ -129,7 +150,11 @@ export class RestClient {
 
         // Add body for methods that support it
         if (method !== "GET" && data !== undefined && data !== null) {
-            requestOptions.body = JSON.stringify(data);
+            if (isFormData) {
+                requestOptions.body = data as FormData;
+            } else {
+                requestOptions.body = JSON.stringify(data);
+            }
         }
 
         // Make the request
@@ -148,7 +173,7 @@ export class RestClient {
                         errorMessage = errorData.message;
                     }
                 }
-            } catch (e) {
+            } catch {
                 // If we can't parse the error response, just use the default error message
             }
 

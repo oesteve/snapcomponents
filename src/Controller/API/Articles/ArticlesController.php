@@ -6,6 +6,7 @@ use App\Controller\AbstractController;
 use App\Controller\API\Articles\DTO\ArticleData;
 use App\Entity\Article;
 use App\Repository\ArticleRepository;
+use App\Service\Import\ArticleImportService;
 use App\Service\Search\ArticleSearchService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -80,5 +81,38 @@ class ArticlesController extends AbstractController
     {
         $articleRepository->remove($article);
         return $this->json(null, Response::HTTP_NO_CONTENT);
+    }
+
+    #[Route('/import/csv', methods: ['POST'])]
+    public function importCsv(
+        Request $request,
+        ArticleImportService $importService
+    ): JsonResponse
+    {
+        // Check if a file was uploaded
+        $file = $request->files->get('file');
+        if (!$file) {
+            return $this->json(['error' => 'No file uploaded'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Get the current user
+        $user = $this->getLoggedUserOrFail();
+
+        // Import the articles
+        $result = $importService->importFromCsv($file, $user);
+
+        // Prepare the response
+        $response = [
+            'success' => count($result['success']),
+            'errors' => $result['errors'],
+            'articles' => $result['success'],
+        ];
+
+        // Return a 207 Multi-Status response if there are errors
+        $statusCode = !empty($result['errors'])
+            ? Response::HTTP_MULTI_STATUS
+            : Response::HTTP_OK;
+
+        return $this->json($response, $statusCode);
     }
 }

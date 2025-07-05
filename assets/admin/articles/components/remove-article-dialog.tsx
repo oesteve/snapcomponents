@@ -11,7 +11,7 @@ import { Trash2 } from "lucide-react";
 import { Form } from "@/components/form";
 import Submit from "@/components/form/submit.tsx";
 import { useMutation } from "@tanstack/react-query";
-import { type Article, removeArticle } from "@/lib/articles/articles.ts";
+import { type Article, removeArticle } from "@/admin/articles/lib/articles.ts";
 import FormError from "@/components/form/form-error.tsx";
 import DevFormData from "@/components/form/dev-form-data.tsx";
 import { useState } from "react";

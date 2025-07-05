@@ -12,6 +12,19 @@ export function getArticles() {
     return client.get<Article[]>("/api/articles");
 }
 
+export type ImportResult = {
+    articles: Article[]
+    success: number;
+    errors: Array<{ line: number; message: string }>;
+};
+
+export async function importArticlesFromCsv(file: File): Promise<ImportResult> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return client.postFormData<ImportResult>("/api/articles/import/csv", formData);
+}
+
 export type ArticleData = {
     name: string;
     title: string;

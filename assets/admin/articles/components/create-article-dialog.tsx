@@ -12,7 +12,7 @@ import { Form } from "@/components/form";
 import TextInputWidget from "@/components/form/widgets/text-input-widget.tsx";
 import Submit from "@/components/form/submit.tsx";
 import { useMutation } from "@tanstack/react-query";
-import { createArticle } from "@/lib/articles/articles.ts";
+import { createArticle } from "@/admin/articles/lib/articles.ts";
 import FormError from "@/components/form/form-error.tsx";
 import DevFormData from "@/components/form/dev-form-data.tsx";
 import { useState } from "react";

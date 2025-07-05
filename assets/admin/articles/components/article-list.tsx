@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";
-import { type Article, getArticles } from "@/lib/articles/articles.ts";
+import { type Article, getArticles } from "@/admin/articles/lib/articles.ts";
 import { DataTable } from "@/admin/components/agents/data-table.tsx";
-import { CreateArticleDialog } from "@/admin/components/articles/create-article-dialog.tsx";
-import { RemoveArticleDialog } from "@/admin/components/articles/remove-article-dialog.tsx";
-import { EditArticleDialog } from "@/admin/components/articles/edit-article-dialog.tsx";
+import { CreateArticleDialog } from "@/admin/articles/components/create-article-dialog.tsx";
+import { RemoveArticleDialog } from "@/admin/articles/components/remove-article-dialog.tsx";
+import { EditArticleDialog } from "@/admin/articles/components/edit-article-dialog.tsx";
+import { ImportArticlesDialog } from "@/admin/articles/components/import-articles-dialog.tsx";
 
 export function ArticleList() {
     const articlesQuery = useQuery({
@@ -66,7 +67,8 @@ export function ArticleList() {
 
     return (
         <div className="w-full max-w-6xl flex flex-col gap-4">
-            <div className="flex flex-row justify-end">
+            <div className="flex flex-row justify-end space-x-2">
+                <ImportArticlesDialog onImported={refresh} />
                 <CreateArticleDialog onCreated={refresh} />
             </div>
             <DataTable columns={columns} data={articlesQuery.data ?? []} />
