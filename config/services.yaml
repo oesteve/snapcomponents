@@ -36,8 +36,8 @@ services:
         arguments: ["%env(OPENAI_SECRET_KEY)%"]
 
     _instanceof:
-        App\Service\Chat\Function\FunctionInterface:
-            tags: ["app.chat.function"]
+        App\Service\Chat\Tool\ToolInterface:
+            tags: ["app.chat.tool"]
 
     League\CommonMark\Extension\Table\TableExtension:
         class: League\CommonMark\Extension\Table\TableExtension

@@ -11,7 +11,7 @@ use App\Entity\ChatIntent;
 use App\Repository\ChatConfigurationRepository;
 use App\Repository\ChatIntentRepository;
 use App\Service\Chat\ChatService;
-use App\Service\Chat\Function\FunctionsManager;
+use App\Service\Chat\Tool\ToolManager;
 use App\Service\Chat\Widget\ComponentsManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,10 +25,14 @@ class ChatController extends AbstractController
 
     #[Route('/tools', methods: ['GET'])]
     public function tools(
-        FunctionsManager $functionManager
+        ToolManager $toolManager
     ): JsonResponse
     {
-        return $this->json($functionManager->getFunctions());
+        $tools = $toolManager->getTools(ToolManager::CHAT_SCOPE);
+
+        return $this->json(
+            $tools
+        );
     }
 
     #[Route('/components', methods: ['GET'])]

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Service\Chat\Function;
+namespace App\Service\Chat\Tool;
 
 use App\Entity\ChatIntent;
 use App\Entity\ChatMessage;
 
-class DefineIntent implements FunctionInterface
+class DefineIntent implements ToolInterface
 {
 
     CONST string NAME = "define_intent";
@@ -15,6 +15,14 @@ class DefineIntent implements FunctionInterface
         return self::NAME;
     }
 
+    public function getDisplayName(): string
+    {
+        return "Define Intent";
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
     public function getParameters(
         ChatMessage $message,
     ): array
@@ -72,5 +80,10 @@ class DefineIntent implements FunctionInterface
         return $message->getChat()->getConfiguration()->getIntents()->map(function ($intent) {
             return $intent->getName();
         })->toArray();
+    }
+
+    public function support(string $scope): bool
+    {
+        return in_array($scope, [ToolManager::CHAT_SCOPE]);
     }
 }

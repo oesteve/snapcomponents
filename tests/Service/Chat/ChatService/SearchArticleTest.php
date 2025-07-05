@@ -5,7 +5,7 @@ namespace App\Tests\Service\Chat\ChatService;
 use App\Entity\ChatConfiguration;
 use App\Entity\ChatIntent;
 use App\Service\Chat\ChatService;
-use App\Service\Chat\Function\SearchArticle;
+use App\Service\Chat\Tool\SearchArticle;
 use App\Service\Search\ArticleSearchService;
 
 class SearchArticleTest extends AbstractChatServiceTest

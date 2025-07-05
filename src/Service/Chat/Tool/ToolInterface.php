@@ -1,13 +1,19 @@
 <?php
 
-namespace App\Service\Chat\Function;
+namespace App\Service\Chat\Tool;
 
 use App\Entity\ChatMessage;
 
-interface FunctionInterface
+interface ToolInterface
 {
     public function getName(): string;
+    public function getDisplayName(): string;
 
+
+    /**
+     * @param ChatMessage $message
+     * @return array<string, mixed>
+     */
     public function getParameters(
         ChatMessage $message,
     ): array;
@@ -20,4 +26,6 @@ interface FunctionInterface
         ChatMessage $message,
         array $parameters
     ): string;
+
+    public function support(string $scope): bool;
 }

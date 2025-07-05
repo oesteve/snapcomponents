@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Chat\Function;
+namespace App\Service\Chat\Tool;
 
 use App\Entity\ChatMessage;
 use App\Service\Product\ProductSearchService;
@@ -9,7 +9,7 @@ use phpDocumentor\Reflection\Type;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
-readonly class SearchProduct implements FunctionInterface
+readonly class SearchProduct implements ToolInterface
 {
 
     public const string NAME = "search_product";
@@ -24,6 +24,12 @@ readonly class SearchProduct implements FunctionInterface
     public function getName(): string
     {
         return self::NAME;
+    }
+
+
+    public function getDisplayName(): string
+    {
+        return "Search Products in the database";
     }
 
     /**
@@ -105,5 +111,11 @@ readonly class SearchProduct implements FunctionInterface
         }
 
         return $result;
+    }
+
+
+    public function support(string $scope): bool
+    {
+        return in_array($scope, [ToolManager::CHAT_SCOPE]);
     }
 }

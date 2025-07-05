@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Service\Chat\Function;
+namespace App\Service\Chat\Tool;
 
 use App\Entity\ChatMessage;
 use App\Service\Search\ArticleSearchService;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class SearchArticle implements FunctionInterface
+class SearchArticle implements ToolInterface
 {
 
     public const string NAME = "search_article";
@@ -49,7 +49,7 @@ class SearchArticle implements FunctionInterface
         ChatMessage $message,
     ): string
     {
-        return "Search in the FAQ database";
+        return "Search results articles database";
     }
 
 
@@ -65,5 +65,15 @@ class SearchArticle implements FunctionInterface
         $articles = $this->searchService->search($parameters["query"]);
 
         return $this->serializer->serialize($articles, 'json');
+    }
+
+    public function getDisplayName(): string
+    {
+        return "Search Articles";
+    }
+
+    public function support(string $scope): bool
+    {
+        return in_array($scope, [ToolManager::CHAT_SCOPE]);
     }
 }

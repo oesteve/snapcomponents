@@ -8,8 +8,8 @@ use App\Repository\ChatMessageRepository;
 use App\Repository\ChatRepository;
 use App\Service\Agent\AgentService;
 use App\Service\Chat\Widget\ComponentsManager;
-use App\Service\Chat\Function\DefineIntent;
-use App\Service\Chat\Function\FunctionInterface;
+use App\Service\Chat\Tool\DefineIntent;
+use App\Service\Chat\Tool\ToolInterface;
 use OpenAI;
 use OpenAI\Responses\Chat\CreateResponse;
 use OpenAI\Responses\Chat\CreateResponseToolCall;
@@ -21,7 +21,7 @@ class ChatService
 {
 
     /**
-     * @var array<string, FunctionInterface>
+     * @var array<string, ToolInterface>
      */
     private array $functions = [];
 
@@ -30,14 +30,14 @@ class ChatService
      * @param ChatMessageRepository $chatMessageRepository
      * @param AgentService $agentService
      * @param OpenAI\Client $client
-     * @param array<FunctionInterface> $functions
+     * @param array<ToolInterface> $functions
      */
     public function __construct(
         private readonly ChatRepository        $chatRepository,
         private readonly ChatMessageRepository $chatMessageRepository,
         private readonly AgentService          $agentService,
         private readonly OpenAI\Client         $client,
-        #[AutowireIterator(tag: 'app.chat.function')]
+        #[AutowireIterator(tag: 'app.chat.tool')]
         iterable                               $functions,
         private readonly ComponentsManager     $widgetProvider,
         private readonly LoggerInterface       $logger
@@ -169,7 +169,7 @@ class ChatService
             ...$message->getChat()->getIntent()?->getTools() ?? [],
         ];
 
-        return array_reduce($this->functions, function ($carry, FunctionInterface $function) use ($supportedTools, $message) {
+        return array_reduce($this->functions, function ($carry, ToolInterface $function) use ($supportedTools, $message) {
             if (!in_array($function->getName(), $supportedTools, true)) {
                 return $carry;
             }
