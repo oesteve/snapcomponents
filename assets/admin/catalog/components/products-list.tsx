@@ -14,6 +14,24 @@ export function ProductsList() {
 
     const columns: ColumnDef<Product>[] = [
         {
+            accessorKey: "image",
+            header: "Image",
+            cell: ({ row }) => {
+                const product = row.original;
+                return (
+                    <div className="w-12 h-12 relative">
+                        {product.image && (
+                            <img
+                                src={product.image}
+                                alt={product.name}
+                                className="object-cover w-full h-full rounded border"
+                            />
+                        )}
+                    </div>
+                );
+            },
+        },
+        {
             accessorKey: "name",
             header: "Name",
             cell: ({ row }) => {
@@ -38,6 +56,14 @@ export function ProductsList() {
         {
             accessorKey: "description",
             header: "Description",
+            cell: ({ row }) => {
+                const product = row.original;
+                return (
+                    <div className="max-w-md truncate" title={product.description}>
+                        {product.description}
+                    </div>
+                );
+            },
         },
         {
             accessorKey: "price",
