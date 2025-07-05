@@ -64,7 +64,7 @@ export class RestClient {
    */
   async put<ResponseType = unknown>(
     url: string,
-    data?: unknown,
+    data: unknown,
     options: RequestOptions = {}
   ): Promise<ResponseType> {
     return this.request<ResponseType>('PUT', url, { ...options, data });

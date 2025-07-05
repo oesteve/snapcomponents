@@ -38,7 +38,7 @@ class Agent extends BaseEntity
 
     public function __construct(
         string $name,
-        User $user,
+        User   $user,
     )
     {
         $this->name = $name;
@@ -82,6 +82,9 @@ class Agent extends BaseEntity
         return $this->user;
     }
 
+    /**
+     * @return Collection<int,Chat>
+     */
     public function getChats(): Collection
     {
         return $this->chats;

@@ -1,6 +1,15 @@
 "use client"
 
-import {BotMessageSquare, ChevronRight, Code, FileText, type LucideIcon, Settings, SquareTerminal} from "lucide-react"
+import {
+    BotMessageSquare,
+    ChevronRight,
+    Code,
+    FileText,
+    type LucideIcon,
+    Settings,
+    ShoppingBasket,
+    SquareTerminal
+} from "lucide-react"
 
 import {
     Collapsible,
@@ -62,6 +71,11 @@ const navMainData: {
         title: "Articles",
         url: "/admin/articles",
         icon: FileText,
+    },
+    {
+        title: "Products",
+        url: "/admin/products",
+        icon: ShoppingBasket,
     }
 ];
 

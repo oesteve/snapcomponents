@@ -7,7 +7,7 @@ use App\Entity\ChatMessage;
 use App\Repository\ChatMessageRepository;
 use App\Repository\ChatRepository;
 use App\Service\Agent\AgentService;
-use App\Service\Chat\Widget\WidgetProvider;
+use App\Service\Chat\Widget\ComponentsManager;
 use App\Service\Chat\Function\DefineIntent;
 use App\Service\Chat\Function\FunctionInterface;
 use OpenAI;
@@ -39,8 +39,8 @@ class ChatService
         private readonly OpenAI\Client         $client,
         #[AutowireIterator(tag: 'app.chat.function')]
         iterable                               $functions,
-        private readonly WidgetProvider        $widgetProvider,
-        private readonly LoggerInterface $logger
+        private readonly ComponentsManager     $widgetProvider,
+        private readonly LoggerInterface       $logger
     )
     {
 

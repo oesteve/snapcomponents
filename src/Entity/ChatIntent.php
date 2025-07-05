@@ -64,6 +64,25 @@ class ChatIntent
         $this->widgets = $widgets;
     }
 
+    /**
+     * @param array<string> $tools
+     * @param array<string> $widgets
+     * @return void
+     */
+    public function update(
+        string $name,
+        string $description,
+        string $instructions,
+        array $tools,
+        array $widgets
+    ): void {
+        $this->name = $name;
+        $this->description = $description;
+        $this->instructions = $instructions;
+        $this->tools = $tools;
+        $this->widgets = $widgets;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

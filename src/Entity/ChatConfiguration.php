@@ -89,4 +89,11 @@ class ChatConfiguration
         $this->intents->add($intent);
     }
 
+    public function update(string $name, string $description, string $instructions): void
+    {
+        $this->name = $name;
+        $this->description = $description;
+        $this->instructions = $instructions;
+    }
+
 }

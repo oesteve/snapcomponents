@@ -59,7 +59,7 @@ export function ArticleList() {
     }
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="w-full max-w-6xl flex flex-col gap-4">
             <div className="flex flex-row justify-end">
                 <CreateArticleDialog onCreated={refresh} />
             </div>

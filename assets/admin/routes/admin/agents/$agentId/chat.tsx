@@ -1,20 +1,25 @@
 import {createFileRoute} from "@tanstack/react-router";
-import {getAgent, updateAgent} from "@/lib/agents/agents";
+import {getAgent} from "@/lib/agents/agents";
 import {useLayoutStore} from "@/admin/components/layout/breadcrumb-store.ts";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {useMutation} from "@tanstack/react-query";
 import {toast} from "sonner";
-import {useMemo} from "react";
 import {Form} from "@/components/form";
 import Submit from "@/components/form/submit.tsx";
 import FormError from "@/components/form/form-error.tsx";
 import DevFormData from "@/components/form/dev-form-data.tsx";
-import TextInputWidget from "@/components/form/widgets/text-input-widget.tsx";
 import {Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
+import TextareaInputWidget from "@/components/form/widgets/textarea-input-widget.tsx";
+
+import {getChatConfig, updateChatConfig} from "@/lib/agents/chat.ts";
+import {IntentsWidget} from "@/admin/components/agents/chat/intents-widget.tsx";
+import {useMemo} from "react";
 
 export const Route = createFileRoute('/admin/agents/$agentId/chat')({
-    component: Settings,
+    component: ChatRoute,
     loader: async ({params: {agentId}}) => {
-        const agent = await getAgent(parseInt(agentId))
+        const id = parseInt(agentId);
+        const agent = await getAgent(id)
+        const chatConfig = await getChatConfig(id)
 
         const layout = useLayoutStore.getState();
 
@@ -22,48 +27,48 @@ export const Route = createFileRoute('/admin/agents/$agentId/chat')({
             {label: "Admin", href: "/admin"},
             {label: "Agents", href: "/admin/agents"},
             {label: agent.name},
-            {label: "Settings", isActive: true}
+            {label: "Chat", isActive: true}
         ])
 
         layout.setAgent(agent)
 
 
         return {
-            agent
+            agent,
+            chatConfig
         }
     }
 })
 
 
-export function Settings() {
-    const {agent} = Route.useLoaderData()
+export function ChatRoute() {
+    const {
+        agent,
+        chatConfig
+    } = Route.useLoaderData()
 
-    const client = useQueryClient()
-
-    const editAgentMutation = useMutation({
-        mutationFn: updateAgent,
+    const updateChatSettingsMutation = useMutation({
+        mutationFn: updateChatConfig,
         onSuccess: () => {
-            client.invalidateQueries({
-                queryKey: ['agent']
-            })
             toast.success("Agent updated successfully")
         }
     })
 
     const defaultData = useMemo(() => ({
-        id: agent.id,
-        name: agent.name
-    }), [agent]);
+        agentId: agent.id,
+        ...chatConfig,
+    }), [agent, chatConfig])
 
     return (
-        <Form onSubmit={editAgentMutation.mutateAsync} defaultData={defaultData} className="w-full items-center">
+        <Form onSubmit={updateChatSettingsMutation.mutateAsync}
+              defaultData={defaultData} className="w-full items-center">
             <Card className="w-full max-w-4xl">
                 <CardHeader>
                     <CardTitle>
-                        General settings for the agent.
+                        Chat bot settings for the agent.
                     </CardTitle>
                     <CardDescription>
-                        Adjust the general settings for the agent installed on your website.
+                        Adjust the chat bot settings for the agent installed on your website.
                     </CardDescription>
                     <CardAction>
                         <Submit>
@@ -75,11 +80,19 @@ export function Settings() {
                     <FormError/>
                     <DevFormData/>
 
-                    <TextInputWidget
-                        name={"name"}
-                        label={"Name"}
-                        description={"Name used to identify the agent"}
+                    <TextareaInputWidget
+                        name={"instructions"}
+                        label={"Instruction"}
+                        className="font-mono"
+                        description={"The instructions provided to the model."}
                     />
+
+                    <IntentsWidget
+                        name={"intents"}
+                        label={"Intents"}
+                        description="Define the behaviur of the chat base in the user intents."
+                    />
+
                 </CardContent>
             </Card>
         </Form>

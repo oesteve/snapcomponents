@@ -16,7 +16,7 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 #[Route('/api/agents', format: 'json')]
 #[IsGranted('ROLE_ADMIN')]
-class AgentsController extends AbstractController
+class AgentController extends AbstractController
 {
     #[Route('', methods: ['GET'])]
     public function list(
