@@ -13,8 +13,6 @@ class Article extends BaseEntity
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private string $name;
 
     #[ORM\Column(length: 255)]
     private string $title;
@@ -29,20 +27,24 @@ class Article extends BaseEntity
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
+    #[ORM\ManyToOne(inversedBy: 'articles')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ArticleCategory $category;
+
     /**
      */
     public function __construct(
-        string $name,
         string $title,
         string $description,
         string $content,
-        User $user
+        User $user,
+        ArticleCategory $category
     ) {
-        $this->name = $name;
         $this->title = $title;
         $this->description = $description;
         $this->content = $content;
         $this->user = $user;
+        $this->category = $category;
     }
 
     public function getId(): ?int
@@ -50,10 +52,6 @@ class Article extends BaseEntity
         return $this->id;
     }
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
 
     public function getTitle(): string
     {
@@ -75,15 +73,20 @@ class Article extends BaseEntity
         return $this->user;
     }
 
+    public function getCategory(): ArticleCategory
+    {
+        return $this->category;
+    }
+
     public function update(
-        string $name,
         string $title,
         string $description,
-        string $content
+        string $content,
+        ArticleCategory $category
     ): void {
-        $this->name = $name;
         $this->title = $title;
         $this->description = $description;
         $this->content = $content;
+        $this->category = $category;
     }
 }

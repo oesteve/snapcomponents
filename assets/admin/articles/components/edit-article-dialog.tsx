@@ -11,13 +11,14 @@ import { Edit } from "lucide-react";
 import { Form } from "@/components/form";
 import TextInputWidget from "@/components/form/widgets/text-input-widget.tsx";
 import Submit from "@/components/form/submit.tsx";
-import { useMutation } from "@tanstack/react-query";
-import { type Article, updateArticle } from "@/admin/articles/lib/articles.ts";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { type Article, updateArticle, getArticleCategories } from "@/admin/articles/lib/articles.ts";
 import FormError from "@/components/form/form-error.tsx";
 import DevFormData from "@/components/form/dev-form-data.tsx";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import TextareaWidget from "@/components/form/widgets/textarea-input-widget.tsx";
+import SelectInputWidget from "@/components/form/widgets/select-input-widget.tsx";
 
 interface EditArticleDialogProps {
     article: Article;
@@ -31,6 +32,20 @@ export function EditArticleDialog({
     trigger,
 }: EditArticleDialogProps) {
     const [open, setOpen] = useState(false);
+
+    const { data: categories = [] } = useQuery({
+        queryKey: ["article-categories"],
+        queryFn: getArticleCategories,
+        enabled: open,
+    });
+
+    const categoryOptions = useMemo(() => {
+        return categories.reduce((acc, category) => {
+            acc[category.name] = category.id;
+            return acc;
+        }, {} as Record<string, number>);
+    }, [categories]);
+
     const editArticleMutation = useMutation({
         mutationFn: updateArticle,
         onSuccess: () => {
@@ -43,10 +58,10 @@ export function EditArticleDialog({
     const defaultData = useMemo(
         () => ({
             id: article.id,
-            name: article.name,
             title: article.title,
             description: article.description,
             content: article.content,
+            categoryId: article.category?.id,
         }),
         [article],
     );
@@ -77,11 +92,6 @@ export function EditArticleDialog({
                     <FormError />
                     <DevFormData />
 
-                    <TextInputWidget
-                        name={"name"}
-                        label={"Name"}
-                        description={"Name used to identify the article"}
-                    />
 
                     <TextInputWidget
                         name={"title"}
@@ -99,6 +109,14 @@ export function EditArticleDialog({
                         name={"content"}
                         label={"Content"}
                         description={"Full content of the article"}
+                    />
+
+                    <SelectInputWidget
+                        name={"categoryId"}
+                        label={"Category"}
+                        description={"Category of the article"}
+                        options={categoryOptions}
+                        placeholder={"Select a category"}
                     />
 
                     <div className="flex justify-end space-x-2 pt-4">

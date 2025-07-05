@@ -3,7 +3,9 @@
 namespace App\Service\Import;
 
 use App\Entity\Article;
+use App\Entity\ArticleCategory;
 use App\Entity\User;
+use App\Repository\ArticleCategoryRepository;
 use App\Repository\ArticleRepository;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -11,6 +13,7 @@ class ArticleImportService
 {
     public function __construct(
         private readonly ArticleRepository $articleRepository,
+        private readonly ArticleCategoryRepository $categoryRepository,
     ) {
     }
 
@@ -59,7 +62,7 @@ class ArticleImportService
         }
 
         // Validate the header
-        $requiredColumns = ['name', 'title', 'description', 'content'];
+        $requiredColumns = ['title', 'description', 'content', 'category_name'];
         $missingColumns = array_diff($requiredColumns, $header);
         if (!empty($missingColumns)) {
             $result['errors'][] = [
@@ -93,13 +96,13 @@ class ArticleImportService
             }
 
             // Extract data
-            $name = $row[$columnMap['name']] ?? '';
             $title = $row[$columnMap['title']] ?? '';
             $description = $row[$columnMap['description']] ?? '';
             $content = $row[$columnMap['content']] ?? '';
+            $categoryName = $row[$columnMap['category_name']] ?? '';
 
             // Validate data
-            if (empty($name) || empty($title) || empty($description) || empty($content)) {
+            if (empty($title) || empty($description) || empty($content) || empty($categoryName)) {
                 $result['errors'][] = [
                     'line' => $lineNumber,
                     'message' => 'All fields are required.',
@@ -108,14 +111,31 @@ class ArticleImportService
                 continue;
             }
 
+            // Validate and fetch or create category
+            try {
+                $category = $this->categoryRepository->findOneBy(['name' => $categoryName]);
+                if ($category === null) {
+                    // Create a new category if it doesn't exist
+                    $category = new ArticleCategory($categoryName);
+                    $this->categoryRepository->save($category);
+                }
+            } catch (\Exception $e) {
+                $result['errors'][] = [
+                    'line' => $lineNumber,
+                    'message' => 'Error processing category: ' . $e->getMessage(),
+                ];
+                $lineNumber++;
+                continue;
+            }
+
             try {
                 // Create and save the article
                 $article = new Article(
-                    $name,
                     $title,
                     $description,
                     $content,
-                    $user
+                    $user,
+                    $category
                 );
 
                 $this->articleRepository->save($article);

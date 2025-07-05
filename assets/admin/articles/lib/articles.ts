@@ -1,11 +1,17 @@
 import client from "@/lib/client.ts";
 
-export type Article = {
+
+export type ArticleCategory = {
     id: number;
     name: string;
+};
+
+export type Article = {
+    id: number;
     title: string;
     description: string;
     content: string;
+    category: ArticleCategory;
 };
 
 export function getArticles() {
@@ -26,10 +32,10 @@ export async function importArticlesFromCsv(file: File): Promise<ImportResult> {
 }
 
 export type ArticleData = {
-    name: string;
     title: string;
     description: string;
     content: string;
+    categoryId?: number;
 };
 
 export function createArticle(article: ArticleData) {
@@ -42,21 +48,25 @@ export function removeArticle(id: Article["id"]) {
 
 export function updateArticle({
     id,
-    name,
     title,
     description,
     content,
+    categoryId,
 }: {
     id: Article["id"];
-    name: Article["name"];
     title: Article["title"];
     description: Article["description"];
     content: Article["content"];
+    categoryId?: number;
 }) {
     return client.put<Article>(`/api/articles/${id}`, {
-        name,
         title,
         description,
         content,
+        categoryId,
     });
+}
+
+export function getArticleCategories() {
+    return client.get<ArticleCategory[]>("/api/articles/categories");
 }

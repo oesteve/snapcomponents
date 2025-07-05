@@ -36,7 +36,7 @@ export class RestClient {
      * @param url - The URL to request
      * @param options - Request options
      * @returns Promise with the response data of type ResponseType
-     * @throws {HttpError} If the response status is not 200 (OK)
+     * @throws {HttpError} If the response status is not 200 (OK) or 207 (Multi-Status)
      */
     async get<ResponseType = unknown>(
         url: string,
@@ -54,7 +54,7 @@ export class RestClient {
      * @param data - The data to send
      * @param options - Request options
      * @returns Promise with the response data of type ResponseType
-     * @throws {HttpError} If the response status is not 200 (OK)
+     * @throws {HttpError} If the response status is not 200 (OK) or 207 (Multi-Status)
      */
     async post<ResponseType = unknown>(
         url: string,
@@ -70,7 +70,7 @@ export class RestClient {
      * @param formData - The FormData object to send
      * @param options - Request options
      * @returns Promise with the response data of type ResponseType
-     * @throws {HttpError} If the response status is not 200 (OK)
+     * @throws {HttpError} If the response status is not 200 (OK) or 207 (Multi-Status)
      */
     async postFormData<ResponseType = unknown>(
         url: string,
@@ -90,7 +90,7 @@ export class RestClient {
      * @param data - The data to send
      * @param options - Request options
      * @returns Promise with the response data of type ResponseType
-     * @throws {HttpError} If the response status is not 200 (OK)
+     * @throws {HttpError} If the response status is not 200 (OK) or 207 (Multi-Status)
      */
     async put<ResponseType = unknown>(
         url: string,
@@ -105,7 +105,7 @@ export class RestClient {
      * @param url - The URL to request
      * @param options - Request options
      * @returns Promise with the response data of type ResponseType
-     * @throws {HttpError} If the response status is not 200 (OK)
+     * @throws {HttpError} If the response status is not 200 (OK) or 207 (Multi-Status)
      */
     async delete<ResponseType = unknown>(
         url: string,
@@ -123,7 +123,7 @@ export class RestClient {
      * @param url - The URL to request
      * @param options - Request options
      * @returns Promise with the response data of type ResponseType
-     * @throws {HttpError} If the response status is not 200 (OK)
+     * @throws {HttpError} If the response status is not 200 (OK) or 207 (Multi-Status)
      */
     private async request<ResponseType>(
         method: HttpMethod,
@@ -160,8 +160,8 @@ export class RestClient {
         // Make the request
         const response = await fetch(fullUrl, requestOptions);
 
-        // Check if the response status is not 200 (OK)
-        if (response.status !== 200) {
+        // Check if the response status is not 200 (OK) or 207 (Multi-Status)
+        if (response.status !== 200 && response.status !== 207) {
             let errorMessage = `HTTP Error ${response.status}: ${response.statusText}`;
 
             // Try to extract more detailed error message from response if possible

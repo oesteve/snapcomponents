@@ -5,6 +5,7 @@ namespace App\Controller\API\Articles;
 use App\Controller\AbstractController;
 use App\Controller\API\Articles\DTO\ArticleData;
 use App\Entity\Article;
+use App\Repository\ArticleCategoryRepository;
 use App\Repository\ArticleRepository;
 use App\Service\Import\ArticleImportService;
 use App\Service\Search\ArticleSearchService;
@@ -37,19 +38,30 @@ class ArticlesController extends AbstractController
         return $this->json($results);
     }
 
+    #[Route('/categories', methods: ['GET'])]
+    public function categories(
+        ArticleCategoryRepository $categoryRepository,
+    ): JsonResponse
+    {
+        return $this->json($categoryRepository->findAll());
+    }
+
     #[Route('', methods: ['POST'])]
     public function create(
         #[MapRequestPayload]
         ArticleData       $articleData,
         ArticleRepository $articleRepository,
+        ArticleCategoryRepository $categoryRepository,
     ): JsonResponse
     {
+        $category = $categoryRepository->findOrFail($articleData->categoryId);
+
         $article = new Article(
-            $articleData->name,
             $articleData->title,
             $articleData->description,
             $articleData->content,
             $this->getLoggedUserOrFail(),
+            $category
         );
 
         $articleRepository->save($article);
@@ -61,15 +73,18 @@ class ArticlesController extends AbstractController
     public function update(
         Article           $article,
         ArticleRepository $articleRepository,
+        ArticleCategoryRepository $categoryRepository,
         #[MapRequestPayload]
         ArticleData       $articleData,
     ): JsonResponse
     {
+        $category = $categoryRepository->findOrFail($articleData->categoryId);
+
         $article->update(
-            $articleData->name,
             $articleData->title,
             $articleData->description,
-            $articleData->content
+            $articleData->content,
+            $category
         );
 
         $articleRepository->save($article);

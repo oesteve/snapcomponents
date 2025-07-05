@@ -48,8 +48,8 @@ export function RemoveArticleDialog({
                 <DialogHeader>
                     <DialogTitle>Remove Article</DialogTitle>
                     <DialogDescription>
-                        Are you sure you want to remove the article "
-                        {article.name}"? This action cannot be undone.
+                        Are you sure you want to remove the article &quot;
+                        {article.title}&quot;? This action cannot be undone.
                     </DialogDescription>
                 </DialogHeader>
                 <Form

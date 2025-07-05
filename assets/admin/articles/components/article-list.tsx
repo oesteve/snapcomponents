@@ -15,8 +15,8 @@ export function ArticleList() {
 
     const columns: ColumnDef<Article>[] = [
         {
-            accessorKey: "name",
-            header: "Name",
+            accessorKey: "title",
+            header: "Title",
             cell: ({ row }) => {
                 const article = row.original;
                 return (
@@ -25,7 +25,7 @@ export function ArticleList() {
                         onEdited={refresh}
                         trigger={
                             <span className="font-medium hover:underline cursor-pointer">
-                                {article.name}
+                                {article.title}
                             </span>
                         }
                     />
@@ -33,8 +33,16 @@ export function ArticleList() {
             },
         },
         {
-            accessorKey: "title",
-            header: "Title",
+            accessorKey: "category",
+            header: "Category",
+            cell: ({ row }) => {
+                const article = row.original;
+                return (
+                    <span className="font-medium hover:underline cursor-pointer">
+                        {article.category.name}
+                    </span>
+                );
+            },
         },
         {
             accessorKey: "description",

@@ -1,4 +1,4 @@
-name,title,description,content
-article-1,First Article,This is the first article,This is the content of the first article.
-article-2,Second Article,This is the second article,This is the content of the second article.
-article-3,Third Article,This is the third article,This is the content of the third article.
+title,description,content,category_name
+First Article,This is the first article,This is the content of the first article.,General
+Second Article,This is the second article,This is the content of the second article.,Technology
+Third Article,This is the third article,This is the content of the third article.,News

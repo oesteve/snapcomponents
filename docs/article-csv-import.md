@@ -6,17 +6,17 @@ This document describes how to use the CSV import functionality for articles.
 
 The CSV file should have the following columns:
 
-- `name`: A unique identifier/slug for the article
 - `title`: The article title
 - `description`: A short description of the article
 - `content`: The main content of the article
+- `category_name`: The name of the category the article belongs to
 
 Example:
 
 ```csv
-name,title,description,content
-article-1,First Article,This is the first article,This is the content of the first article.
-article-2,Second Article,This is the second article,This is the content of the second article.
+title,description,content,category_name
+First Article,This is the first article,This is the content of the first article.,General
+Second Article,This is the second article,This is the content of the second article.,Technology
 ```
 
 ## API Endpoint
@@ -55,17 +55,17 @@ Example response:
   "articles": [
     {
       "id": 1,
-      "name": "article-1",
       "title": "First Article",
       "description": "This is the first article",
-      "content": "This is the content of the first article."
+      "content": "This is the content of the first article.",
+      "category": "General"
     },
     {
       "id": 2,
-      "name": "article-2",
       "title": "Second Article",
       "description": "This is the second article",
-      "content": "This is the content of the second article."
+      "content": "This is the content of the second article.",
+      "category": "Technology"
     }
   ]
 }

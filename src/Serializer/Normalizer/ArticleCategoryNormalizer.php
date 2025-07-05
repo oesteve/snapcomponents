@@ -2,13 +2,13 @@
 
 namespace App\Serializer\Normalizer;
 
-use App\Entity\Article;
+use App\Entity\ArticleCategory;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class ArticleNormalizer implements NormalizerInterface
+class ArticleCategoryNormalizer implements NormalizerInterface
 {
     public function __construct(
         #[Autowire(service: 'serializer.normalizer.object')]
@@ -17,7 +17,7 @@ class ArticleNormalizer implements NormalizerInterface
     }
 
     /**
-     * @param Article $object
+     * @param ArticleCategory $object
      * @param string|null $format
      * @param array $context
      * @return array<string,mixed>
@@ -25,10 +25,7 @@ class ArticleNormalizer implements NormalizerInterface
      */
     public function normalize($object, ?string $format = null, array $context = []): array
     {
-
-        $context[AbstractNormalizer::IGNORED_ATTRIBUTES] ??= [
-            'user'
-        ];
+        $context[AbstractNormalizer::IGNORED_ATTRIBUTES][] = 'articles';
 
         $data = $this->normalizer->normalize(
             $object,
@@ -41,11 +38,11 @@ class ArticleNormalizer implements NormalizerInterface
 
     public function supportsNormalization($data, ?string $format = null, array $context = []): bool
     {
-        return $data instanceof Article;
+        return $data instanceof ArticleCategory;
     }
 
     public function getSupportedTypes(?string $format): array
     {
-        return [Article::class => true];
+        return [ArticleCategory::class => true];
     }
 }

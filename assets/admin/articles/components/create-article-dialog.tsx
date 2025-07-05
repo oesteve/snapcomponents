@@ -11,13 +11,14 @@ import { Plus } from "lucide-react";
 import { Form } from "@/components/form";
 import TextInputWidget from "@/components/form/widgets/text-input-widget.tsx";
 import Submit from "@/components/form/submit.tsx";
-import { useMutation } from "@tanstack/react-query";
-import { createArticle } from "@/admin/articles/lib/articles.ts";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { createArticle, getArticleCategories } from "@/admin/articles/lib/articles.ts";
 import FormError from "@/components/form/form-error.tsx";
 import DevFormData from "@/components/form/dev-form-data.tsx";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import TextareaWidget from "@/components/form/widgets/textarea-input-widget.tsx";
+import SelectInputWidget from "@/components/form/widgets/select-input-widget.tsx";
 
 interface CreateArticleDialogProps {
     onCreated: () => void;
@@ -25,6 +26,19 @@ interface CreateArticleDialogProps {
 
 export function CreateArticleDialog({ onCreated }: CreateArticleDialogProps) {
     const [open, setOpen] = useState(false);
+
+    const { data: categories = [] } = useQuery({
+        queryKey: ["article-categories"],
+        queryFn: getArticleCategories,
+        enabled: open,
+    });
+
+    const categoryOptions = useMemo(() => {
+        return categories.reduce((acc, category) => {
+            acc[category.name] = category.id;
+            return acc;
+        }, {} as Record<string, number>);
+    }, [categories]);
 
     const createArticleMutation = useMutation({
         mutationFn: createArticle,
@@ -57,11 +71,6 @@ export function CreateArticleDialog({ onCreated }: CreateArticleDialogProps) {
                     <FormError />
                     <DevFormData />
 
-                    <TextInputWidget
-                        name={"name"}
-                        label={"Name"}
-                        description={"Name used to identify the article"}
-                    />
 
                     <TextInputWidget
                         name={"title"}
@@ -79,6 +88,14 @@ export function CreateArticleDialog({ onCreated }: CreateArticleDialogProps) {
                         name={"content"}
                         label={"Content"}
                         description={"Full content of the article"}
+                    />
+
+                    <SelectInputWidget
+                        name={"categoryId"}
+                        label={"Category"}
+                        description={"Category of the article"}
+                        options={categoryOptions}
+                        placeholder={"Select a category"}
                     />
 
                     <Submit>Create Article</Submit>

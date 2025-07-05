@@ -102,8 +102,8 @@ export function ImportArticlesDialog({
                     <DialogTitle>Import Articles from CSV</DialogTitle>
                     <DialogDescription>
                         Upload a CSV file to import multiple articles at once.
-                        The CSV file should have the following columns: name,
-                        title, description, content.
+                        The CSV file should have the following columns:
+                        title, description, content, category_name.
                         <Button variant="link" asChild className="py-0">
                             <a href="/articles.csv" download>
                                 Download example CSV file
@@ -112,7 +112,7 @@ export function ImportArticlesDialog({
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="grid gap-4">
+                <div className="grid gap-4 overflow-y-auto max-h-full">
                     {importResult ? (
                         <div className="space-y-12">
                             {importResult.articles.length > 0 && (
@@ -131,7 +131,6 @@ export function ImportArticlesDialog({
                                     <Table>
                                         <TableHeader>
                                             <TableRow>
-                                                <TableHead>Name</TableHead>
                                                 <TableHead>Title</TableHead>
                                                 <TableHead>
                                                     Description
@@ -143,9 +142,6 @@ export function ImportArticlesDialog({
                                                 (article) => (
                                                     <TableRow key={article.id}>
                                                         <TableCell className="font-medium">
-                                                            {article.name}
-                                                        </TableCell>
-                                                        <TableCell>
                                                             {article.title}
                                                         </TableCell>
                                                         <TableCell className="truncate max-w-[200px]">
