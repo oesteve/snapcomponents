@@ -6,6 +6,8 @@ services:
             # No target specified to use the final stage (production build)
         environment:
             APP_ENV: prod
+            PHP_XDEBUG_ENABLED: "1"
+            PHP_IDE_CONFIG: "serverName=app"
         ports:
             - "8000:80"
         volumes:
