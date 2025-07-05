@@ -7,7 +7,7 @@ use App\Entity\ChatMessage;
 use App\Repository\ChatMessageRepository;
 use App\Repository\ChatRepository;
 use App\Service\Agent\AgentService;
-use App\Service\Chat\Widget\ComponentsManager;
+use App\Service\Chat\Component\ComponentManager;
 use App\Service\Chat\Tool\DefineIntent;
 use App\Service\Chat\Tool\ToolInterface;
 use OpenAI;
@@ -39,7 +39,7 @@ class ChatService
         private readonly OpenAI\Client         $client,
         #[AutowireIterator(tag: 'app.chat.tool')]
         iterable                               $functions,
-        private readonly ComponentsManager     $widgetProvider,
+        private readonly ComponentManager      $componentManager,
         private readonly LoggerInterface       $logger
     )
     {
@@ -209,13 +209,18 @@ class ChatService
                 $prompt .= "The user's intent is '{$intent->getName()}', if the user change their intent notify it to the system.\n\n";
 
                 // Add Intent instructions
-                $prompt .= $intent->getInstructions();
+                $prompt .= $intent->getInstructions().'\n\n';
 
                 // Add widget
                 if ($intent->getWidgets()) {
-                    $prompt .= "You ara able to use html element en your response. These are the available elements: \n";
+                    $prompt .= <<<MD
+You ara able to use components en your response.
+  - Send them as regular content like MDX.
+  - Don't put the components inside a code snippet.
+  - These are the available elements: \n"
+MD;
                     foreach ($intent->getWidgets() as $widget) {
-                        $prompt .= $this->widgetProvider->getDefinition($widget);
+                        $prompt .= $this->componentManager->getDefinition($widget);
                     }
                 }
 

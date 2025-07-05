@@ -38,6 +38,8 @@ services:
     _instanceof:
         App\Service\Chat\Tool\ToolInterface:
             tags: ["app.chat.tool"]
+        App\Service\Chat\Component\ComponentInterface:
+            tags: ["app.chat.component"]
 
     League\CommonMark\Extension\Table\TableExtension:
         class: League\CommonMark\Extension\Table\TableExtension

@@ -12,7 +12,7 @@ use App\Repository\ChatConfigurationRepository;
 use App\Repository\ChatIntentRepository;
 use App\Service\Chat\ChatService;
 use App\Service\Chat\Tool\ToolManager;
-use App\Service\Chat\Widget\ComponentsManager;
+use App\Service\Chat\Component\ComponentManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
@@ -37,7 +37,7 @@ class ChatController extends AbstractController
 
     #[Route('/components', methods: ['GET'])]
     public function components(
-        ComponentsManager $widgetProvider
+        ComponentManager $widgetProvider
     ): JsonResponse
     {
         return $this->json($widgetProvider->getComponents());

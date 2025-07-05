@@ -2,7 +2,7 @@
 
 namespace App\Twig\Extension;
 
-use App\Service\Chat\Widget\ComponentsManager;
+use App\Service\Chat\Component\ComponentManager;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -11,7 +11,7 @@ class WidgetDocExtension extends AbstractExtension
 
 
     public function __construct(
-        private ComponentsManager $widgetProvider,
+        private ComponentManager $widgetProvider,
     )
     {
     }
