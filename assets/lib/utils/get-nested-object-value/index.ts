@@ -7,32 +7,33 @@
  * @returns The value or undefined if not found.
  */
 export function getNestedObjectValue(
-  obj: Record<string, any>,
-  key: string,
+    obj: Record<string, any>,
+    key: string,
 ): any {
-  return key.split(".").reduce((acc: any, part) => {
-    // Handle array indexing like `items[0]`
-    const match = part.match(/^(\w*)\[(\d+)\]$/);
-    if (match) {
-      const arrayKey = match[1]; // E.g., 'items'
-      const index = parseInt(match[2], 10); // E.g., 0
+    return key.split(".").reduce((acc: any, part) => {
+        // Handle array indexing like `items[0]`
+        const match = part.match(/^(\w*)\[(\d+)\]$/);
+        if (match) {
+            const arrayKey = match[1]; // E.g., 'items'
+            const index = parseInt(match[2], 10); // E.g., 0
 
-      if (arrayKey) {
-        // If it's an array key like `items`
-        acc = acc && typeof acc === "object" ? acc[arrayKey] : undefined;
-      }
+            if (arrayKey) {
+                // If it's an array key like `items`
+                acc =
+                    acc && typeof acc === "object" ? acc[arrayKey] : undefined;
+            }
 
-      if (Array.isArray(acc)) {
-        // Get the value at the specified index
-        return acc[index];
-      }
+            if (Array.isArray(acc)) {
+                // Get the value at the specified index
+                return acc[index];
+            }
 
-      return undefined; // If not an array, return undefined
-    }
+            return undefined; // If not an array, return undefined
+        }
 
-    // Handle regular object keys
-    return acc && typeof acc === "object" && part in acc
-      ? acc[part]
-      : undefined;
-  }, obj);
+        // Handle regular object keys
+        return acc && typeof acc === "object" && part in acc
+            ? acc[part]
+            : undefined;
+    }, obj);
 }

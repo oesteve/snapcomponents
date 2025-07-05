@@ -1,18 +1,14 @@
-import * as React from "react"
-import {
-    AudioWaveform,
-    Command,
-    GalleryVerticalEnd,
-} from "lucide-react"
+import * as React from "react";
+import { AudioWaveform, Command, GalleryVerticalEnd } from "lucide-react";
 
-import {NavMain} from "@/components/nav-main.tsx"
-import {NavUser} from "@/components/nav-user.tsx"
+import { NavMain } from "@/components/nav-main.tsx";
+import { NavUser } from "@/components/nav-user.tsx";
 import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
     SidebarRail,
-} from "@/components/ui/sidebar.tsx"
+} from "@/components/ui/sidebar.tsx";
 
 // This is sample data.
 const data = {
@@ -37,19 +33,19 @@ const data = {
             logo: Command,
             plan: "Free",
         },
-    ]
-}
+    ],
+};
 
-export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     return (
         <Sidebar collapsible="icon" {...props}>
             <SidebarContent>
-                <NavMain/>
+                <NavMain />
             </SidebarContent>
             <SidebarFooter>
-                <NavUser user={data.user}/>
+                <NavUser user={data.user} />
             </SidebarFooter>
-            <SidebarRail/>
+            <SidebarRail />
         </Sidebar>
-    )
+    );
 }

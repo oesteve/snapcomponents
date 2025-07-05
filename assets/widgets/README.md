@@ -11,18 +11,18 @@ The `createWebComponent` utility function wraps a React component in a Web Compo
 ### Basic Usage
 
 ```typescript
-import { createWebComponent } from './utils/createWebComponent';
-import MyReactComponent from './MyReactComponent';
+import { createWebComponent } from "./utils/createWebComponent";
+import MyReactComponent from "./MyReactComponent";
 
 createWebComponent({
-  tagName: 'my-element',
-  component: MyReactComponent,
-  observedAttributes: ['some-attribute'],
-  mapAttributesToProps: (el) => {
-    // Convert HTML attributes to React props
-    const someValue = el.getAttribute('some-attribute') || 'default';
-    return { someValue };
-  }
+    tagName: "my-element",
+    component: MyReactComponent,
+    observedAttributes: ["some-attribute"],
+    mapAttributesToProps: (el) => {
+        // Convert HTML attributes to React props
+        const someValue = el.getAttribute("some-attribute") || "default";
+        return { someValue };
+    },
 });
 ```
 
@@ -54,44 +54,44 @@ The `createWebComponent` function accepts a configuration object with the follow
 ### Chat Widget
 
 ```typescript
-import ChatComponent from './ChatComponent';
-import { createWebComponent } from '../utils/createWebComponent';
+import ChatComponent from "./ChatComponent";
+import { createWebComponent } from "../utils/createWebComponent";
 
 createWebComponent({
-  tagName: 'wg-chat',
-  component: ChatComponent,
-  observedAttributes: ['initial-count'],
-  mapAttributesToProps: (el) => {
-    const initialCount = el.hasAttribute('initial-count')
-      ? parseInt(el.getAttribute('initial-count')!, 10)
-      : 0;
-    
-    return { initialCount };
-  }
+    tagName: "wg-chat",
+    component: ChatComponent,
+    observedAttributes: ["initial-count"],
+    mapAttributesToProps: (el) => {
+        const initialCount = el.hasAttribute("initial-count")
+            ? parseInt(el.getAttribute("initial-count")!, 10)
+            : 0;
+
+        return { initialCount };
+    },
 });
 ```
 
 ### Counter Widget
 
 ```typescript
-import SimpleCounter from './SimpleCounter';
-import { createWebComponent } from '../utils/createWebComponent';
+import SimpleCounter from "./SimpleCounter";
+import { createWebComponent } from "../utils/createWebComponent";
 
 createWebComponent({
-  tagName: 'wg-counter',
-  component: SimpleCounter,
-  observedAttributes: ['initial-value', 'label'],
-  mapAttributesToProps: (el) => {
-    const initialValue = el.hasAttribute('initial-value')
-      ? parseInt(el.getAttribute('initial-value')!, 10)
-      : 0;
-    
-    const label = el.hasAttribute('label')
-      ? el.getAttribute('label')!
-      : 'Counter';
-    
-    return { initialValue, label };
-  }
+    tagName: "wg-counter",
+    component: SimpleCounter,
+    observedAttributes: ["initial-value", "label"],
+    mapAttributesToProps: (el) => {
+        const initialValue = el.hasAttribute("initial-value")
+            ? parseInt(el.getAttribute("initial-value")!, 10)
+            : 0;
+
+        const label = el.hasAttribute("label")
+            ? el.getAttribute("label")!
+            : "Counter";
+
+        return { initialValue, label };
+    },
 });
 ```
 

@@ -1,18 +1,18 @@
-import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
-import React, {useEffect, useState} from 'react';
-import {Button} from "@/components/ui/button.tsx";
-import {Minus, Plus, ShoppingCart} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import React, { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button.tsx";
+import { Minus, Plus, ShoppingCart } from "lucide-react";
 
 interface CartIndicatorProps {
     initialValue?: number;
 }
 
-const CartIndicator: React.FC<CartIndicatorProps> = ({initialValue = 0}) => {
+const CartIndicator: React.FC<CartIndicatorProps> = ({ initialValue = 0 }) => {
     const [count, setCount] = useState(initialValue);
 
     useEffect(() => {
-        setCount(initialValue)
-    }, [initialValue])
+        setCount(initialValue);
+    }, [initialValue]);
 
     return (
         <Card className="w-auto inline-block">
@@ -26,7 +26,7 @@ const CartIndicator: React.FC<CartIndicatorProps> = ({initialValue = 0}) => {
             </CardHeader>
             <CardContent className="flex justify-center items-center gap-2 pt-2">
                 <Button
-                    onClick={() => setCount(prev => Math.max(0, prev - 1))}
+                    onClick={() => setCount((prev) => Math.max(0, prev - 1))}
                     size="icon"
                     variant="outline"
                 >
@@ -35,7 +35,7 @@ const CartIndicator: React.FC<CartIndicatorProps> = ({initialValue = 0}) => {
                 <Button
                     variant="outline"
                     size="icon"
-                    onClick={() => setCount(prev => prev + 1)}
+                    onClick={() => setCount((prev) => prev + 1)}
                 >
                     <Plus className="h-4 w-4" />
                 </Button>

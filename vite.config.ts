@@ -1,9 +1,9 @@
 import path from "path";
 import tailwindcss from "@tailwindcss/vite";
-import {defineConfig} from "vite";
+import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import symfonyPlugin from "vite-plugin-symfony";
-import { tanstackRouter } from '@tanstack/router-plugin/vite'
+import { tanstackRouter } from "@tanstack/router-plugin/vite";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -28,10 +28,10 @@ export default defineConfig({
         tailwindcss(),
         // Please make sure that '@tanstack/router-plugin' is passed before '@vitejs/plugin-react'
         tanstackRouter({
-            target: 'react',
+            target: "react",
             autoCodeSplitting: true,
-            routesDirectory: 'assets/admin/routes',
-            generatedRouteTree: 'assets/admin/routeTree.gen.ts'
+            routesDirectory: "assets/admin/routes",
+            generatedRouteTree: "assets/admin/routeTree.gen.ts",
         }),
         react(),
     ],

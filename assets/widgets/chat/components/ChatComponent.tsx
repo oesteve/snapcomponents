@@ -1,6 +1,6 @@
-import React from 'react';
-import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
-import ChatContent from './ChatContent.tsx';
+import React from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import ChatContent from "./ChatContent.tsx";
 
 // Create a client
 const queryClient = new QueryClient();

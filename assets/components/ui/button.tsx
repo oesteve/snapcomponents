@@ -1,10 +1,9 @@
-import * as React from "react"
-import {Slot} from "@radix-ui/react-slot"
-import {cva, type VariantProps} from "class-variance-authority"
-import {Loader2} from "lucide-react"
+import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
+import { cva, type VariantProps } from "class-variance-authority";
+import { Loader2 } from "lucide-react";
 
-import {cn} from "@/lib/utils"
-
+import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
     "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
@@ -19,8 +18,7 @@ const buttonVariants = cva(
                     "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
                 secondary:
                     "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
-                ghost:
-                    "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+                ghost: "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
                 link: "text-primary underline-offset-4 hover:underline",
             },
             size: {
@@ -34,45 +32,52 @@ const buttonVariants = cva(
             variant: "default",
             size: "default",
         },
-    }
-)
+    },
+);
 
 export type ButtonProps = React.ComponentProps<"button"> &
     VariantProps<typeof buttonVariants> & {
-    asChild?: boolean
-    loading?: boolean
-};
+        asChild?: boolean;
+        loading?: boolean;
+    };
 
 function Button({
-                    className,
-                    variant,
-                    size,
-                    asChild = false,
-                    loading = false,
-                    children,
-                    ...props
-                }: ButtonProps) {
-    const Comp = asChild ? Slot : "button"
+    className,
+    variant,
+    size,
+    asChild = false,
+    loading = false,
+    children,
+    ...props
+}: ButtonProps) {
+    const Comp = asChild ? Slot : "button";
 
     return (
         <Comp
             data-slot="button"
-            className={cn(
-                buttonVariants({variant, size, className}),
-            )}
+            className={cn(buttonVariants({ variant, size, className }))}
             disabled={loading || props.disabled}
             {...props}
         >
             <div className="relative">
-                {loading &&
-                    <Loader2 className={"animate-spin absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"}/>}
-                <span className={cn("transition-opacity duration-200 opacity-100 flex gap-2 items-center", loading && "opacity-0")}>
-                {children}
-            </span>
+                {loading && (
+                    <Loader2
+                        className={
+                            "animate-spin absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                        }
+                    />
+                )}
+                <span
+                    className={cn(
+                        "transition-opacity duration-200 opacity-100 flex gap-2 items-center",
+                        loading && "opacity-0",
+                    )}
+                >
+                    {children}
+                </span>
             </div>
-
         </Comp>
-    )
+    );
 }
 
-export {Button, buttonVariants}
+export { Button, buttonVariants };

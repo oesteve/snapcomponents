@@ -76,7 +76,6 @@
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
 
-
     --tw-border-style: solid;
     --tw-font-weight: initial;
     --tw-tracking: initial;
@@ -137,7 +136,8 @@
         @apply bg-background text-foreground;
     }
 
-    a, button {
+    a,
+    button {
         cursor: pointer;
     }
 
@@ -162,4 +162,3 @@
         @apply text-primary hover:text-muted-foreground hover:underline;
     }
 }
-

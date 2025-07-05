@@ -1,5 +1,5 @@
-import React from "react"
-import {AppSidebar} from "@/admin/components/layout/app-sidebar.tsx"
+import React from "react";
+import { AppSidebar } from "@/admin/components/layout/app-sidebar.tsx";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -7,37 +7,37 @@ import {
     BreadcrumbList,
     BreadcrumbPage,
     BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb.tsx"
-import {Separator} from "@/components/ui/separator.tsx"
+} from "@/components/ui/breadcrumb.tsx";
+import { Separator } from "@/components/ui/separator.tsx";
 import {
     SidebarInset,
     SidebarProvider,
     SidebarTrigger,
-} from "@/components/ui/sidebar.tsx"
-import {useBreadcrumbItems} from "@/admin/components/layout/use-breadcrumb.ts";
-import {createFileRoute, Outlet} from "@tanstack/react-router";
-import {Toaster} from "sonner";
+} from "@/components/ui/sidebar.tsx";
+import { useBreadcrumbItems } from "@/admin/components/layout/use-breadcrumb.ts";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { Toaster } from "sonner";
 
-export const Route = createFileRoute('/admin')({
+export const Route = createFileRoute("/admin")({
     component: Layout,
-})
+});
 
 function Layout() {
     const breadcrumbItems = useBreadcrumbItems();
 
     // If no breadcrumbs are set, show a default one
-    const displayedBreadcrumbs = breadcrumbItems.length > 0
-        ? breadcrumbItems
-        : [{label: "Admin", isActive: true}];
+    const displayedBreadcrumbs =
+        breadcrumbItems.length > 0
+            ? breadcrumbItems
+            : [{ label: "Admin", isActive: true }];
 
     return (
         <SidebarProvider>
-            <AppSidebar/>
+            <AppSidebar />
             <SidebarInset>
-                <header
-                    className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+                <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
                     <div className="flex items-center gap-2 px-4">
-                        <SidebarTrigger className="-ml-1"/>
+                        <SidebarTrigger className="-ml-1" />
                         <Separator
                             orientation="vertical"
                             className="mr-2 data-[orientation=vertical]:h-4"
@@ -46,12 +46,24 @@ function Layout() {
                             <BreadcrumbList>
                                 {displayedBreadcrumbs.map((item, index) => (
                                     <React.Fragment key={index}>
-                                        {index > 0 && <BreadcrumbSeparator/>}
-                                        <BreadcrumbItem className={index === 0 ? "hidden md:block" : ""}>
+                                        {index > 0 && <BreadcrumbSeparator />}
+                                        <BreadcrumbItem
+                                            className={
+                                                index === 0
+                                                    ? "hidden md:block"
+                                                    : ""
+                                            }
+                                        >
                                             {item.isActive ? (
-                                                <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                                                <BreadcrumbPage>
+                                                    {item.label}
+                                                </BreadcrumbPage>
                                             ) : (
-                                                <BreadcrumbLink href={item.href || "#"}>{item.label}</BreadcrumbLink>
+                                                <BreadcrumbLink
+                                                    href={item.href || "#"}
+                                                >
+                                                    {item.label}
+                                                </BreadcrumbLink>
                                             )}
                                         </BreadcrumbItem>
                                     </React.Fragment>
@@ -61,10 +73,10 @@ function Layout() {
                     </div>
                 </header>
                 <div className="flex flex-1 flex-col gap-4 p-8 items-center">
-                    <Outlet/>
+                    <Outlet />
                 </div>
-                <Toaster/>
+                <Toaster />
             </SidebarInset>
         </SidebarProvider>
-    )
+    );
 }

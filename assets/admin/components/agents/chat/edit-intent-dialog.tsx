@@ -1,4 +1,4 @@
-import {Button} from "@/components/ui/button.tsx"
+import { Button } from "@/components/ui/button.tsx";
 import {
     Dialog,
     DialogClose,
@@ -7,37 +7,35 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-} from "@/components/ui/dialog.tsx"
+} from "@/components/ui/dialog.tsx";
 import TextInputWidget from "@/components/form/widgets/text-input-widget.tsx";
 import TextareaInputWidget from "@/components/form/widgets/textarea-input-widget.tsx";
-import {TagInputWidget} from "@/components/form/widgets/tag-input-widget.tsx";
-import {useEffect, useState} from "react";
-import {useQueryTools, useQueryComponents} from "@/lib/agents/chat.ts";
+import { TagInputWidget } from "@/components/form/widgets/tag-input-widget.tsx";
+import { useEffect, useState } from "react";
+import { useQueryTools, useQueryComponents } from "@/lib/agents/chat.ts";
 
 interface EditIntentDialogProps {
-    name: string
+    name: string;
     onClosed: () => void;
 }
 
-export function EditIntentDialog({name, onClosed}: EditIntentDialogProps) {
-    const [open, setOpen] = useState(true)
-    const { data: tools = [], isLoading: isLoadingTools } = useQueryTools()
-    const { data: components = {}, isLoading: isLoadingComponents } = useQueryComponents()
+export function EditIntentDialog({ name, onClosed }: EditIntentDialogProps) {
+    const [open, setOpen] = useState(true);
+    const { data: tools = [], isLoading: isLoadingTools } = useQueryTools();
+    const { data: components = {}, isLoading: isLoadingComponents } =
+        useQueryComponents();
 
     // Convert tools to options array for TagInputWidget
-    const toolOptions = tools.map(tool => tool.name)
+    const toolOptions = tools.map((tool) => tool.name);
 
     // Convert components object to options array for TagInputWidget
-    const componentOptions = Object.keys(components)
+    const componentOptions = Object.keys(components);
 
     useEffect(() => {
         if (!open) {
-            setTimeout(
-                onClosed,
-                300
-            )
+            setTimeout(onClosed, 300);
         }
-    }, [open])
+    }, [open]);
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -68,24 +66,32 @@ export function EditIntentDialog({name, onClosed}: EditIntentDialogProps) {
                     <TagInputWidget
                         name={`${name}.tools`}
                         label={"Tools"}
-                        description={isLoadingTools ? "Loading tools..." : "Select the tools that can be used in this intent."}
+                        description={
+                            isLoadingTools
+                                ? "Loading tools..."
+                                : "Select the tools that can be used in this intent."
+                        }
                         options={toolOptions}
                         placeholder="Search for a tool..."
                     />
                     <TagInputWidget
                         name={`${name}.widgets`}
                         label={"Components"}
-                        description={isLoadingComponents ? "Loading components..." : "Select the UI components that can be used in this intent."}
+                        description={
+                            isLoadingComponents
+                                ? "Loading components..."
+                                : "Select the UI components that can be used in this intent."
+                        }
                         options={componentOptions}
                         placeholder="Search for a component..."
                     />
                 </div>
                 <DialogFooter>
                     <DialogClose asChild>
-                        <Button >Back</Button>
+                        <Button>Back</Button>
                     </DialogClose>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
-    )
+    );
 }

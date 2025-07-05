@@ -3,9 +3,14 @@
     "private": true,
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "lint": "eslint assets --ext .js,.jsx,.ts,.tsx",
+        "lint:fix": "eslint assets --ext .js,.jsx,.ts,.tsx --fix",
+        "format": "prettier --check 'assets/**/*.{js,jsx,ts,tsx,css,md,json}'",
+        "format:fix": "prettier --write 'assets/**/*.{js,jsx,ts,tsx,css,md,json}'"
     },
     "devDependencies": {
+        "@eslint/js": "^9.30.1",
         "@hotwired/stimulus": "^3.0.0",
         "@hotwired/turbo": "^7.1.1 || ^8.0",
         "@symfony/stimulus-bridge": "^3.2.0 || ^4.0.0",
@@ -16,8 +21,13 @@
         "@types/node": "^24.0.3",
         "@types/react-dom": "^19.1.6",
         "@vitejs/plugin-react": "^4.5.2",
+        "eslint": "^9.30.1",
+        "eslint-plugin-react": "^7.37.5",
+        "globals": "^16.3.0",
         "intl-messageformat": "^10.5.11",
+        "prettier": "3.6.2",
         "tw-animate-css": "^1.3.4",
+        "typescript-eslint": "^8.35.1",
         "vite": "^6.0",
         "vite-plugin-symfony": "^8.1"
     },

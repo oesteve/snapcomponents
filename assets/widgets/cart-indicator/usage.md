@@ -9,7 +9,7 @@ A cart indicator widget that displays the number of items in a shopping cart. It
 ### Props/Attributes
 
 | Prop/Attribute | Type   | Default | Description                                |
-|----------------|--------|---------|--------------------------------------------|
+| -------------- | ------ | ------- | ------------------------------------------ |
 | initial-value  | number | 0       | The starting value for the cart item count |
 
 ### Usage Example

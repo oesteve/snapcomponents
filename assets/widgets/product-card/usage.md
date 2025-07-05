@@ -13,7 +13,7 @@ rating, price, and an "Add to cart" button.
 ### Props/Attributes
 
 | Prop/Attribute | Type   | Description                      |
-|----------------|--------|----------------------------------|
+| -------------- | ------ | -------------------------------- |
 | image          | string | URL of the product image         |
 | title          | string | Title/name of the product        |
 | price          | number | Price of the product (without $) |

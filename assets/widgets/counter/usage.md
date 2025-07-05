@@ -10,7 +10,7 @@ card with plus and minus buttons to adjust the value.
 ### Props/Attributes
 
 | Prop/Attribute | Type   | Default | Description                        |
-|----------------|--------|---------|------------------------------------|
+| -------------- | ------ | ------- | ---------------------------------- |
 | initial-value  | number | 0       | The starting value for the counter |
 
 ### Usage Example

@@ -1,79 +1,88 @@
-import {createFileRoute} from "@tanstack/react-router";
-import {getAgent, updateAgent} from "@/lib/agents/agents";
-import {useLayoutStore} from "@/admin/components/layout/breadcrumb-store.ts";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {toast} from "sonner";
-import {useMemo} from "react";
-import {Form} from "@/components/form";
+import { createFileRoute } from "@tanstack/react-router";
+import { getAgent, updateAgent } from "@/lib/agents/agents";
+import { useLayoutStore } from "@/admin/components/layout/breadcrumb-store.ts";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { useMemo } from "react";
+import { Form } from "@/components/form";
 import Submit from "@/components/form/submit.tsx";
 import FormError from "@/components/form/form-error.tsx";
 import DevFormData from "@/components/form/dev-form-data.tsx";
 import TextInputWidget from "@/components/form/widgets/text-input-widget.tsx";
-import {Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
+import {
+    Card,
+    CardAction,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card.tsx";
 
-export const Route = createFileRoute('/admin/agents/$agentId/settings')({
+export const Route = createFileRoute("/admin/agents/$agentId/settings")({
     component: Settings,
-    loader: async ({params: {agentId}}) => {
-        const agent = await getAgent(parseInt(agentId))
+    loader: async ({ params: { agentId } }) => {
+        const agent = await getAgent(parseInt(agentId));
 
         const layout = useLayoutStore.getState();
 
         layout.setBreadcrumbs([
-            {label: "Admin", href: "/admin"},
-            {label: "Agents", href: "/admin/agents"},
-            {label: agent.name},
-            {label: "Settings", isActive: true}
-        ])
+            { label: "Admin", href: "/admin" },
+            { label: "Agents", href: "/admin/agents" },
+            { label: agent.name },
+            { label: "Settings", isActive: true },
+        ]);
 
-        layout.setAgent(agent)
-
+        layout.setAgent(agent);
 
         return {
-            agent
-        }
-    }
-})
-
+            agent,
+        };
+    },
+});
 
 export function Settings() {
-    const {agent} = Route.useLoaderData()
+    const { agent } = Route.useLoaderData();
 
-    const client = useQueryClient()
+    const client = useQueryClient();
 
     const editAgentMutation = useMutation({
         mutationFn: updateAgent,
         onSuccess: () => {
             client.invalidateQueries({
-                queryKey: ['agent']
-            })
-            toast.success("Agent updated successfully")
-        }
-    })
+                queryKey: ["agent"],
+            });
+            toast.success("Agent updated successfully");
+        },
+    });
 
-    const defaultData = useMemo(() => ({
-        id: agent.id,
-        name: agent.name
-    }), [agent]);
+    const defaultData = useMemo(
+        () => ({
+            id: agent.id,
+            name: agent.name,
+        }),
+        [agent],
+    );
 
     return (
-        <Form onSubmit={editAgentMutation.mutateAsync} defaultData={defaultData} className="w-full items-center">
+        <Form
+            onSubmit={editAgentMutation.mutateAsync}
+            defaultData={defaultData}
+            className="w-full items-center"
+        >
             <Card className="w-full max-w-4xl">
                 <CardHeader>
-                    <CardTitle>
-                        General settings for the agent.
-                    </CardTitle>
+                    <CardTitle>General settings for the agent.</CardTitle>
                     <CardDescription>
-                        Adjust the general settings for the agent installed on your website.
+                        Adjust the general settings for the agent installed on
+                        your website.
                     </CardDescription>
                     <CardAction>
-                        <Submit>
-                            Save Changes
-                        </Submit>
+                        <Submit>Save Changes</Submit>
                     </CardAction>
                 </CardHeader>
                 <CardContent className="grid gap-4">
-                    <FormError/>
-                    <DevFormData/>
+                    <FormError />
+                    <DevFormData />
 
                     <TextInputWidget
                         name={"name"}
@@ -83,6 +92,5 @@ export function Settings() {
                 </CardContent>
             </Card>
         </Form>
-    )
-
+    );
 }

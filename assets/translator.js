@@ -1,4 +1,9 @@
-import { trans, getLocale, setLocale, setLocaleFallbacks } from '@symfony/ux-translator';
+import {
+    trans,
+    getLocale,
+    setLocale,
+    setLocaleFallbacks,
+} from "@symfony/ux-translator";
 /*
  * This file is part of the Symfony UX Translator package.
  *

@@ -1,4 +1,4 @@
-import {Button} from "@/components/ui/button.tsx"
+import { Button } from "@/components/ui/button.tsx";
 import {
     Dialog,
     DialogContent,
@@ -6,40 +6,41 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/components/ui/dialog.tsx"
-import {Plus} from "lucide-react";
-import {Form} from "@/components/form";
+} from "@/components/ui/dialog.tsx";
+import { Plus } from "lucide-react";
+import { Form } from "@/components/form";
 import TextInputWidget from "@/components/form/widgets/text-input-widget.tsx";
 import Submit from "@/components/form/submit.tsx";
-import {useMutation} from "@tanstack/react-query";
-import {createArticle} from "@/lib/articles/articles.ts";
+import { useMutation } from "@tanstack/react-query";
+import { createArticle } from "@/lib/articles/articles.ts";
 import FormError from "@/components/form/form-error.tsx";
 import DevFormData from "@/components/form/dev-form-data.tsx";
-import {useState} from "react";
-import {toast} from "sonner";
+import { useState } from "react";
+import { toast } from "sonner";
 import TextareaWidget from "@/components/form/widgets/textarea-input-widget.tsx";
 
 interface CreateArticleDialogProps {
     onCreated: () => void;
 }
 
-export function CreateArticleDialog({onCreated}: CreateArticleDialogProps) {
-    const [open, setOpen] = useState(false)
+export function CreateArticleDialog({ onCreated }: CreateArticleDialogProps) {
+    const [open, setOpen] = useState(false);
 
     const createArticleMutation = useMutation({
         mutationFn: createArticle,
         onSuccess: () => {
-            setOpen(false)
-            onCreated()
-            toast.success("Article created successfully")
-        }
-    })
+            setOpen(false);
+            onCreated();
+            toast.success("Article created successfully");
+        },
+    });
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button>
-                    <Plus/>Create Article
+                    <Plus />
+                    Create Article
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
@@ -49,9 +50,12 @@ export function CreateArticleDialog({onCreated}: CreateArticleDialogProps) {
                         Create a new Article to be used in your application.
                     </DialogDescription>
                 </DialogHeader>
-                <Form className="grid gap-4" onSubmit={createArticleMutation.mutateAsync}>
-                    <FormError/>
-                    <DevFormData/>
+                <Form
+                    className="grid gap-4"
+                    onSubmit={createArticleMutation.mutateAsync}
+                >
+                    <FormError />
+                    <DevFormData />
 
                     <TextInputWidget
                         name={"name"}
@@ -77,11 +81,9 @@ export function CreateArticleDialog({onCreated}: CreateArticleDialogProps) {
                         description={"Full content of the article"}
                     />
 
-                    <Submit>
-                        Create Article
-                    </Submit>
+                    <Submit>Create Article</Submit>
                 </Form>
             </DialogContent>
         </Dialog>
-    )
+    );
 }

@@ -76,7 +76,6 @@
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
 
-
     --tw-border-style: solid;
     --tw-font-weight: initial;
     --tw-tracking: initial;
@@ -95,7 +94,8 @@
 
     color: var(--foreground);
     background-color: transparent;
-    a, button {
+    a,
+    button {
         cursor: pointer;
     }
 }

@@ -1,47 +1,51 @@
 import client from "@/lib/client.ts";
-import type {Agent} from "@/lib/agents/agents.ts";
+import type { Agent } from "@/lib/agents/agents.ts";
 import { useQuery } from "@tanstack/react-query";
-
 
 export type ChatIntent = {
     id: number;
     name: string;
     description: string;
     instructions: string;
-    tools: string[]
-    widgets: string[]
+    tools: string[];
+    widgets: string[];
 };
 
 export type ChatConfig = {
     instructions: string;
-    intents: ChatIntent[]
-}
+    intents: ChatIntent[];
+};
 
 export type ChatTool = {
     name: string;
     description: string;
     parameters: Record<string, any>;
-}
+};
 
 export type ChatComponent = {
     name: string;
     description: string;
-}
+};
 
 export function getChatConfig(id: Agent["id"]) {
     return client.get<ChatConfig>(`/api/agents/${id}/chat`);
 }
 
-export function updateChatConfig(chatConfig: { agentId: Agent["id"] } & ChatConfig) {
-    return client.put<ChatConfig>(`/api/agents/${chatConfig.agentId}/chat`, chatConfig);
+export function updateChatConfig(
+    chatConfig: { agentId: Agent["id"] } & ChatConfig,
+) {
+    return client.put<ChatConfig>(
+        `/api/agents/${chatConfig.agentId}/chat`,
+        chatConfig,
+    );
 }
 
 export function getTools() {
-    return client.get<ChatTool[]>('/api/chats/tools');
+    return client.get<ChatTool[]>("/api/chats/tools");
 }
 
 export function getComponents() {
-    return client.get<Record<string, ChatComponent>>('/api/chats/components');
+    return client.get<Record<string, ChatComponent>>("/api/chats/components");
 }
 
 /**
@@ -49,7 +53,7 @@ export function getComponents() {
  */
 export function useQueryTools() {
     return useQuery({
-        queryKey: ['chat-tools'],
+        queryKey: ["chat-tools"],
         queryFn: () => getTools(),
     });
 }
@@ -59,7 +63,7 @@ export function useQueryTools() {
  */
 export function useQueryComponents() {
     return useQuery({
-        queryKey: ['chat-components'],
+        queryKey: ["chat-components"],
         queryFn: () => getComponents(),
     });
 }
@@ -75,14 +79,14 @@ export function createIntent(intent: {
     widgets: string[];
     configurationId: number;
 }) {
-    return client.post<ChatIntent>('/api/chats/intents', intent);
+    return client.post<ChatIntent>("/api/chats/intents", intent);
 }
 
 /**
  * Update an existing intent
  */
 export function updateIntent(intent: {
-    id: ChatIntent["id"]
+    id: ChatIntent["id"];
     name: string;
     description: string;
     instructions: string;

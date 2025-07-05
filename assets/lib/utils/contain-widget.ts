@@ -1,19 +1,19 @@
 export function isMarkdown(text: string) {
     const markdownIndicators = [
-        /^#\s/m,           // Headers
-        /\*\*(.*?)\*\*/,   // Bold text
-        /\*(.*?)\*/,       // Italic text
+        /^#\s/m, // Headers
+        /\*\*(.*?)\*\*/, // Bold text
+        /\*(.*?)\*/, // Italic text
         /\[(.*?)\]\((.*?)\)/, // Links
-        /^\s*[-*+]\s/m,    // Unordered lists
-        /^\s*\d+\.\s/m,    // Ordered lists
-        /```[\s\S]*?```/,  // Code blocks
-        /^\s*>/m,          // Blockquotes
-        /\|.*\|.*\|/       // Tables
+        /^\s*[-*+]\s/m, // Unordered lists
+        /^\s*\d+\.\s/m, // Ordered lists
+        /```[\s\S]*?```/, // Code blocks
+        /^\s*>/m, // Blockquotes
+        /\|.*\|.*\|/, // Tables
     ];
 
-    let b = markdownIndicators.some(pattern => pattern.test(text));
+    const b = markdownIndicators.some((pattern) => pattern.test(text));
 
-    console.log( "is markdown?", b, text);
+    console.log("is markdown?", b, text);
 
     return b;
 }

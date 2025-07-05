@@ -8,8 +8,8 @@ import { EditArticleDialog } from "@/admin/components/articles/edit-article-dial
 
 export function ArticleList() {
     const articlesQuery = useQuery({
-        queryKey: ['articles'],
-        queryFn: getArticles
+        queryKey: ["articles"],
+        queryFn: getArticles,
     });
 
     const columns: ColumnDef<Article>[] = [
@@ -46,12 +46,18 @@ export function ArticleList() {
                 const article = row.original;
                 return (
                     <div className="flex justify-end space-x-2">
-                        <EditArticleDialog article={article} onEdited={refresh} />
-                        <RemoveArticleDialog article={article} onRemoved={refresh} />
+                        <EditArticleDialog
+                            article={article}
+                            onEdited={refresh}
+                        />
+                        <RemoveArticleDialog
+                            article={article}
+                            onRemoved={refresh}
+                        />
                     </div>
                 );
             },
-        }
+        },
     ];
 
     function refresh() {
