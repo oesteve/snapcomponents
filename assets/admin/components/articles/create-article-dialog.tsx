@@ -43,7 +43,7 @@ export function CreateArticleDialog({ onCreated }: CreateArticleDialogProps) {
                     Create Article
                 </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-3xl">
                 <DialogHeader>
                     <DialogTitle>Create Article</DialogTitle>
                     <DialogDescription>

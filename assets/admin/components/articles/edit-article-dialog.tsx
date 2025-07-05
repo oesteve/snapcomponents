@@ -62,7 +62,7 @@ export function EditArticleDialog({
                     </Button>
                 )}
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-3xl">
                 <DialogHeader>
                     <DialogTitle>Edit Article</DialogTitle>
                     <DialogDescription>
