@@ -10,6 +10,8 @@ services:
             PHP_IDE_CONFIG: "serverName=app"
         ports:
             - "8000:80"
+        extra_hosts:
+            - host.docker.internal:host-gateway
         volumes:
             - ./var/log/:/htdocs/var/log/
             - ./.env.local:/htdocs/.env.local
