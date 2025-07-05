@@ -63,3 +63,31 @@ export function useQueryComponents() {
         queryFn: () => getComponents(),
     });
 }
+
+/**
+ * Create a new intent for a chat configuration
+ */
+export function createIntent(intent: {
+    name: string;
+    description: string;
+    instructions: string;
+    tools: string[];
+    widgets: string[];
+    configurationId: number;
+}) {
+    return client.post<ChatIntent>('/api/chats/intents', intent);
+}
+
+/**
+ * Update an existing intent
+ */
+export function updateIntent(intent: {
+    id: ChatIntent["id"]
+    name: string;
+    description: string;
+    instructions: string;
+    tools: string[];
+    widgets: string[];
+}) {
+    return client.put<ChatIntent>(`/api/chats/intents/${intent.id}`, intent);
+}
