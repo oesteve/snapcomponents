@@ -22,8 +22,30 @@ jobs:
           extensions: mbstring, intl
           coverage: none
 
-      - name: Install dependencies
+      - name: Install PHP dependencies
         run: composer install --prefer-dist --no-progress
 
-      - name: Check code style
+      - name: Check PHP code style
         run: composer cs-check
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      - name: Validate package.json format
+        run: |
+          # Check if package.json is valid JSON
+          node -e "JSON.parse(require('fs').readFileSync('package.json'))"
+          # Check if npm can parse the dependencies correctly
+          npm ls --json >/dev/null
+
+      - name: Lint JavaScript/TypeScript code
+        run: npm run lint
+
+      - name: Check JavaScript/TypeScript formatting
+        run: npm run format
