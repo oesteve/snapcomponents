@@ -31,7 +31,7 @@ export function IntentsWidget(props: FormElementProps) {
 
     function handleRemove(
         e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-        idx,
+        idx: number,
     ) {
         e.preventDefault();
         e.stopPropagation();
