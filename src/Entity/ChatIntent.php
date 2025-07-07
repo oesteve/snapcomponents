@@ -55,8 +55,8 @@ class ChatIntent
         $this->description = $description;
         $this->instructions = $instructions;
         $this->tools = $tools;
-        $this->configuration = $configuration;
         $this->widgets = $widgets;
+        $this->configuration = $configuration;
     }
 
     /**
