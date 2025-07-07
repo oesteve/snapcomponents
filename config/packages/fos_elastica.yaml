@@ -12,11 +12,14 @@ fos_elastica:
                 finder: ~
             properties:
                 id: ~
-                name: ~
                 title: ~
                 description: ~
                 content: ~
-                user_id: ~
+                category:
+                    type: object
+                    properties:
+                        name:
+                            type: keyword
 
                 title_vector:
                     type: dense_vector

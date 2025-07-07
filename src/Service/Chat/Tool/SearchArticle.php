@@ -38,6 +38,11 @@ class SearchArticle implements ToolInterface
                 "query" => [
                     "type" => "string",
                     "description" => "Terms of use"
+                ],
+                "category" => [
+                    "type" => "string",
+                    "description" => "Category of the article",
+                    "enum" => $this->searchService->getCategories()
                 ]
             ],
             "required" => ["query"],

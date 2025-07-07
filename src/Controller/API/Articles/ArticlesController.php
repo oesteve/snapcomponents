@@ -35,7 +35,10 @@ class ArticlesController extends AbstractController
         $query = $request->query->get('query');
         $results = $articleService->search($query);
 
-        return $this->json($results);
+        return $this->json([
+            'results' => $results,
+            'categories' => $articleService->getCategories()
+        ]);
     }
 
     #[Route('/categories', methods: ['GET'])]
