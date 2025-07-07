@@ -1,9 +1,6 @@
 "use client";
 
-import {
-    ChevronsUpDown,
-    LogOut,
-} from "lucide-react";
+import { ChevronsUpDown, LogOut } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -26,11 +23,10 @@ import { getUser } from "@/lib/user/profile.tsx";
 export function NavUser() {
     const { isMobile } = useSidebar();
 
-
     const { data: user } = useQuery({
         queryKey: ["user"],
-        queryFn: getUser
-    })
+        queryFn: getUser,
+    });
 
     if (!user) {
         return null;

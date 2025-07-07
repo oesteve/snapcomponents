@@ -80,7 +80,7 @@ export class RestClient {
         return this.request<ResponseType>("POST", url, {
             ...options,
             data: formData,
-            isFormData: true
+            isFormData: true,
         });
     }
 

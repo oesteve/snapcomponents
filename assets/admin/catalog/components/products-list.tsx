@@ -59,7 +59,10 @@ export function ProductsList() {
             cell: ({ row }) => {
                 const product = row.original;
                 return (
-                    <div className="max-w-md truncate" title={product.description}>
+                    <div
+                        className="max-w-md truncate"
+                        title={product.description}
+                    >
                         {product.description}
                     </div>
                 );

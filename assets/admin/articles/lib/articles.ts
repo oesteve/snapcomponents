@@ -1,6 +1,5 @@
 import client from "@/lib/client.ts";
 
-
 export type ArticleCategory = {
     id: number;
     name: string;
@@ -19,16 +18,19 @@ export function getArticles() {
 }
 
 export type ImportResult = {
-    articles: Article[]
+    articles: Article[];
     success: number;
     errors: Array<{ line: number; message: string }>;
 };
 
 export async function importArticlesFromCsv(file: File): Promise<ImportResult> {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
 
-    return client.postFormData<ImportResult>("/api/articles/import/csv", formData);
+    return client.postFormData<ImportResult>(
+        "/api/articles/import/csv",
+        formData,
+    );
 }
 
 export type ArticleData = {

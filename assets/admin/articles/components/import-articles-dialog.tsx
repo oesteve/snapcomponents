@@ -102,8 +102,8 @@ export function ImportArticlesDialog({
                     <DialogTitle>Import Articles from CSV</DialogTitle>
                     <DialogDescription>
                         Upload a CSV file to import multiple articles at once.
-                        The CSV file should have the following columns:
-                        title, description, content, category_name.
+                        The CSV file should have the following columns: title,
+                        description, content, category_name.
                         <Button variant="link" asChild className="py-0">
                             <a href="/articles.csv" download>
                                 Download example CSV file

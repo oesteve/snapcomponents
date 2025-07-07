@@ -12,7 +12,10 @@ import { Form } from "@/components/form";
 import TextInputWidget from "@/components/form/widgets/text-input-widget.tsx";
 import Submit from "@/components/form/submit.tsx";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { createArticle, getArticleCategories } from "@/admin/articles/lib/articles.ts";
+import {
+    createArticle,
+    getArticleCategories,
+} from "@/admin/articles/lib/articles.ts";
 import FormError from "@/components/form/form-error.tsx";
 import DevFormData from "@/components/form/dev-form-data.tsx";
 import { useMemo, useState } from "react";
@@ -34,10 +37,13 @@ export function CreateArticleDialog({ onCreated }: CreateArticleDialogProps) {
     });
 
     const categoryOptions = useMemo(() => {
-        return categories.reduce((acc, category) => {
-            acc[category.name] = category.id;
-            return acc;
-        }, {} as Record<string, number>);
+        return categories.reduce(
+            (acc, category) => {
+                acc[category.name] = category.id;
+                return acc;
+            },
+            {} as Record<string, number>,
+        );
     }, [categories]);
 
     const createArticleMutation = useMutation({
@@ -70,7 +76,6 @@ export function CreateArticleDialog({ onCreated }: CreateArticleDialogProps) {
                 >
                     <FormError />
                     <DevFormData />
-
 
                     <TextInputWidget
                         name={"title"}

@@ -8,7 +8,6 @@ export type Profile = {
     roles: string[];
 };
 
-
 export function getUser() {
     return client.get<Profile>("/api/user");
 }
