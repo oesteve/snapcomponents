@@ -35,26 +35,18 @@ class ChatConfiguration
     #[ORM\OneToMany(targetEntity: ChatIntent::class, mappedBy: 'configuration')]
     private Collection $intents;
 
-    /**
-     * @param string $name
-     * @param string $description
-     * @param string $instructions
-     * @param Agent $agent
-     */
     public function __construct(
         string $name,
         string $description,
         string $instructions,
-        Agent  $agent
-    )
-    {
+        Agent $agent,
+    ) {
         $this->name = $name;
         $this->description = $description;
         $this->instructions = $instructions;
         $this->agent = $agent;
         $this->intents = new ArrayCollection([]);
     }
-
 
     public function getName(): string
     {
@@ -95,5 +87,4 @@ class ChatConfiguration
         $this->description = $description;
         $this->instructions = $instructions;
     }
-
 }

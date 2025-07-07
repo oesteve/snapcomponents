@@ -2,7 +2,6 @@
 
 namespace App\Service\Product;
 
-use App\Entity\Article;
 use App\Entity\Product;
 use App\Service\Search\EmbeddingsService;
 use Elastica\Document;
@@ -16,13 +15,12 @@ readonly class ProductSearchService
     public function __construct(
         #[Autowire(service: 'fos_elastica.finder.products')]
         private PaginatedFinderInterface $finder,
-        private EmbeddingsService        $searchService,
-    )
-    {
+        private EmbeddingsService $searchService,
+    ) {
     }
 
     /**
-     * Search for articles using Elasticsearch
+     * Search for articles using Elasticsearch.
      *
      * @param string|null $query The search query
      * @param array<string,array{
@@ -30,13 +28,13 @@ readonly class ProductSearchService
      *     operator: string,
      *     value: string
      * }>|null $filters
+     *
      * @return Product[] The search results
      */
     public function search(
         ?string $query,
-        ?array  $filters = null,
-    ): array
-    {
+        ?array $filters = null,
+    ): array {
         $request = [];
 
         if ($query) {
@@ -46,8 +44,8 @@ readonly class ProductSearchService
                     'field' => 'title_vector',
                     'query_vector' => $queryVector,
                     'k' => 10,
-                    "num_candidates" => 100,
-                ]
+                    'num_candidates' => 100,
+                ],
             ];
         }
 
@@ -60,7 +58,7 @@ readonly class ProductSearchService
                 'gt' => ['range' => [$filter['field'] => ['gt' => $filter['value']]]],
                 'gte' => ['range' => [$filter['field'] => ['gte' => $filter['value']]]],
                 'match' => ['match' => [$filter['field'] => $filter['value']]],
-                default => null
+                default => null,
             };
 
             if ($term) {
@@ -72,7 +70,7 @@ readonly class ProductSearchService
             $request['query'] = [
                 'bool' => [
                     'must' => $must,
-                ]
+                ],
             ];
         }
 
@@ -82,7 +80,7 @@ readonly class ProductSearchService
     #[AsEventListener(event: PostTransformEvent::class)]
     public function onPostTransform(PostTransformEvent $event)
     {
-        if ($event->getObject() instanceof Product === false) {
+        if (false === $event->getObject() instanceof Product) {
             return;
         }
 

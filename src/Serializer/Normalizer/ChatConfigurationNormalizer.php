@@ -13,25 +13,21 @@ class ChatConfigurationNormalizer implements NormalizerInterface
 {
     public function __construct(
         #[Autowire(service: 'serializer.normalizer.object')]
-        private NormalizerInterface $normalizer
-    )
-    {
+        private NormalizerInterface $normalizer,
+    ) {
     }
 
     /**
      * @param ChatConfiguration $object
-     * @param string|null $format
-     * @param array $context
-     * @return array
+     *
      * @throws ExceptionInterface
      */
     public function normalize($object, ?string $format = null, array $context = []): array
     {
-
         $context[AbstractNormalizer::IGNORED_ATTRIBUTES] ??= [
             'user',
             'agent',
-            'intents'
+            'intents',
         ];
 
         $normalizer = $this->normalizer;
@@ -42,12 +38,11 @@ class ChatConfigurationNormalizer implements NormalizerInterface
             $context
         );
 
-
         $data['intents'] = $object->getIntents()->map(
-            fn(ChatIntent $intent) => $normalizer->normalize($intent, $format, [
+            fn (ChatIntent $intent) => $normalizer->normalize($intent, $format, [
                 AbstractNormalizer::IGNORED_ATTRIBUTES => [
-                    'configuration'
-                ]
+                    'configuration',
+                ],
             ]))->toArray();
 
         return $data;

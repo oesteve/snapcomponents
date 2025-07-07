@@ -21,42 +21,38 @@ class ArticlesController extends AbstractController
     #[Route('', methods: ['GET'])]
     public function list(
         ArticleRepository $articleRepository,
-    ): JsonResponse
-    {
+    ): JsonResponse {
         return $this->json($articleRepository->findAll());
     }
 
     #[Route('/search', methods: ['GET'])]
     public function get(
         ArticleSearchService $articleService,
-        Request              $request
-    ): JsonResponse
-    {
+        Request $request,
+    ): JsonResponse {
         $query = $request->query->get('query');
         $results = $articleService->search($query);
 
         return $this->json([
             'results' => $results,
-            'categories' => $articleService->getCategories()
+            'categories' => $articleService->getCategories(),
         ]);
     }
 
     #[Route('/categories', methods: ['GET'])]
     public function categories(
         ArticleCategoryRepository $categoryRepository,
-    ): JsonResponse
-    {
+    ): JsonResponse {
         return $this->json($categoryRepository->findAll());
     }
 
     #[Route('', methods: ['POST'])]
     public function create(
         #[MapRequestPayload]
-        ArticleData       $articleData,
+        ArticleData $articleData,
         ArticleRepository $articleRepository,
         ArticleCategoryRepository $categoryRepository,
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $category = $categoryRepository->findOrFail($articleData->categoryId);
 
         $article = new Article(
@@ -74,13 +70,12 @@ class ArticlesController extends AbstractController
 
     #[Route('/{id}', methods: ['PUT'])]
     public function update(
-        Article           $article,
+        Article $article,
         ArticleRepository $articleRepository,
         ArticleCategoryRepository $categoryRepository,
         #[MapRequestPayload]
-        ArticleData       $articleData,
-    ): JsonResponse
-    {
+        ArticleData $articleData,
+    ): JsonResponse {
         $category = $categoryRepository->findOrFail($articleData->categoryId);
 
         $article->update(
@@ -91,6 +86,7 @@ class ArticlesController extends AbstractController
         );
 
         $articleRepository->save($article);
+
         return $this->json($article);
     }
 
@@ -98,15 +94,15 @@ class ArticlesController extends AbstractController
     public function remove(Article $article, ArticleRepository $articleRepository): JsonResponse
     {
         $articleRepository->remove($article);
+
         return $this->json(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/import/csv', methods: ['POST'])]
     public function importCsv(
         Request $request,
-        ArticleImportService $importService
-    ): JsonResponse
-    {
+        ArticleImportService $importService,
+    ): JsonResponse {
         // Check if a file was uploaded
         $file = $request->files->get('file');
         if (!$file) {

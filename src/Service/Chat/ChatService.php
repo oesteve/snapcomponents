@@ -15,50 +15,40 @@ use OpenAI\Responses\Chat\CreateResponse;
 use OpenAI\Responses\Chat\CreateResponseToolCall;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
-use Symfony\Component\HttpKernel\Log\DebugLoggerInterface;
 
 class ChatService
 {
-
     /**
      * @var array<string, ToolInterface>
      */
     private array $functions = [];
 
     /**
-     * @param ChatRepository $chatRepository
-     * @param ChatMessageRepository $chatMessageRepository
-     * @param AgentService $agentService
-     * @param OpenAI\Client $client
      * @param array<ToolInterface> $functions
      */
     public function __construct(
-        private readonly ChatRepository        $chatRepository,
+        private readonly ChatRepository $chatRepository,
         private readonly ChatMessageRepository $chatMessageRepository,
-        private readonly AgentService          $agentService,
-        private readonly OpenAI\Client         $client,
+        private readonly AgentService $agentService,
+        private readonly OpenAI\Client $client,
         #[AutowireIterator(tag: 'app.chat.tool')]
-        iterable                               $functions,
-        private readonly ComponentManager      $componentManager,
-        private readonly LoggerInterface       $logger
-    )
-    {
-
+        iterable $functions,
+        private readonly ComponentManager $componentManager,
+        private readonly LoggerInterface $logger,
+    ) {
         foreach ($functions as $function) {
             $this->functions[$function->getName()] = $function;
         }
-
     }
 
     public function createChat(
         string $content,
-    ): Chat
-    {
+    ): Chat {
         $agent = $this->agentService->getAgentOrFail();
         $chatConfiguration = $agent->getChatConfiguration();
 
         if (!$chatConfiguration) {
-            throw new \Exception("Chat configuration not found");
+            throw new \Exception('Chat configuration not found');
         }
 
         $chat = new Chat(
@@ -78,6 +68,7 @@ class ChatService
         $chat->addMessage($message);
 
         $this->handleChatMessage($message);
+
         return $chat;
     }
 
@@ -94,7 +85,6 @@ class ChatService
 
         $this->handleChatMessage($message);
     }
-
 
     private function handleChatMessage(ChatMessage $message): void
     {
@@ -113,11 +103,9 @@ class ChatService
     }
 
     private function handleToolCalls(
-        ChatMessage            $message,
-        CreateResponseToolCall $responseToolCall
-    ): array
-    {
-
+        ChatMessage $message,
+        CreateResponseToolCall $responseToolCall,
+    ): array {
         $function = $responseToolCall->function;
 
         if (!isset($this->functions[$function->name])) {
@@ -134,13 +122,10 @@ class ChatService
         return [
             'role' => 'tool',
             'tool_call_id' => $responseToolCall->id,
-            'content' => json_encode($executionResult)
+            'content' => json_encode($executionResult),
         ];
     }
 
-    /**
-     * @return CreateResponse
-     */
     private function processChatInteraction(ChatMessage $message): CreateResponse
     {
         $context = $message->getChat()->getMessages()
@@ -163,7 +148,6 @@ class ChatService
      */
     private function getToolsDefinitions(ChatMessage $message): array
     {
-
         $supportedTools = [
             DefineIntent::NAME,
             ...$message->getChat()->getIntent()?->getTools() ?? [],
@@ -180,19 +164,15 @@ class ChatService
                     'name' => $function->getName(),
                     'description' => $function->getDescription($message),
                     'parameters' => $function->getParameters($message),
-                ]
+                ],
             ];
 
             return $carry;
         }, []);
     }
 
-    /**
-     * @return string
-     */
     private function getInstructions(ChatMessage $message): string
     {
-
         // Chat instructions
         $configuration = $message->getChat()->getConfiguration();
 
@@ -203,7 +183,7 @@ class ChatService
 
 MD;
 
-        $prompt .= $configuration->getInstructions() . ".\n\n";
+        $prompt .= $configuration->getInstructions().".\n\n";
 
         // Context definition instructions
         if (!$configuration->getIntents()->isEmpty()) {
@@ -231,20 +211,16 @@ MD;
                         $prompt .= $this->componentManager->getDefinition($widget);
                     }
                 }
-
             } else {
                 $prompt .= "Try to determine the user intent and notify it to the system.\n";
             }
         }
 
-
         return $prompt;
     }
 
     /**
-     * @param ChatMessage $message
      * @param array<int,array<string,mixed>> $context
-     * @return CreateResponse
      */
     private function getResponse(ChatMessage $message, array $context): CreateResponse
     {
@@ -252,14 +228,13 @@ MD;
             'model' => 'gpt-4o',
             'messages' => [
                 [
-                    "role" => "developer",
-                    "content" => $this->getInstructions($message)
+                    'role' => 'developer',
+                    'content' => $this->getInstructions($message),
                 ],
-                ...$context
+                ...$context,
             ],
-            'tools' => $this->getToolsDefinitions($message)
+            'tools' => $this->getToolsDefinitions($message),
         ];
-
 
         $start = microtime(true);
         $response = $this->client->chat()->create($parameters);
@@ -271,7 +246,6 @@ MD;
                 'response' => $response,
             ]
         );
-
 
         $responseMessage = $response->choices[0]->message;
 
@@ -296,6 +270,7 @@ MD;
                 );
             }
         }
+
         return $response;
     }
 }

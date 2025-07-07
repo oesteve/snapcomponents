@@ -18,7 +18,6 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 abstract class AbstractChatServiceTest extends BaseTestCase
 {
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -29,7 +28,6 @@ abstract class AbstractChatServiceTest extends BaseTestCase
         $configuration = $this->createTestConfiguration($agent);
 
         $em = $this->getService(EntityManagerInterface::class);
-
 
         foreach ($this->withIntents($configuration) as $intent) {
             $em->persist($intent);
@@ -47,9 +45,6 @@ abstract class AbstractChatServiceTest extends BaseTestCase
         $em->flush();
     }
 
-    /**
-     * @return User
-     */
     private function createTestUser(): User
     {
         $user = new User(
@@ -57,13 +52,10 @@ abstract class AbstractChatServiceTest extends BaseTestCase
             [User::ROLE_USER],
         );
         static::getContainer()->get(UserRepository::class)->save($user);
+
         return $user;
     }
 
-    /**
-     * @param User $user
-     * @return Agent
-     */
     private function createTestAgent(User $user): Agent
     {
         $agent = new Agent(
@@ -71,13 +63,10 @@ abstract class AbstractChatServiceTest extends BaseTestCase
             $user,
         );
         static::getContainer()->get(AgentRepository::class)->save($agent);
+
         return $agent;
     }
 
-    /**
-     * @param Agent $agent
-     * @return ChatConfiguration
-     */
     private function createTestConfiguration(Agent $agent): ChatConfiguration
     {
         $configuration = new ChatConfiguration(
@@ -87,17 +76,16 @@ abstract class AbstractChatServiceTest extends BaseTestCase
             $agent
         );
         static::getContainer()->get(ChatConfigurationRepository::class)->save($configuration);
+
         return $configuration;
     }
 
     /**
-     * @param KernelInterface $kernel
-     * @return void
      * @throws \Exception
      */
     private function setUpDatabase(KernelInterface $kernel): void
     {
-// Get the application (console)
+        // Get the application (console)
         $application = new Application($kernel);
         $application->setAutoExit(false);
 
@@ -114,9 +102,8 @@ abstract class AbstractChatServiceTest extends BaseTestCase
     /**
      * @return array<ChatIntent>
      */
-    protected function withIntents(ChatConfiguration $configuration): array{
-
+    protected function withIntents(ChatConfiguration $configuration): array
+    {
         return [];
     }
-
 }

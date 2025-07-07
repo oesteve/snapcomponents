@@ -10,7 +10,7 @@ use Symfony\Component\String\ByteString;
 
 #[ORM\Entity(repositoryClass: AgentRepository::class)]
 #[ORM\Table(indexes: [
-    new ORM\Index(name: 'code_idx', columns: ['code'])
+    new ORM\Index(name: 'code_idx', columns: ['code']),
 ])]
 class Agent extends BaseEntity
 {
@@ -38,9 +38,8 @@ class Agent extends BaseEntity
 
     public function __construct(
         string $name,
-        User   $user,
-    )
-    {
+        User $user,
+    ) {
         $this->name = $name;
         $this->code = $this->generateCode();
         $this->user = $user;

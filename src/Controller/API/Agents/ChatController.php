@@ -12,12 +12,9 @@ use App\Repository\AgentRepository;
 use App\Repository\ChatConfigurationRepository;
 use App\Repository\ChatIntentRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-
 
 #[Route('/api/agents/{id:agent}/chat', format: 'json')]
 #[IsGranted('ROLE_ADMIN')]
@@ -26,19 +23,16 @@ class ChatController extends AbstractController
     #[Route('', methods: ['GET'])]
     public function list(
         Agent $agent,
-    ): JsonResponse
-    {
-
+    ): JsonResponse {
         return $this->json($agent->getChatConfiguration());
     }
 
     #[Route('', methods: ['POST'])]
     public function create(
         #[MapRequestPayload]
-        AgentData       $agentData,
+        AgentData $agentData,
         AgentRepository $agentRepository,
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $agent = new Agent(
             $agentData->name,
             $this->getLoggedUserOrFail(),
@@ -51,13 +45,12 @@ class ChatController extends AbstractController
 
     #[Route('', methods: ['PUT'])]
     public function update(
-        Agent                       $agent,
+        Agent $agent,
         #[MapRequestPayload]
-        ChatConfigData              $chatConfigData,
+        ChatConfigData $chatConfigData,
         ChatConfigurationRepository $chatConfigurationRepository,
-        ChatIntentRepository        $chatIntentRepository,
-    ): JsonResponse
-    {
+        ChatIntentRepository $chatIntentRepository,
+    ): JsonResponse {
         $chatConfiguration = $agent->getChatConfiguration();
 
         if (!$chatConfiguration) {
@@ -70,35 +63,34 @@ class ChatController extends AbstractController
 
             $agent->setChatConfiguration($chatConfiguration);
         } else {
-
             $chatConfiguration->update(
                 $chatConfigData->name,
                 $chatConfigData->description,
                 $chatConfigData->instructions,
             );
 
-            $chatConfigurationRepository->save($chatConfiguration);;
+            $chatConfigurationRepository->save($chatConfiguration);
         }
 
         // Remove any intents not in the updated list
         $existentIntents = $chatIntentRepository->findBy([
-            'configuration' => $chatConfiguration
+            'configuration' => $chatConfiguration,
         ]);
 
-        $newIntentIds = array_map(fn(array $intentData) => $intentData['id'] ?? null, $chatConfigData->intents);
+        $newIntentIds = array_map(fn (array $intentData) => $intentData['id'] ?? null, $chatConfigData->intents);
 
         foreach ($existentIntents as $existingIntent) {
             if (in_array($existingIntent->getId(), $newIntentIds)) {
                 continue;
             }
-            $chatIntentRepository->remove($existingIntent);;
+            $chatIntentRepository->remove($existingIntent);
         }
 
         // update or create intents
         foreach ($chatConfigData->intents as $intentData) {
             $intent = $chatIntentRepository->findOneBy([
                 'id' => $intentData['id'] ?? null,
-                'configuration' => $chatConfiguration
+                'configuration' => $chatConfiguration,
             ]);
 
             if ($intent) {
@@ -109,8 +101,6 @@ class ChatController extends AbstractController
                     $intentData['widgets'] ?? [],
                     $intentData['tools'] ?? [],
                 );
-
-
             } else {
                 $intent = new ChatIntent(
                     $intentData['name'],
@@ -120,7 +110,6 @@ class ChatController extends AbstractController
                     $intentData['widgets'] ?? [],
                     $chatConfiguration,
                 );
-
             }
 
             $chatIntentRepository->save($intent);

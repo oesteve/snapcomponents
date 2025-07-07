@@ -8,12 +8,9 @@ use Twig\TwigFunction;
 
 class WidgetDocExtension extends AbstractExtension
 {
-
-
     public function __construct(
         private ComponentManager $widgetProvider,
-    )
-    {
+    ) {
     }
 
     public function getFunctions(): array
@@ -21,7 +18,7 @@ class WidgetDocExtension extends AbstractExtension
         return [
             new TwigFunction('widget_doc', [$this, 'getWidgetDoc'], [
                 'is_safe' => ['html'],
-            ] ),
+            ]),
         ];
     }
 

@@ -4,7 +4,7 @@ namespace App\Service\Chat\Component;
 
 class ProductCard implements ComponentInterface
 {
-    public const string NAME = "product-card";
+    public const string NAME = 'product-card';
 
     public function getName(): string
     {
@@ -13,34 +13,34 @@ class ProductCard implements ComponentInterface
 
     public function getDisplayName(): string
     {
-        return "Product Card Widget";
+        return 'Product Card Widget';
     }
 
     public function getDescription(): string
     {
-        return "A product card widget that displays product information in an attractive card format. It shows the product image, title, rating, price, and an \"Add to cart\" button.";
+        return 'A product card widget that displays product information in an attractive card format. It shows the product image, title, rating, price, and an "Add to cart" button.';
     }
 
     public function getParameters(): array
     {
         return [
-            "type" => "object",
-            "properties" => [
-                "image" => [
-                    "type" => "string",
-                    "description" => "URL of the product image"
+            'type' => 'object',
+            'properties' => [
+                'image' => [
+                    'type' => 'string',
+                    'description' => 'URL of the product image',
                 ],
-                "title" => [
-                    "type" => "string",
-                    "description" => "Title/name of the product"
+                'title' => [
+                    'type' => 'string',
+                    'description' => 'Title/name of the product',
                 ],
-                "price" => [
-                    "type" => "number",
-                    "description" => "Price of the product (without $)"
-                ]
+                'price' => [
+                    'type' => 'number',
+                    'description' => 'Price of the product (without $)',
+                ],
             ],
-            "required" => ["image", "title", "price"],
-            "additionalProperties" => false
+            'required' => ['image', 'title', 'price'],
+            'additionalProperties' => false,
         ];
     }
 

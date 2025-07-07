@@ -8,14 +8,12 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class SearchArticle implements ToolInterface
 {
-
-    public const string NAME = "search_article";
+    public const string NAME = 'search_article';
 
     public function __construct(
         private ArticleSearchService $searchService,
-        private SerializerInterface  $serializer,
-    )
-    {
+        private SerializerInterface $serializer,
+    ) {
     }
 
     public function getName(): string
@@ -23,58 +21,51 @@ class SearchArticle implements ToolInterface
         return self::NAME;
     }
 
-
     /**
-     * @param ChatMessage $message
      * @return array<string, mixed>
      */
     public function getParameters(
         ChatMessage $message,
-    ): array
-    {
+    ): array {
         return [
-            "type" => "object",
-            "properties" => [
-                "query" => [
-                    "type" => "string",
-                    "description" => "Terms of use"
+            'type' => 'object',
+            'properties' => [
+                'query' => [
+                    'type' => 'string',
+                    'description' => 'Terms of use',
                 ],
-                "category" => [
-                    "type" => "string",
-                    "description" => "Category of the article",
-                    "enum" => $this->searchService->getCategories()
-                ]
+                'category' => [
+                    'type' => 'string',
+                    'description' => 'Category of the article',
+                    'enum' => $this->searchService->getCategories(),
+                ],
             ],
-            "required" => ["query"],
-            "additionalProperties" => false
+            'required' => ['query'],
+            'additionalProperties' => false,
         ];
     }
 
     public function getDescription(
         ChatMessage $message,
-    ): string
-    {
-        return "Search results articles database";
+    ): string {
+        return 'Search results articles database';
     }
 
-
     /**
-     * @param ChatMessage $message
-     *
      * @param array{query: string} $parameters
      */
     public function execute(
         ChatMessage $message,
-        array $parameters
+        array $parameters,
     ): string {
-        $articles = $this->searchService->search($parameters["query"]);
+        $articles = $this->searchService->search($parameters['query']);
 
         return $this->serializer->serialize($articles, 'json');
     }
 
     public function getDisplayName(): string
     {
-        return "Search Articles";
+        return 'Search Articles';
     }
 
     public function support(string $scope): bool

@@ -8,5 +8,4 @@ class AgentData
 {
     #[NotBlank(allowNull: false)]
     public string $name;
-
 }

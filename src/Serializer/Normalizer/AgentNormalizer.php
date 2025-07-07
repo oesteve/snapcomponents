@@ -13,7 +13,7 @@ class AgentNormalizer implements NormalizerInterface
     public function __construct(
         #[Autowire(service: 'serializer.normalizer.object')]
         private NormalizerInterface $normalizer,
-        private AgentService $agentService
+        private AgentService $agentService,
     ) {
     }
 
@@ -29,7 +29,7 @@ class AgentNormalizer implements NormalizerInterface
                 ...$context,
                 AbstractNormalizer::IGNORED_ATTRIBUTES => [
                     'user',
-                    'chatConfiguration'
+                    'chatConfiguration',
                 ],
             ]
         );

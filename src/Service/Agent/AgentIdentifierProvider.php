@@ -8,8 +8,7 @@ readonly class AgentIdentifierProvider
 {
     public function __construct(
         private RequestStack $requestStack,
-    )
-    {
+    ) {
     }
 
     public function getToken(): ?string
@@ -17,7 +16,6 @@ readonly class AgentIdentifierProvider
         $headerValue = $this->requestStack
             ->getCurrentRequest()
             ->headers->get('Authorization');
-
 
         if (empty($headerValue)) {
             return null;
@@ -29,5 +27,4 @@ readonly class AgentIdentifierProvider
 
         return explode(' ', $headerValue)[1];
     }
-
 }

@@ -12,7 +12,7 @@ final readonly class OAuthConnector implements AccountConnectorInterface
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private array                  $properties
+        private array $properties,
     ) {
     }
 

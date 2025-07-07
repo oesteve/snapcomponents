@@ -2,7 +2,6 @@
 
 namespace App\Serializer\Normalizer;
 
-use App\Entity\ChatConfiguration;
 use App\Entity\ChatIntent;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
@@ -12,19 +11,19 @@ class ChatIntentNormalizer implements NormalizerInterface
 {
     public function __construct(
         #[Autowire(service: 'serializer.normalizer.object')]
-        private NormalizerInterface $normalizer
+        private NormalizerInterface $normalizer,
     ) {
     }
 
     /**
      * @param ChatIntent $object
+     *
      * @return array<string, mixed>
      */
     public function normalize($object, ?string $format = null, array $context = []): array
     {
-
         $context[AbstractNormalizer::IGNORED_ATTRIBUTES] ??= [
-            'configuration'
+            'configuration',
         ];
 
         $data = $this->normalizer->normalize($object, $format, $context);

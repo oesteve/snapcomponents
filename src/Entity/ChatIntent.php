@@ -39,22 +39,17 @@ class ChatIntent
     #[ORM\JoinColumn(nullable: false)]
     private ChatConfiguration $configuration;
 
-
     /**
-     * @param string $name
-     * @param string $description
-     * @param string $instructions
      * @param array<string> $tools
      * @param array<string> $widgets
-     * @param ChatConfiguration $configuration
      */
     public function __construct(
-        string            $name,
-        string            $description,
-        string            $instructions,
-        array             $tools,
-        array             $widgets,
-        ChatConfiguration $configuration
+        string $name,
+        string $description,
+        string $instructions,
+        array $tools,
+        array $widgets,
+        ChatConfiguration $configuration,
     ) {
         $this->name = $name;
         $this->description = $description;
@@ -67,14 +62,13 @@ class ChatIntent
     /**
      * @param array<string> $tools
      * @param array<string> $widgets
-     * @return void
      */
     public function update(
         string $name,
         string $description,
         string $instructions,
         array $tools,
-        array $widgets
+        array $widgets,
     ): void {
         $this->name = $name;
         $this->description = $description;

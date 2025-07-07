@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Agent;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -15,5 +14,4 @@ class AgentRepository extends BaseRepository
     {
         parent::__construct($registry, Agent::class);
     }
-
 }

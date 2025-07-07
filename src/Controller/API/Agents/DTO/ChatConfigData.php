@@ -19,7 +19,6 @@ class ChatConfigData
     #[Assert\NotBlank(allowNull: false)]
     public string $instructions;
 
-
     /**
      * @var array<int, array{id:int|null, name:string, description: string, instructions:string, tools:array<string>|null, widgets:array<string>|null  }>
      */
@@ -30,8 +29,8 @@ class ChatConfigData
             'description' => [new Assert\NotBlank()],
             'instructions' => [new Assert\NotBlank()],
             'tools' => [new Assert\Optional([new Assert\Type('array'), new Assert\All([new Assert\NotBlank()])])],
-            'widgets' => [new Assert\Optional([new Assert\Type('array'), new Assert\All([new Assert\NotBlank()])])]
-        ])
+            'widgets' => [new Assert\Optional([new Assert\Type('array'), new Assert\All([new Assert\NotBlank()])])],
+        ]),
     ])]
     public array $intents;
 

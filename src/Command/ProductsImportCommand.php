@@ -5,7 +5,6 @@ namespace App\Command;
 use App\Entity\Product;
 use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
-use App\Service\Product\ProductData;
 use App\Service\Product\ProductProvider;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -24,9 +23,8 @@ class ProductsImportCommand extends Command
     public function __construct(
         private ProductProvider $productProvider,
         private ProductRepository $productRepository,
-        private UserRepository $userRepository
-    )
-    {
+        private UserRepository $userRepository,
+    ) {
         parent::__construct();
     }
 
@@ -43,15 +41,13 @@ class ProductsImportCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $userId = (int) $input->getArgument('userId');
 
-        foreach ($this->productProvider->getProducts() as $productData){
-
+        foreach ($this->productProvider->getProducts() as $productData) {
             $product = $this->productRepository->findOneBy([
                 'user' => $userId,
                 'name' => $productData->name,
             ]);
 
-
-            if (!$product){
+            if (!$product) {
                 $product = new Product(
                     $productData->name,
                     $productData->title,
@@ -60,7 +56,7 @@ class ProductsImportCommand extends Command
                     $productData->price,
                     $this->userRepository->findOrFail($userId)
                 );
-            }else{
+            } else {
                 $product->update(
                     $productData->name,
                     $productData->title,
@@ -71,9 +67,7 @@ class ProductsImportCommand extends Command
             }
 
             $this->productRepository->save($product);
-
         }
-
 
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
 

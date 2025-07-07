@@ -6,7 +6,6 @@ use App\Entity\User;
 
 abstract class AbstractController extends \Symfony\Bundle\FrameworkBundle\Controller\AbstractController
 {
-
     protected function getLoggedUserOrFail(): User
     {
         $user = $this->getUser();

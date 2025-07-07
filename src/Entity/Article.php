@@ -13,7 +13,6 @@ class Article extends BaseEntity
     #[ORM\Column]
     private ?int $id = null;
 
-
     #[ORM\Column(length: 255)]
     private string $title;
 
@@ -31,14 +30,12 @@ class Article extends BaseEntity
     #[ORM\JoinColumn(nullable: false)]
     private ArticleCategory $category;
 
-    /**
-     */
     public function __construct(
         string $title,
         string $description,
         string $content,
         User $user,
-        ArticleCategory $category
+        ArticleCategory $category,
     ) {
         $this->title = $title;
         $this->description = $description;
@@ -51,7 +48,6 @@ class Article extends BaseEntity
     {
         return $this->id;
     }
-
 
     public function getTitle(): string
     {
@@ -82,7 +78,7 @@ class Article extends BaseEntity
         string $title,
         string $description,
         string $content,
-        ArticleCategory $category
+        ArticleCategory $category,
     ): void {
         $this->title = $title;
         $this->description = $description;

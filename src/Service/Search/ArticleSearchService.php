@@ -17,21 +17,20 @@ readonly class ArticleSearchService
     public function __construct(
         #[Autowire(service: 'fos_elastica.finder.articles')]
         private PaginatedFinderInterface $finder,
-        private EmbeddingsService        $searchService,
-    )
-    {
+        private EmbeddingsService $searchService,
+    ) {
     }
 
     /**
-     * Search for articles using Elasticsearch
+     * Search for articles using Elasticsearch.
      *
      * @param string|null $query The search query
+     *
      * @return Article[] The search results
      */
     public function search(
-        ?string $query
-    ): array
-    {
+        ?string $query,
+    ): array {
         $query = $this->searchService->createEmbeddings(
             $query,
         );
@@ -41,15 +40,15 @@ readonly class ArticleSearchService
                 'field' => 'title_vector',
                 'query_vector' => $query,
                 'k' => 10,
-                "num_candidates" => 100,
-            ]
+                'num_candidates' => 100,
+            ],
         ]);
     }
 
     #[AsEventListener(event: PostTransformEvent::class)]
     public function onPostTransform(PostTransformEvent $event)
     {
-        if ($event->getObject() instanceof Article === false) {
+        if (false === $event->getObject() instanceof Article) {
             return;
         }
 
@@ -75,7 +74,7 @@ readonly class ArticleSearchService
         $aggregationData = $adapter->getAggregations();
 
         return array_map(
-            fn(array $item) => $item['key'],
+            fn (array $item) => $item['key'],
             $aggregationData['categories']['buckets']
         );
     }

@@ -28,16 +28,11 @@ class ChatMessage extends BaseEntity
     #[ORM\JoinColumn(nullable: false)]
     private Chat $chat;
 
-    /**
-     * @param string $content
-     * @param Chat $chat
-     */
     public function __construct(
         Chat $chat,
         string $role,
         string $content,
-    )
-    {
+    ) {
         $this->chat = $chat;
         $this->role = $role;
         $this->content = $content;

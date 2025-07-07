@@ -2,7 +2,6 @@
 
 namespace App\Serializer\Normalizer;
 
-use App\Entity\Article;
 use App\Entity\Product;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
@@ -12,15 +11,14 @@ class ProductNormalizer implements NormalizerInterface
 {
     public function __construct(
         #[Autowire(service: 'serializer.normalizer.object')]
-        private NormalizerInterface $normalizer
+        private NormalizerInterface $normalizer,
     ) {
     }
 
     public function normalize($object, ?string $format = null, array $context = []): array
     {
-
         $context[AbstractNormalizer::IGNORED_ATTRIBUTES] ??= [
-            'user'
+            'user',
         ];
 
         $data = $this->normalizer->normalize(

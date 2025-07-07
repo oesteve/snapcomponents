@@ -7,11 +7,10 @@ use App\Entity\ChatMessage;
 interface ToolInterface
 {
     public function getName(): string;
+
     public function getDisplayName(): string;
 
-
     /**
-     * @param ChatMessage $message
      * @return array<string, mixed>
      */
     public function getParameters(
@@ -24,7 +23,7 @@ interface ToolInterface
 
     public function execute(
         ChatMessage $message,
-        array $parameters
+        array $parameters,
     ): string;
 
     public function support(string $scope): bool;

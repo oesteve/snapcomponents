@@ -4,8 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Agent;
 use App\Repository\AgentRepository;
-
-use App\Service\Agent\AgentIdentifierProvider;
 use App\Service\Agent\AgentService;
 use Pentatrion\ViteBundle\Service\EntrypointRenderer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,15 +16,12 @@ final class AgentController extends AbstractController
 {
     #[Route('/agent-{code:agent}.js', name: 'app_agent')]
     public function index(
-        Agent              $agent,
+        Agent $agent,
         EntrypointRenderer $entrypointRenderer,
         AgentService $agentService,
-        Request            $request,
-    ): Response
-    {
-
-
-        $scripts = $entrypointRenderer->renderScripts('widgets', ['dependency' => "react"]);
+        Request $request,
+    ): Response {
+        $scripts = $entrypointRenderer->renderScripts('widgets', ['dependency' => 'react']);
         $schemeAndHttpHost = $request->getSchemeAndHttpHost();
         $content = <<<JS
 (() => {
@@ -85,9 +80,7 @@ JS;
     #[Route('/agents', name: 'app_agents_list')]
     public function list(
         AgentRepository $agentRepository,
-    ): Response
-    {
-
+    ): Response {
         return $this->render('admin/list.html.twig', [
             'agents' => $agentRepository->findAll(),
         ]);

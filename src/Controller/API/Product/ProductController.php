@@ -9,16 +9,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
-
 #[Route('/api/products', format: 'json')]
 class ProductController extends AbstractController
 {
-
     #[Route('', methods: ['GET'])]
     public function list(
         ProductRepository $productRepository,
-    ): JsonResponse
-    {
+    ): JsonResponse {
         return $this->json(
             $productRepository->findAll(),
         );
@@ -27,12 +24,10 @@ class ProductController extends AbstractController
     #[Route('/search', methods: ['GET'])]
     public function search(
         ProductSearchService $productSearchService,
-        Request $request
-    ): JsonResponse
-    {
+        Request $request,
+    ): JsonResponse {
         $query = $request->query->get('query');
 
         return $this->json($productSearchService->search($query));
     }
-
 }

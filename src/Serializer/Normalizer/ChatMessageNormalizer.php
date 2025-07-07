@@ -2,29 +2,26 @@
 
 namespace App\Serializer\Normalizer;
 
-use App\Entity\Chat;
 use App\Entity\ChatMessage;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-
 class ChatMessageNormalizer implements NormalizerInterface
 {
     public function __construct(
         #[Autowire(service: 'serializer.normalizer.object')]
-        private NormalizerInterface $normalizer
-    )
-    {
+        private NormalizerInterface $normalizer,
+    ) {
     }
 
     /**
      * @param ChatMessage $object
+     *
      * @return array<string, mixed>
      */
     public function normalize($object, ?string $format = null, array $context = []): array
     {
-
         $data = $this->normalizer->normalize(
             $object,
             $format,

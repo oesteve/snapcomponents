@@ -85,5 +85,4 @@ class Product
     {
         return $this->user;
     }
-
 }

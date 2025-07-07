@@ -2,19 +2,9 @@
 
 namespace App\Tests\Service\Chat\ChatService;
 
-use App\Entity\Agent;
 use App\Entity\ChatConfiguration;
 use App\Entity\ChatIntent;
-use App\Entity\User;
-use App\Repository\AgentRepository;
-use App\Repository\ChatConfigurationRepository;
-use App\Repository\UserRepository;
-use App\Service\Agent\AgentIdentifierProvider;
 use App\Service\Chat\ChatService;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 class DetermineIntentTest extends AbstractChatServiceTest
 {
@@ -48,7 +38,7 @@ class DetermineIntentTest extends AbstractChatServiceTest
                 'Tell to the user a joke',
                 [],
                 $configuration
-            )
+            ),
         ];
     }
 
@@ -56,7 +46,7 @@ class DetermineIntentTest extends AbstractChatServiceTest
     {
         $chatService = $this->getService(ChatService::class);
 
-        $chat = $chatService->createChat("I want to play music");
+        $chat = $chatService->createChat('I want to play music');
         $this->assertEquals('play_music', $chat->getIntent()?->getName());
     }
 
@@ -64,7 +54,7 @@ class DetermineIntentTest extends AbstractChatServiceTest
     {
         $chatService = $this->getService(ChatService::class);
 
-        $chat = $chatService->createChat("Random unrelated message");
+        $chat = $chatService->createChat('Random unrelated message');
         $this->assertNull($chat->getIntent());
     }
 
@@ -73,7 +63,7 @@ class DetermineIntentTest extends AbstractChatServiceTest
         $chatService = $this->getService(ChatService::class);
 
         // Set an initial intention
-        $chat = $chatService->createChat("I want to play music");
+        $chat = $chatService->createChat('I want to play music');
         $this->assertEquals('play_music', $chat->getIntent()?->getName());
 
         // Change my mind

@@ -10,12 +10,10 @@ readonly class EmbeddingsService
     public function __construct(
         private Client $client,
         private LoggerInterface $logger,
-    )
-    {
+    ) {
     }
 
     /**
-     * @param string $text
      * @return array<float>
      */
     public function createEmbeddings(string $text): array
@@ -24,8 +22,8 @@ readonly class EmbeddingsService
 
         $res = $this->client->embeddings()->create([
             'input' => $text,
-            "model" => "text-embedding-3-small",
-            "encoding_format" => "float"
+            'model' => 'text-embedding-3-small',
+            'encoding_format' => 'float',
         ]);
 
         $this->logger->notice(

@@ -45,7 +45,7 @@ class User implements UserInterface
 
     /**
      * @var Collection<int, Product>
-    */
+     */
     #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $products;
 
@@ -57,8 +57,7 @@ class User implements UserInterface
         array $roles,
         ?string $picture = null,
         ?string $github = null,
-    )
-    {
+    ) {
         $this->email = $email;
         $this->picture = $picture;
         $this->github = $github;
@@ -69,7 +68,6 @@ class User implements UserInterface
         $this->products = new ArrayCollection();
     }
 
-
     public function getId(): ?int
     {
         return $this->id;
@@ -78,7 +76,6 @@ class User implements UserInterface
     public function getEmail(): ?string
     {
         return $this->email;
-
     }
 
     public function getPicture(): ?string

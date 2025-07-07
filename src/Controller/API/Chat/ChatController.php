@@ -11,23 +11,20 @@ use App\Entity\ChatIntent;
 use App\Repository\ChatConfigurationRepository;
 use App\Repository\ChatIntentRepository;
 use App\Service\Chat\ChatService;
-use App\Service\Chat\Tool\ToolManager;
 use App\Service\Chat\Component\ComponentManager;
+use App\Service\Chat\Tool\ToolManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
-
 #[Route('/api/chats')]
 class ChatController extends AbstractController
 {
-
     #[Route('/tools', methods: ['GET'])]
     public function tools(
-        ToolManager $toolManager
-    ): JsonResponse
-    {
+        ToolManager $toolManager,
+    ): JsonResponse {
         $tools = $toolManager->getTools(ToolManager::CHAT_SCOPE);
 
         return $this->json(
@@ -37,9 +34,8 @@ class ChatController extends AbstractController
 
     #[Route('/components', methods: ['GET'])]
     public function components(
-        ComponentManager $widgetProvider
-    ): JsonResponse
-    {
+        ComponentManager $widgetProvider,
+    ): JsonResponse {
         return $this->json($widgetProvider->getComponents());
     }
 
@@ -48,9 +44,8 @@ class ChatController extends AbstractController
         #[MapRequestPayload]
         CreateIntent $createIntent,
         ChatIntentRepository $chatIntentRepository,
-        ChatConfigurationRepository $chatConfigurationRepository
-    ): JsonResponse
-    {
+        ChatConfigurationRepository $chatConfigurationRepository,
+    ): JsonResponse {
         $configuration = $chatConfigurationRepository->findOrFail($createIntent->configurationId);
 
         $intent = new ChatIntent(
@@ -72,9 +67,8 @@ class ChatController extends AbstractController
         ChatIntent $intent,
         #[MapRequestPayload]
         UpdateIntent $updateIntent,
-        ChatIntentRepository $chatIntentRepository
-    ): JsonResponse
-    {
+        ChatIntentRepository $chatIntentRepository,
+    ): JsonResponse {
         $intent->update(
             $updateIntent->name,
             $updateIntent->description,
@@ -91,11 +85,11 @@ class ChatController extends AbstractController
     #[Route('', methods: ['POST'])]
     public function sendMessage(
         #[MapRequestPayload]
-        CreateMessage         $createMessage,
-        ChatService           $chatService,
-    ): JsonResponse
-    {
+        CreateMessage $createMessage,
+        ChatService $chatService,
+    ): JsonResponse {
         $chat = $chatService->createChat($createMessage->content);
+
         return $this->json($chat);
     }
 
@@ -110,14 +104,10 @@ class ChatController extends AbstractController
         #[MapRequestPayload]
         AddMessage $addMessage,
         Chat $chat,
-        ChatService           $chatService,
-    ): JsonResponse
-    {
+        ChatService $chatService,
+    ): JsonResponse {
         $chatService->addMessage($chat, $addMessage->content);
 
         return $this->json($chat);
     }
-
-
-
 }

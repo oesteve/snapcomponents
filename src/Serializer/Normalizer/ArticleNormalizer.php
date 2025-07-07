@@ -12,22 +12,21 @@ class ArticleNormalizer implements NormalizerInterface
 {
     public function __construct(
         #[Autowire(service: 'serializer.normalizer.object')]
-        private NormalizerInterface $normalizer
+        private NormalizerInterface $normalizer,
     ) {
     }
 
     /**
      * @param Article $object
-     * @param string|null $format
-     * @param array $context
+     *
      * @return array<string,mixed>
+     *
      * @throws ExceptionInterface
      */
     public function normalize($object, ?string $format = null, array $context = []): array
     {
-
         $context[AbstractNormalizer::IGNORED_ATTRIBUTES] ??= [
-            'user'
+            'user',
         ];
 
         $data = $this->normalizer->normalize(

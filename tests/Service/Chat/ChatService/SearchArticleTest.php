@@ -21,7 +21,7 @@ class SearchArticleTest extends AbstractChatServiceTest
                     SearchArticle::NAME,
                 ],
                 $configuration
-            )
+            ),
         ];
     }
 
@@ -37,14 +37,14 @@ class SearchArticleTest extends AbstractChatServiceTest
             ->with(self::callback(function (string $query): bool {
                 return str_contains($query, 'bot');
             }))
-            ->willReturn(["num_items" => "0"]);
+            ->willReturn(['num_items' => '0']);
 
         static::getContainer()->set(ArticleSearchService::class, $searchService);
 
         $chatService = $this->getService(ChatService::class);
 
-        $res = $chatService->createChat("How to create a chat bot?");
+        $res = $chatService->createChat('How to create a chat bot?');
 
-        $this->assertEquals("search_article", $res->getIntent()?->getName());
+        $this->assertEquals('search_article', $res->getIntent()?->getName());
     }
 }

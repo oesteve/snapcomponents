@@ -7,7 +7,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 class ComponentManager
 {
-    const string PATH_TEMPLATE = '/assets/widgets/%s/usage.md';
+    public const string PATH_TEMPLATE = '/assets/widgets/%s/usage.md';
 
     /**
      * @var array<string, ComponentInterface>
@@ -21,9 +21,8 @@ class ComponentManager
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
         #[AutowireIterator(tag: 'app.chat.component')]
-        iterable                $components = [],
-    )
-    {
+        iterable $components = [],
+    ) {
         foreach ($components as $component) {
             $this->components[$component->getName()] = $component;
         }
@@ -31,10 +30,10 @@ class ComponentManager
 
     public function getDefinition(string $componentName): string
     {
-        $path = $this->projectDir . sprintf(self::PATH_TEMPLATE, $componentName);
+        $path = $this->projectDir.sprintf(self::PATH_TEMPLATE, $componentName);
 
         if (!file_exists($path)) {
-            throw new \Exception('Component not found: Definition file ' . $path . ' does not exist.');
+            throw new \Exception('Component not found: Definition file '.$path.' does not exist.');
         }
 
         if (($content = file_get_contents($path)) === false) {
@@ -54,15 +53,15 @@ class ComponentManager
         foreach ($this->components as $id => $component) {
             $result[$id] = [
                 'name' => $component->getDisplayName(),
-                'description' => $component->getDescription()
+                'description' => $component->getDescription(),
             ];
         }
-        return $result;
 
+        return $result;
     }
 
     /**
-     * Get a specific component by name
+     * Get a specific component by name.
      */
     public function getComponent(string $name): ?ComponentInterface
     {
@@ -70,13 +69,13 @@ class ComponentManager
     }
 
     /**
-     * Render a component with the given parameters
+     * Render a component with the given parameters.
      */
     public function renderComponent(string $name, array $parameters = []): string
     {
         $component = $this->getComponent($name);
 
-        if ($component === null) {
+        if (null === $component) {
             throw new \Exception("Component not found: $name");
         }
 

@@ -18,10 +18,11 @@ class ArticleImportService
     }
 
     /**
-     * Import articles from a CSV file
+     * Import articles from a CSV file.
      *
      * @param UploadedFile $file The uploaded CSV file
-     * @param User $user The user to associate with the imported articles
+     * @param User         $user The user to associate with the imported articles
+     *
      * @return array{success: array<int, Article>, errors: array<int, array{line: int, message: string}>}
      */
     public function importFromCsv(UploadedFile $file, User $user): array
@@ -32,32 +33,35 @@ class ArticleImportService
         ];
 
         // Check if the file is a CSV
-        if ($file->getMimeType() !== 'text/csv' && $file->getClientOriginalExtension() !== 'csv') {
+        if ('text/csv' !== $file->getMimeType() && 'csv' !== $file->getClientOriginalExtension()) {
             $result['errors'][] = [
                 'line' => 0,
                 'message' => 'The file is not a CSV file.',
             ];
+
             return $result;
         }
 
         // Open the file
         $handle = fopen($file->getPathname(), 'r');
-        if ($handle === false) {
+        if (false === $handle) {
             $result['errors'][] = [
                 'line' => 0,
                 'message' => 'Could not open the file.',
             ];
+
             return $result;
         }
 
         // Read the header row
         $header = fgetcsv($handle);
-        if ($header === false) {
+        if (false === $header) {
             $result['errors'][] = [
                 'line' => 0,
                 'message' => 'The file is empty.',
             ];
             fclose($handle);
+
             return $result;
         }
 
@@ -67,9 +71,10 @@ class ArticleImportService
         if (!empty($missingColumns)) {
             $result['errors'][] = [
                 'line' => 1,
-                'message' => 'Missing required columns: ' . implode(', ', $missingColumns),
+                'message' => 'Missing required columns: '.implode(', ', $missingColumns),
             ];
             fclose($handle);
+
             return $result;
         }
 
@@ -80,8 +85,8 @@ class ArticleImportService
         $lineNumber = 2; // Start at 2 because line 1 is the header
         while (($row = fgetcsv($handle)) !== false) {
             // Skip empty rows
-            if (count($row) === 1 && empty($row[0])) {
-                $lineNumber++;
+            if (1 === count($row) && empty($row[0])) {
+                ++$lineNumber;
                 continue;
             }
 
@@ -91,7 +96,7 @@ class ArticleImportService
                     'line' => $lineNumber,
                     'message' => 'Invalid number of columns.',
                 ];
-                $lineNumber++;
+                ++$lineNumber;
                 continue;
             }
 
@@ -107,14 +112,14 @@ class ArticleImportService
                     'line' => $lineNumber,
                     'message' => 'All fields are required.',
                 ];
-                $lineNumber++;
+                ++$lineNumber;
                 continue;
             }
 
             // Validate and fetch or create category
             try {
                 $category = $this->categoryRepository->findOneBy(['name' => $categoryName]);
-                if ($category === null) {
+                if (null === $category) {
                     // Create a new category if it doesn't exist
                     $category = new ArticleCategory($categoryName);
                     $this->categoryRepository->save($category);
@@ -122,9 +127,9 @@ class ArticleImportService
             } catch (\Exception $e) {
                 $result['errors'][] = [
                     'line' => $lineNumber,
-                    'message' => 'Error processing category: ' . $e->getMessage(),
+                    'message' => 'Error processing category: '.$e->getMessage(),
                 ];
-                $lineNumber++;
+                ++$lineNumber;
                 continue;
             }
 
@@ -143,14 +148,15 @@ class ArticleImportService
             } catch (\Exception $e) {
                 $result['errors'][] = [
                     'line' => $lineNumber,
-                    'message' => 'Error creating article: ' . $e->getMessage(),
+                    'message' => 'Error creating article: '.$e->getMessage(),
                 ];
             }
 
-            $lineNumber++;
+            ++$lineNumber;
         }
 
         fclose($handle);
+
         return $result;
     }
 }
