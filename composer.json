@@ -104,7 +104,12 @@
         "cs-check": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix --dry-run --diff",
         "cs-fix": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix",
         "phpstan": "phpstan analyse -c phpstan.neon",
-        "build": "./bin/console cache:warmup && npm run build"
+        "build": "./bin/console cache:warmup && npm run build",
+        "fix-adn-format": [
+            "@cs-fix",
+            "npm run lint:fix",
+            "npm run format:fix"
+        ]
     },
     "conflict": {
         "symfony/symfony": "*"
