@@ -96,6 +96,7 @@ export function TagInputWidget({
             <div className="flex flex-wrap gap-2 items-center mb-2">
                 {value.map((entry) => (
                     <Button
+                        key={entry}
                         variant="secondary"
                         size="sm"
                         onClick={(e) => {

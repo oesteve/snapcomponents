@@ -1,6 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import type { Root } from "react-dom/client";
+// @ts-expect-error Type 'string' is not assignable to type 'string & { __inline: true }'
 import componentStyles from "@/widgets/index.css?inline";
 
 // Create a single CSSStyleSheet instance for better performance
@@ -8,7 +9,9 @@ const styleSheet = new CSSStyleSheet();
 styleSheet.replaceSync(componentStyles);
 
 // Setup hot module replacement for the CSS
+// @ts-expect-error Property 'hot' does not exist on type 'ImportMeta'
 if (import.meta.hot) {
+    // @ts-expect-error Method 'accept' does not exist on type 'ImportMeta'
     import.meta.hot.accept("@/widgets/index.css?inline", (newModule) => {
         if (newModule) {
             // Update the stylesheet with the new CSS content
@@ -18,7 +21,7 @@ if (import.meta.hot) {
     });
 }
 
-interface WebComponentOptions<P extends object = {}> {
+interface WebComponentOptions<P extends object> {
     // The tag name to register the web component with
     tagName: string;
 
@@ -48,7 +51,7 @@ interface WebComponentOptions<P extends object = {}> {
 /**
  * Creates a web component class from a React component
  */
-export function createWebComponent<P extends object = {}>(
+export function createWebComponent<P extends object>(
     options: WebComponentOptions<P>,
 ): void {
     const {

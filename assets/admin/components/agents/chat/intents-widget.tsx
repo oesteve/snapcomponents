@@ -55,7 +55,7 @@ export function IntentsWidget(props: FormElementProps) {
                 <Table>
                     <TableBody>
                         {intents.map((intentData, idx) => (
-                            <TableRow>
+                            <TableRow key={idx}>
                                 <TableCell>
                                     <Button
                                         variant="link"

@@ -16,8 +16,15 @@ export default defineConfig([
         languageOptions: { globals: globals.browser },
     },
     tseslint.configs.recommended,
-    pluginReact.configs.flat.recommended,
-    { files: ["**/*.{jsx,tsx}"], rules: { "react/react-in-jsx-scope": "off" } },
+    {
+        ...pluginReact.configs.flat.recommended,
+        settings: {
+            react: {
+                version: "19.1.0"
+            }
+        }
+    },
+    { files: ["**/*.{jsx,tsx}"], rules: { "react/react-in-jsx-scope": "off", "react/no-unescaped-entities": "off" } },
     {
         files: ["**/*.{ts,mts,cts,tsx}"],
         rules: { "@typescript-eslint/no-explicit-any": "off" },

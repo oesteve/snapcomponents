@@ -41,6 +41,7 @@ export default function DimensionWidget({
             {description && <FormDescription>{description}</FormDescription>}
             {dimensionLevels.map((level, index) => (
                 <TextareaInputWidget
+                    key={index}
                     label={`${index + 1} ${level}`}
                     name={`${name}[${index}]`}
                     containerClassName="ms-4 mb-2"
