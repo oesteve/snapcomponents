@@ -32,9 +32,12 @@ class ReturnComponentTest extends AbstractChatServiceTest
 
         $this->assertEquals('counter', $res->getIntent()?->getName());
 
+        $lastMessage = $res->getMessages()->last();
+        $content = $lastMessage ? $lastMessage->getContent() : '';
+
         $this->assertStringContainsStringIgnoringCase(
             '<wg-counter initial-value="5"></wg-counter>',
-            $res->getMessages()->last()?->getContent() ?? ''
+            $content
         );
     }
 }

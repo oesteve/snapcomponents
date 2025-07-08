@@ -105,7 +105,7 @@
         "cs-fix": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix",
         "phpstan": "phpstan analyse -c phpstan.neon",
         "build": "./bin/console cache:warmup && npm run build",
-        "fix-adn-format": [
+        "fix-and-format": [
             "@cs-fix",
             "npm run lint:fix",
             "npm run format:fix"

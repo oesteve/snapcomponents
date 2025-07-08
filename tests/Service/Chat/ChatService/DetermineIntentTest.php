@@ -16,12 +16,14 @@ class DetermineIntentTest extends AbstractChatServiceTest
                 'The user wants to play music.',
                 'Say the user to play a song with a falute',
                 [],
+                [],
                 $configuration
             ),
             new ChatIntent(
                 'cooking',
                 'The user wants to cook something.',
                 'Ask the user to cook a delicious dish.',
+                [],
                 [],
                 $configuration
             ),
@@ -30,12 +32,14 @@ class DetermineIntentTest extends AbstractChatServiceTest
                 'The user wants to know the weather.',
                 'Provide weather information for the requested location.',
                 [],
+                [],
                 $configuration
             ),
             new ChatIntent(
                 'get_news',
                 'The user wants to be more happy',
                 'Tell to the user a joke',
+                [],
                 [],
                 $configuration
             ),

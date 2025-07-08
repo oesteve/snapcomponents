@@ -1,0 +1,10 @@
+# This file contains test-specific service configuration
+
+services:
+    # Override the AuthenticationTokenService with the dummy implementation for tests
+    App\Service\Authentication\AuthenticationTokenService:
+        class: App\Tests\Service\Authentication\DummyAuthenticationTokenService
+
+    # Override the AgentIdentifierProvider with the dummy implementation for tests
+    App\Service\Agent\AgentIdentifierService:
+        class: App\Tests\Service\Agent\DummyAgentIdentifierService

@@ -4,7 +4,7 @@ namespace App\Service\Agent;
 
 use Symfony\Component\HttpFoundation\RequestStack;
 
-readonly class AgentIdentifierProvider
+readonly class RequestAgentIdentifierService implements AgentIdentifierService
 {
     public function __construct(
         private RequestStack $requestStack,
@@ -15,7 +15,7 @@ readonly class AgentIdentifierProvider
     {
         $headerValue = $this->requestStack
             ->getCurrentRequest()
-            ->headers->get('Authorization');
+            ?->headers->get('Authorization');
 
         if (empty($headerValue)) {
             return null;

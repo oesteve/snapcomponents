@@ -16,6 +16,7 @@ class IntentInstructionsTest extends AbstractChatServiceTest
                 'Provide support about the their purchases in the store.',
                 'Your access to information about the order is limited. Please refer to the FAQ section of the store for any related support topics.',
                 [],
+                [],
                 $configuration
             ),
         ];
@@ -27,6 +28,9 @@ class IntentInstructionsTest extends AbstractChatServiceTest
 
         $chat = $chatService->createChat('I want ask for a refound or my order.');
         $this->assertEquals('support', $chat->getIntent()?->getName());
-        $this->assertStringContainsStringIgnoringCase('FAQ', $chat->getMessages()->last()->getContent());
+
+        $lastMessage = $chat->getMessages()->last();
+        $this->assertNotFalse($lastMessage, 'No messages found');
+        $this->assertStringContainsStringIgnoringCase('FAQ', $lastMessage->getContent());
     }
 }

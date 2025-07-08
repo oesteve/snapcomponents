@@ -20,7 +20,8 @@ class SearchArticleTest extends AbstractChatServiceTest
                 [
                     SearchArticle::NAME,
                 ],
-                $configuration
+                [],
+                $configuration,
             ),
         ];
     }

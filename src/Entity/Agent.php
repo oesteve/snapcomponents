@@ -56,7 +56,7 @@ class Agent extends BaseEntity
         $this->chatConfiguration = $configuration;
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }

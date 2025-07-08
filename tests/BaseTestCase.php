@@ -13,7 +13,7 @@ abstract class BaseTestCase extends KernelTestCase
     }
 
     /**
-     * @template T
+     * @template T of object
      *
      * @param class-string<T> $class
      *
@@ -23,9 +23,10 @@ abstract class BaseTestCase extends KernelTestCase
      */
     protected function getService(string $class): mixed
     {
+        /** @var T|null $service */
         $service = static::getContainer()->get($class);
 
-        if (!$service) {
+        if (null === $service) {
             throw new \LogicException(sprintf('Service "%s" not found in container', $class));
         }
 

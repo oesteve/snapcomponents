@@ -6,11 +6,14 @@ use App\Entity\Agent;
 use App\Entity\ChatConfiguration;
 use App\Entity\ChatIntent;
 use App\Entity\User;
+use App\Kernel;
 use App\Repository\AgentRepository;
 use App\Repository\ChatConfigurationRepository;
 use App\Repository\UserRepository;
-use App\Service\Agent\AgentIdentifierProvider;
+use App\Service\Agent\AgentIdentifierService;
+use App\Service\Authentication\AuthenticationTokenService;
 use App\Tests\BaseTestCase;
+use App\Tests\Service\Agent\DummyAgentIdentifierService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -21,7 +24,11 @@ abstract class AbstractChatServiceTest extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpDatabase(static::$kernel);
+
+        /** @var Kernel $kernel */
+        $kernel = static::$kernel;
+
+        $this->setUpDatabase($kernel);
 
         $user = $this->createTestUser();
         $agent = $this->createTestAgent($user);
@@ -35,12 +42,15 @@ abstract class AbstractChatServiceTest extends BaseTestCase
         }
 
         $agent->setChatConfiguration($configuration);
-        $mock = $this->getMockBuilder(AgentIdentifierProvider::class)
-            ->disableOriginalConstructor()
-            ->getMock();
 
-        $mock->method('getToken')->willReturn($agent->getCode());
-        static::getContainer()->set(AgentIdentifierProvider::class, $mock);
+        $token = $this->getService(AuthenticationTokenService::class)
+            /* @phpstan-ignore-next-line */
+            ->generateToken(['id' => $agent->getId(), 'code' => $agent->getCode()]);
+
+        /** @var DummyAgentIdentifierService $identifier */
+        $identifier = $this->getService(AgentIdentifierService::class);
+        $identifier
+            ->setToken($token);
 
         $em->flush();
     }
@@ -51,7 +61,7 @@ abstract class AbstractChatServiceTest extends BaseTestCase
             'test@example.com',
             [User::ROLE_USER],
         );
-        static::getContainer()->get(UserRepository::class)->save($user);
+        $this->getService(UserRepository::class)->save($user);
 
         return $user;
     }
@@ -62,7 +72,7 @@ abstract class AbstractChatServiceTest extends BaseTestCase
             'test',
             $user,
         );
-        static::getContainer()->get(AgentRepository::class)->save($agent);
+        static::getService(AgentRepository::class)->save($agent);
 
         return $agent;
     }
@@ -75,7 +85,8 @@ abstract class AbstractChatServiceTest extends BaseTestCase
             'Act as a useful assistant',
             $agent
         );
-        static::getContainer()->get(ChatConfigurationRepository::class)->save($configuration);
+
+        static::getService(ChatConfigurationRepository::class)->save($configuration);
 
         return $configuration;
     }

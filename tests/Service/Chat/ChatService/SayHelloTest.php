@@ -8,11 +8,12 @@ class SayHelloTest extends AbstractChatServiceTest
 {
     public function testChatResponse(): void
     {
-        /** @var ChatService $chatService */
-        $chatService = static::getContainer()->get(ChatService::class);
+        $chatService = $this->getService(ChatService::class);
 
         $res = $chatService->createChat('Say hello');
-        $content = $res->getMessages()->last()->getContent();
+        $lastMessage = $res->getMessages()->last();
+        $this->assertNotFalse($lastMessage, 'No messages found');
+        $content = $lastMessage->getContent();
 
         $this->assertStringContainsStringIgnoringCase('hello', $content);
     }
