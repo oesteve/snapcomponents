@@ -3,7 +3,7 @@
 namespace App\Service\Chat\Tool;
 
 use App\Entity\ChatMessage;
-use App\Service\Search\ArticleSearchService;
+use App\Service\Articles\ArticleSearchService;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class SearchArticle implements ToolInterface

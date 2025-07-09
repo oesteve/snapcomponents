@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Service\Search;
+namespace App\Service\Articles;
 
 use App\Entity\Article;
+use App\Service\Search\EmbeddingsService;
 use Elastica\Aggregation\Terms;
 use Elastica\Document;
 use Elastica\Query;

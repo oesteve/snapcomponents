@@ -44,3 +44,7 @@ services:
     League\CommonMark\Extension\Table\TableExtension:
         class: League\CommonMark\Extension\Table\TableExtension
         tags: ["twig.markdown.league_extension"]
+
+    # Alias for ProductSearchServiceInterface
+    App\Service\Product\ProductSearchServiceInterface:
+        alias: App\Service\Product\ElasticSearchProductSearchService

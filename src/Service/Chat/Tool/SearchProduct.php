@@ -4,7 +4,6 @@ namespace App\Service\Chat\Tool;
 
 use App\Entity\ChatMessage;
 use App\Service\Product\ProductSearchService;
-use Symfony\Component\Serializer\Exception\ExceptionInterface;
 
 readonly class SearchProduct implements ToolInterface
 {
@@ -73,9 +72,14 @@ readonly class SearchProduct implements ToolInterface
     }
 
     /**
-     * @param array{query:string|null, filters:array|null} $parameters
-     *
-     * @throws ExceptionInterface
+     * @param array{
+     *     query: string|null,
+     *     filters: array<array{
+     *         field: string,
+     *         operator: string,
+     *         value: mixed
+     *     }>|null
+     * } $parameters
      */
     public function execute(
         ChatMessage $message,
