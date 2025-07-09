@@ -2,7 +2,6 @@
 
 namespace App\Service\Product;
 
-use App\Entity\Product;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class DummyProductProvider implements ProductProvider
@@ -13,7 +12,7 @@ class DummyProductProvider implements ProductProvider
     }
 
     /**
-     * @return \Generator<Product>
+     * @return \Generator<ProductData>
      */
     public function getProducts(): \Generator
     {
