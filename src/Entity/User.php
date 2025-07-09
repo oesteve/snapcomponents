@@ -17,7 +17,8 @@ class User implements UserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    /** @phpstan-ignore-next-line */
+    private int $id;
 
     #[ORM\Column(length: 180)]
     private string $email;
@@ -68,7 +69,7 @@ class User implements UserInterface
         $this->products = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }

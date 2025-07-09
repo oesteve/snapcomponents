@@ -7,7 +7,7 @@ use App\Controller\API\Articles\DTO\ArticleData;
 use App\Entity\Article;
 use App\Repository\ArticleCategoryRepository;
 use App\Repository\ArticleRepository;
-use App\Service\Import\ArticleImportService;
+use App\Service\Articles\Import\ArticleImportService;
 use App\Service\Search\ArticleSearchService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -117,9 +117,11 @@ class ArticlesController extends AbstractController
 
         // Prepare the response
         $response = [
-            'success' => count($result['success']),
+            'total_queued' => $result['total'],
             'errors' => $result['errors'],
-            'articles' => $result['success'],
+            'message' => $result['total'] > 0
+                ? sprintf('%d articles queued for import', $result['total'])
+                : 'No articles queued for import',
         ];
 
         // Return a 207 Multi-Status response if there are errors

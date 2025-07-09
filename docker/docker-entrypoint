@@ -16,6 +16,8 @@ PHP_POST_MAX_SIZE="${PHP_POST_MAX_SIZE:-21M}"
 PHP_XDEBUG_CONFIG_PATH=/etc/php84/conf.d/50_xdebug.ini
 PHP_XDEBUG_ENABLED=${PHP_XDEBUG_ENABLED:-""}
 
+WORKER_TTL=${WORKER_TTL:-3600}
+
 echo 'Updating configurations'
 
 if [ ! -z "$PHP_XDEBUG_ENABLED" ]
@@ -75,8 +77,9 @@ fi
 
 
 if [ "$#" -eq 0 ]; then
-  echo 'Running Apache'
-  httpd -D FOREGROUND
+  echo 'Running Supervisord'
+  export WORKER_TTL
+  exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
 else
   exec "$@"
 fi

@@ -31,28 +31,32 @@ readonly class ArticleSearchService
     public function search(
         ?string $query,
     ): array {
-        $query = $this->searchService->createEmbeddings(
-            $query,
+        $queryText = $query ?? '';
+        $queryVector = $this->searchService->createEmbeddings(
+            $queryText,
         );
 
-        return $this->finder->find([
+        /** @var Article[] $results */
+        $results = $this->finder->find([
             'knn' => [
                 'field' => 'title_vector',
-                'query_vector' => $query,
+                'query_vector' => $queryVector,
                 'k' => 10,
                 'num_candidates' => 100,
             ],
         ]);
+
+        return $results;
     }
 
     #[AsEventListener(event: PostTransformEvent::class)]
-    public function onPostTransform(PostTransformEvent $event)
+    public function onPostTransform(PostTransformEvent $event): void
     {
         if (false === $event->getObject() instanceof Article) {
             return;
         }
 
-        // $this->setEmbeddings($event->getDocument());
+        $this->setEmbeddings($event->getDocument());
     }
 
     /**

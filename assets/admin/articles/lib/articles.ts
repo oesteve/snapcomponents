@@ -23,14 +23,32 @@ export type ImportResult = {
     errors: Array<{ line: number; message: string }>;
 };
 
+// This is the actual response from the server
+export type ImportApiResponse = {
+    total_queued: number;
+    errors: Array<{ line: number; message: string }>;
+    message: string;
+};
+
 export async function importArticlesFromCsv(file: File): Promise<ImportResult> {
     const formData = new FormData();
     formData.append("file", file);
 
-    return client.postFormData<ImportResult>(
+    const response = await client.postFormData<ImportApiResponse>(
         "/api/articles/import/csv",
         formData,
     );
+
+    // Transform the API response to match the expected ImportResult format
+    return {
+        // Since articles are now queued for import and not immediately available,
+        // we return an empty array as there are no articles to display yet
+        articles: [],
+        // Use total_queued as the success count
+        success: response.total_queued,
+        // Pass through the errors
+        errors: response.errors || [],
+    };
 }
 
 export type ArticleData = {

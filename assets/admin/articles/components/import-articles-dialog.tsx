@@ -45,14 +45,14 @@ export function ImportArticlesDialog({
         mutationFn: (file: File) => importArticlesFromCsv(file),
         onSuccess: (result) => {
             setImportResult(result);
-            // Call onImported if any articles were successfully imported
-            if (result.articles.length > 0) {
+            // Call onImported if any articles were successfully queued for import
+            if (result.success > 0) {
                 onImported();
             }
 
-            // Don't close the dialog immediately as we're showing results in tables
+            // Don't close the dialog immediately as we're showing results
             // Only close if there are no results to show
-            if (result.articles.length === 0 && result.errors.length === 0) {
+            if (result.success === 0 && result.errors.length === 0) {
                 setOpen(false);
             }
         },
@@ -115,45 +115,21 @@ export function ImportArticlesDialog({
                 <div className="grid gap-4 overflow-y-auto max-h-full">
                     {importResult ? (
                         <div className="space-y-12">
-                            {importResult.articles.length > 0 && (
+                            {importResult.success > 0 && (
                                 <>
                                     <Alert>
                                         <CheckCircle2 />
                                         <AlertTitle>
-                                            Successfully imported{" "}
-                                            {importResult.success} articles
+                                            Successfully queued{" "}
+                                            {importResult.success} articles for
+                                            import
                                         </AlertTitle>
                                         <AlertDescription>
-                                            The articles have been added to your
-                                            database.
+                                            The articles have been queued for
+                                            import and will be processed in the
+                                            background.
                                         </AlertDescription>
                                     </Alert>
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead>Title</TableHead>
-                                                <TableHead>
-                                                    Description
-                                                </TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {importResult.articles.map(
-                                                (article) => (
-                                                    <TableRow key={article.id}>
-                                                        <TableCell className="font-medium">
-                                                            {article.title}
-                                                        </TableCell>
-                                                        <TableCell className="truncate max-w-[200px]">
-                                                            {
-                                                                article.description
-                                                            }
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ),
-                                            )}
-                                        </TableBody>
-                                    </Table>
                                 </>
                             )}
 

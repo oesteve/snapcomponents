@@ -44,7 +44,8 @@ RUN apk --no-cache --update \
         nodejs \
         ghostscript \
         poppler-utils \
-        npm
+        npm \
+        supervisor
 # Add php alias
 RUN ln -s /usr/bin/php84 /usr/bin/php
 
@@ -57,6 +58,10 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
 EXPOSE 80 443
 
 ADD docker/docker-entrypoint /
+
+# Create supervisord config directory and add config
+RUN mkdir -p /etc/supervisor/conf.d
+ADD docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 ENTRYPOINT ["/docker-entrypoint"]
 
