@@ -1,4 +1,4 @@
-# ochat
+# SnapComponents
 
 ## Proof of Concept
 
