@@ -58,7 +58,8 @@ class SearchArticle implements ToolInterface
         ChatMessage $message,
         array $parameters,
     ): string {
-        $articles = $this->searchService->search($parameters['query']);
+        $agent = $message->getChat()->getAgent();
+        $articles = $this->searchService->search($agent, $parameters['query']);
 
         return $this->serializer->serialize($articles, 'json');
     }

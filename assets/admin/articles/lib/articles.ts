@@ -1,4 +1,5 @@
 import client from "@/lib/client.ts";
+import type { Agent } from "@/lib/agents/agents.ts";
 
 export type ArticleCategory = {
     id: number;
@@ -13,8 +14,8 @@ export type Article = {
     category: ArticleCategory;
 };
 
-export function getArticles() {
-    return client.get<Article[]>("/api/articles");
+export function getArticles({ agentId }: { agentId: Agent["id"] }) {
+    return client.get<Article[]>(`/api/agents/${agentId}/articles`);
 }
 
 export type ImportResult = {
@@ -30,12 +31,18 @@ export type ImportApiResponse = {
     message: string;
 };
 
-export async function importArticlesFromCsv(file: File): Promise<ImportResult> {
+export async function importArticlesFromCsv({
+    agentId,
+    file,
+}: {
+    agentId: Agent["id"];
+    file: File;
+}): Promise<ImportResult> {
     const formData = new FormData();
     formData.append("file", file);
 
     const response = await client.postFormData<ImportApiResponse>(
-        "/api/articles/import/csv",
+        `/api/agents/${agentId}/articles/import/csv`,
         formData,
     );
 
@@ -56,14 +63,24 @@ export type ArticleData = {
     description: string;
     content: string;
     categoryId?: number;
+    agentId: Agent["id"];
 };
 
 export function createArticle(article: ArticleData) {
-    return client.post<Article>("/api/articles", article);
+    return client.post<Article>(
+        `/api/agents/${article.agentId}/articles`,
+        article,
+    );
 }
 
-export function removeArticle(id: Article["id"]) {
-    return client.delete<Article>(`/api/articles/${id}`);
+export function removeArticle({
+    id,
+    agentId,
+}: {
+    id: Article["id"];
+    agentId: Agent["id"];
+}) {
+    return client.delete<Article>(`/api/agents/${agentId}/articles/${id}`);
 }
 
 export function updateArticle({
@@ -72,14 +89,16 @@ export function updateArticle({
     description,
     content,
     categoryId,
+    agentId,
 }: {
     id: Article["id"];
     title: Article["title"];
     description: Article["description"];
     content: Article["content"];
     categoryId?: number;
+    agentId: Agent["id"];
 }) {
-    return client.put<Article>(`/api/articles/${id}`, {
+    return client.put<Article>(`/api/agents/${agentId}/articles/${id}`, {
         title,
         description,
         content,
@@ -87,6 +106,8 @@ export function updateArticle({
     });
 }
 
-export function getArticleCategories() {
-    return client.get<ArticleCategory[]>("/api/articles/categories");
+export function getArticleCategories({ agentId }: { agentId: Agent["id"] }) {
+    return client.get<ArticleCategory[]>(
+        `/api/agents/${agentId}/articles/categories`,
+    );
 }

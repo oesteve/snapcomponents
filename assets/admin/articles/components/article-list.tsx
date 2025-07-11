@@ -6,11 +6,16 @@ import { CreateArticleDialog } from "@/admin/articles/components/create-article-
 import { RemoveArticleDialog } from "@/admin/articles/components/remove-article-dialog.tsx";
 import { EditArticleDialog } from "@/admin/articles/components/edit-article-dialog.tsx";
 import { ImportArticlesDialog } from "@/admin/articles/components/import-articles-dialog.tsx";
+import type { Agent } from "@/lib/agents/agents.ts";
 
-export function ArticleList() {
+interface ArticleListProps {
+    agent: Agent;
+}
+
+export function ArticleList({ agent }: ArticleListProps) {
     const articlesQuery = useQuery({
         queryKey: ["articles"],
-        queryFn: getArticles,
+        queryFn: () => getArticles({ agentId: agent.id }),
     });
 
     const columns: ColumnDef<Article>[] = [
@@ -23,6 +28,7 @@ export function ArticleList() {
                     <EditArticleDialog
                         article={article}
                         onEdited={refresh}
+                        agentId={agent.id}
                         trigger={
                             <span className="font-medium hover:underline cursor-pointer">
                                 {article.title}
@@ -58,10 +64,12 @@ export function ArticleList() {
                         <EditArticleDialog
                             article={article}
                             onEdited={refresh}
+                            agentId={agent.id}
                         />
                         <RemoveArticleDialog
                             article={article}
                             onRemoved={refresh}
+                            agentId={agent.id}
                         />
                     </div>
                 );
@@ -76,8 +84,8 @@ export function ArticleList() {
     return (
         <div className="w-full max-w-6xl flex flex-col gap-4">
             <div className="flex flex-row justify-end space-x-2">
-                <ImportArticlesDialog onImported={refresh} />
-                <CreateArticleDialog onCreated={refresh} />
+                <ImportArticlesDialog onImported={refresh} agentId={agent.id} />
+                <CreateArticleDialog onCreated={refresh} agentId={agent.id} />
             </div>
             <DataTable columns={columns} data={articlesQuery.data ?? []} />
         </div>

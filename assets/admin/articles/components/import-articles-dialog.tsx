@@ -31,10 +31,12 @@ import { FormDescription } from "@/components/form/form-description.tsx";
 
 interface ImportArticlesDialogProps {
     onImported: () => void;
+    agentId: number;
 }
 
 export function ImportArticlesDialog({
     onImported,
+    agentId,
 }: ImportArticlesDialogProps) {
     const [open, setOpen] = useState(false);
     const [file, setFile] = useState<File | null>(null);
@@ -42,7 +44,7 @@ export function ImportArticlesDialog({
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const importArticlesMutation = useMutation({
-        mutationFn: (file: File) => importArticlesFromCsv(file),
+        mutationFn: (file: File) => importArticlesFromCsv({ file, agentId }),
         onSuccess: (result) => {
             setImportResult(result);
             // Call onImported if any articles were successfully queued for import

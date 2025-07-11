@@ -7,6 +7,9 @@ import { tanstackRouter } from "@tanstack/router-plugin/vite";
 
 // https://vite.dev/config/
 export default defineConfig({
+    optimizeDeps: {
+      exclude: ["zod"],
+    },
     server: {
         watch: {
             ignored: [

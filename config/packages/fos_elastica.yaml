@@ -4,6 +4,8 @@ fos_elastica:
         default: { url: "%env(ELASTICSEARCH_URL)%" }
     indexes:
         articles:
+            serializer:
+                groups: [ elastica ]
             persistence:
                 # the driver can be orm, mongodb or phpcr
                 driver: orm
@@ -15,6 +17,11 @@ fos_elastica:
                 title: ~
                 description: ~
                 content: ~
+                agent:
+                    type: object
+                    properties:
+                        id:
+                            type: keyword
                 category:
                     type: object
                     properties:

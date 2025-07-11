@@ -3,9 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\ArticleCategoryRepository;
+use App\Serializer\SerializerGroups;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ArticleCategoryRepository::class)]
 class ArticleCategory extends BaseEntity
@@ -13,9 +15,17 @@ class ArticleCategory extends BaseEntity
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups([
+        SerializerGroups::ELASTICA,
+        SerializerGroups::API_LIST,
+    ])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups([
+        SerializerGroups::ELASTICA,
+        SerializerGroups::API_LIST,
+    ])]
     private string $name;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Article::class)]

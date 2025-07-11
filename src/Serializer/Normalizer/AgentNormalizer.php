@@ -30,6 +30,8 @@ class AgentNormalizer implements NormalizerInterface
                 AbstractNormalizer::IGNORED_ATTRIBUTES => [
                     'user',
                     'chatConfiguration',
+                    'articles',
+                    'chats',
                 ],
             ]
         );

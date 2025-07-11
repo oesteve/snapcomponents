@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\API\Articles\DTO;
+namespace App\Controller\API\Agents\Articles\DTO;
 
 class ArticleData
 {

@@ -9,7 +9,7 @@ readonly class ImportArticle
      */
     public function __construct(
         public array $data,
-        public int $userId,
+        public int $agentId,
         public int $lineNumber,
     ) {
     }

@@ -2,12 +2,12 @@
 
 namespace App\Service\Articles\Import;
 
+use App\Entity\Agent;
 use App\Entity\Article;
 use App\Entity\ArticleCategory;
-use App\Entity\User;
+use App\Repository\AgentRepository;
 use App\Repository\ArticleCategoryRepository;
 use App\Repository\ArticleRepository;
-use App\Repository\UserRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -19,7 +19,7 @@ class ArticleImportService
         private readonly ArticleRepository $articleRepository,
         private readonly ArticleCategoryRepository $categoryRepository,
         private readonly MessageBusInterface $messageBus,
-        private readonly UserRepository $userRepository,
+        private readonly AgentRepository $agentRepository,
         private readonly LoggerInterface $logger,
     ) {
     }
@@ -27,12 +27,12 @@ class ArticleImportService
     /**
      * Import articles from a CSV file.
      *
-     * @param UploadedFile $file The uploaded CSV file
-     * @param User         $user The user to associate with the imported articles
+     * @param UploadedFile $file  The uploaded CSV file
+     * @param Agent        $agent The agent to associate with the imported articles
      *
      * @return array{total: int, errors: array<int, array{line: int, message: string}>}
      */
-    public function importFromCsv(UploadedFile $file, User $user): array
+    public function importFromCsv(UploadedFile $file, Agent $agent): array
     {
         $result = [
             'total' => 0,
@@ -51,7 +51,7 @@ class ArticleImportService
         // Second part: Dispatch messages for each valid row
         return $this->dispatchMessagesForValidData(
             $validationResult['data'],
-            $user
+            $agent
         );
     }
 
@@ -174,11 +174,11 @@ class ArticleImportService
      * Dispatch messages for validated data.
      *
      * @param array<int, array{line: int, data: array<string, string>}> $validatedData The validated data from CSV
-     * @param User                                                      $user          The user to associate with the imported articles
+     * @param Agent                                                     $agent         The agent to associate with the imported articles
      *
      * @return array{total: int, errors: array<int, array{line: int, message: string}>}
      */
-    private function dispatchMessagesForValidData(array $validatedData, User $user): array
+    private function dispatchMessagesForValidData(array $validatedData, Agent $agent): array
     {
         $result = [
             'total' => 0,
@@ -193,7 +193,7 @@ class ArticleImportService
                 // Dispatch a message for each valid row
                 $message = new ImportArticle(
                     $data,
-                    $user->getId(),
+                    $agent->getId(),
                     $lineNumber
                 );
 
@@ -221,18 +221,18 @@ class ArticleImportService
         $this->logger->info('Importing article', [
             'lineNumber' => $message->lineNumber,
             'data' => $message->data,
-            'userId' => $message->userId,
+            'agentId' => $message->agentId,
         ]);
 
         $data = $message->data;
-        $userId = $message->userId;
+        $agentId = $message->agentId;
         $lineNumber = $message->lineNumber;
 
-        // Get the user
-        $user = $this->userRepository->find($userId);
-        if (null === $user) {
-            $this->logger->error('User not found for article import', [
-                'userId' => $userId,
+        // Get the agent
+        $agent = $this->agentRepository->find($agentId);
+        if (null === $agent) {
+            $this->logger->error('Agent not found for article import', [
+                'agentId' => $agentId,
                 'lineNumber' => $lineNumber,
             ]);
 
@@ -257,7 +257,7 @@ class ArticleImportService
             $title,
             $description,
             $content,
-            $user,
+            $agent,
             $category
         );
 

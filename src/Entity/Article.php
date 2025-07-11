@@ -3,7 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\ArticleRepository;
+use App\Serializer\SerializerGroups;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article extends BaseEntity
@@ -11,36 +13,59 @@ class Article extends BaseEntity
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups([
+        SerializerGroups::ELASTICA,
+        SerializerGroups::API_LIST,
+    ])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups([
+        SerializerGroups::ELASTICA,
+        SerializerGroups::API_LIST,
+    ])]
     private string $title;
 
     #[ORM\Column(length: 255)]
+    #[Groups([
+        SerializerGroups::ELASTICA,
+        SerializerGroups::API_LIST,
+    ])]
     private string $description;
 
     #[ORM\Column(length: 255)]
+    #[Groups([
+        SerializerGroups::ELASTICA,
+        SerializerGroups::API_LIST,
+    ])]
     private string $content;
 
     #[ORM\ManyToOne(inversedBy: 'articles')]
     #[ORM\JoinColumn(nullable: false)]
-    private User $user;
+    #[Groups([
+        SerializerGroups::ELASTICA,
+    ])]
+    private Agent $agent;
 
     #[ORM\ManyToOne(inversedBy: 'articles')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups([
+        SerializerGroups::ELASTICA,
+        SerializerGroups::API_LIST,
+    ])]
     private ArticleCategory $category;
 
     public function __construct(
         string $title,
         string $description,
         string $content,
-        User $user,
+        Agent $agent,
         ArticleCategory $category,
     ) {
         $this->title = $title;
         $this->description = $description;
         $this->content = $content;
-        $this->user = $user;
+        $this->agent = $agent;
         $this->category = $category;
     }
 
@@ -64,9 +89,9 @@ class Article extends BaseEntity
         return $this->content;
     }
 
-    public function getUser(): User
+    public function getAgent(): Agent
     {
-        return $this->user;
+        return $this->agent;
     }
 
     public function getCategory(): ArticleCategory

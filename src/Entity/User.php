@@ -39,12 +39,6 @@ class User implements UserInterface
     private Collection $agents;
 
     /**
-     * @var Collection<int, Article>
-     */
-    #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'user', orphanRemoval: true)]
-    private Collection $articles;
-
-    /**
      * @var Collection<int, Product>
      */
     #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'user', orphanRemoval: true)]
@@ -65,7 +59,6 @@ class User implements UserInterface
         $this->roles = $roles;
 
         $this->agents = new ArrayCollection();
-        $this->articles = new ArrayCollection();
         $this->products = new ArrayCollection();
     }
 
@@ -138,36 +131,6 @@ class User implements UserInterface
     public function getAgents(): Collection
     {
         return $this->agents;
-    }
-
-    /**
-     * @return Collection<int, Article>
-     */
-    public function getArticles(): Collection
-    {
-        return $this->articles;
-    }
-
-    public function addArticle(Article $article): static
-    {
-        if (!$this->articles->contains($article)) {
-            $this->articles->add($article);
-            $article->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeArticle(Article $article): static
-    {
-        if ($this->articles->removeElement($article)) {
-            // set the owning side to null (unless already changed)
-            if ($article->getUser() === $this) {
-                $article->setUser(null);
-            }
-        }
-
-        return $this;
     }
 
     /**

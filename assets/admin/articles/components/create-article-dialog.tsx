@@ -25,14 +25,18 @@ import SelectInputWidget from "@/components/form/widgets/select-input-widget.tsx
 
 interface CreateArticleDialogProps {
     onCreated: () => void;
+    agentId: number;
 }
 
-export function CreateArticleDialog({ onCreated }: CreateArticleDialogProps) {
+export function CreateArticleDialog({
+    onCreated,
+    agentId,
+}: CreateArticleDialogProps) {
     const [open, setOpen] = useState(false);
 
     const { data: categories = [] } = useQuery({
-        queryKey: ["article-categories"],
-        queryFn: getArticleCategories,
+        queryKey: ["article-categories", agentId],
+        queryFn: () => getArticleCategories({ agentId }),
         enabled: open,
     });
 
@@ -73,6 +77,9 @@ export function CreateArticleDialog({ onCreated }: CreateArticleDialogProps) {
                 <Form
                     className="grid gap-4"
                     onSubmit={createArticleMutation.mutateAsync}
+                    defaultData={{
+                        agentId: agentId,
+                    }}
                 >
                     <FormError />
                     <DevFormData />

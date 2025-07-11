@@ -28,18 +28,20 @@ interface EditArticleDialogProps {
     article: Article;
     onEdited: () => void;
     trigger?: React.ReactNode;
+    agentId: number;
 }
 
 export function EditArticleDialog({
     article,
     onEdited,
     trigger,
+    agentId,
 }: EditArticleDialogProps) {
     const [open, setOpen] = useState(false);
 
     const { data: categories = [] } = useQuery({
-        queryKey: ["article-categories"],
-        queryFn: getArticleCategories,
+        queryKey: ["article-categories", agentId],
+        queryFn: () => getArticleCategories({ agentId }),
         enabled: open,
     });
 
@@ -69,6 +71,7 @@ export function EditArticleDialog({
             description: article.description,
             content: article.content,
             categoryId: article.category?.id,
+            agentId: agentId,
         }),
         [article],
     );

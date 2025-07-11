@@ -20,16 +20,18 @@ import { toast } from "sonner";
 interface RemoveArticleDialogProps {
     article: Article;
     onRemoved: () => void;
+    agentId: number;
 }
 
 export function RemoveArticleDialog({
     article,
     onRemoved,
+    agentId,
 }: RemoveArticleDialogProps) {
     const [open, setOpen] = useState(false);
 
     const removeArticleMutation = useMutation({
-        mutationFn: () => removeArticle(article.id),
+        mutationFn: () => removeArticle({ id: article.id, agentId }),
         onSuccess: () => {
             setOpen(false);
             onRemoved();

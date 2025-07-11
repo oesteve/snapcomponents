@@ -52,6 +52,11 @@ const agentSettingsData: {
         url: "/admin/agents/$agentId/chat",
         icon: BotMessageSquare,
     },
+    {
+        title: "Articles",
+        url: "/admin/agents/$agentId/articles",
+        icon: FileText,
+    },
 ];
 
 const navMainData: {
@@ -68,11 +73,6 @@ const navMainData: {
         title: "Agents",
         url: "/admin/agents",
         icon: SquareTerminal,
-    },
-    {
-        title: "Articles",
-        url: "/admin/articles",
-        icon: FileText,
     },
     {
         title: "Products",

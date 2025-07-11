@@ -2,6 +2,7 @@
 
 namespace App\Service\Articles;
 
+use App\Entity\Agent;
 use App\Entity\Article;
 use App\Service\Search\EmbeddingsService;
 use Elastica\Aggregation\Terms;
@@ -25,27 +26,36 @@ readonly class ArticleSearchService
     /**
      * Search for articles using Elasticsearch.
      *
-     * @param string|null $query The search query
+     * @param Agent  $agent The agent to filter articles by
+     * @param string $query The search query
      *
      * @return Article[] The search results
      */
     public function search(
-        ?string $query,
+        Agent $agent,
+        string $query,
     ): array {
-        $queryText = $query ?? '';
         $queryVector = $this->searchService->createEmbeddings(
-            $queryText,
+            $query,
         );
 
-        /** @var Article[] $results */
-        $results = $this->finder->find([
+        $searchParams = [
             'knn' => [
                 'field' => 'title_vector',
                 'query_vector' => $queryVector,
                 'k' => 10,
                 'num_candidates' => 100,
             ],
-        ]);
+        ];
+
+        $searchParams['post_filter'] = [
+            'term' => [
+                'agent.id' => $agent->getId(),
+            ],
+        ];
+
+        /** @var Article[] $results */
+        $results = $this->finder->find($searchParams);
 
         return $results;
     }

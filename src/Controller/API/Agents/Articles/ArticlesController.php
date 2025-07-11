@@ -1,49 +1,80 @@
 <?php
 
-namespace App\Controller\API\Articles;
+namespace App\Controller\API\Agents\Articles;
 
 use App\Controller\AbstractController;
-use App\Controller\API\Articles\DTO\ArticleData;
+use App\Controller\API\Agents\Articles\DTO\ArticleData;
+use App\Entity\Agent;
 use App\Entity\Article;
+use App\Repository\AgentRepository;
 use App\Repository\ArticleCategoryRepository;
 use App\Repository\ArticleRepository;
+use App\Serializer\SerializerGroups;
 use App\Service\Articles\ArticleSearchService;
 use App\Service\Articles\Import\ArticleImportService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
-#[Route('/api/articles', format: 'json')]
+#[Route('/api/agents/{agentId:agent.id}/articles', format: 'json')]
 class ArticlesController extends AbstractController
 {
     #[Route('', methods: ['GET'])]
     public function list(
         ArticleRepository $articleRepository,
+        Agent $agent,
     ): JsonResponse {
-        return $this->json($articleRepository->findAll());
+        $articles = $articleRepository->findBy([
+            'agent' => $agent,
+        ]);
+
+        return $this->json($articles, Response::HTTP_OK, [], [
+            AbstractNormalizer::GROUPS => [SerializerGroups::API_LIST],
+        ]);
     }
 
     #[Route('/search', methods: ['GET'])]
     public function get(
         ArticleSearchService $articleService,
-        Request $request,
+        Agent $agent,
+        #[MapQueryParameter]
+        string $query,
     ): JsonResponse {
-        $query = $request->query->get('query');
-        $results = $articleService->search($query);
+        $results = $articleService->search(
+            $agent,
+            $query,
+        );
 
-        return $this->json([
+        $data = [
             'results' => $results,
             'categories' => $articleService->getCategories(),
-        ]);
+        ];
+
+        return $this->json($data,
+            Response::HTTP_OK,
+            [],
+            [
+                AbstractNormalizer::GROUPS => [SerializerGroups::API_LIST],
+            ]
+        );
     }
 
     #[Route('/categories', methods: ['GET'])]
     public function categories(
         ArticleCategoryRepository $categoryRepository,
     ): JsonResponse {
-        return $this->json($categoryRepository->findAll());
+        return $this->json(
+            $categoryRepository->findAll(),
+            Response::HTTP_OK,
+            [],
+            [
+                AbstractNormalizer::GROUPS => [SerializerGroups::API_LIST],
+            ]
+        );
     }
 
     #[Route('', methods: ['POST'])]
@@ -52,6 +83,7 @@ class ArticlesController extends AbstractController
         ArticleData $articleData,
         ArticleRepository $articleRepository,
         ArticleCategoryRepository $categoryRepository,
+        Agent $agent,
     ): JsonResponse {
         $category = $categoryRepository->findOrFail($articleData->categoryId);
 
@@ -59,13 +91,13 @@ class ArticlesController extends AbstractController
             $articleData->title,
             $articleData->description,
             $articleData->content,
-            $this->getLoggedUserOrFail(),
+            $agent,
             $category
         );
 
         $articleRepository->save($article);
 
-        return $this->json($article);
+        return $this->json(null);
     }
 
     #[Route('/{id}', methods: ['PUT'])]
@@ -87,7 +119,7 @@ class ArticlesController extends AbstractController
 
         $articleRepository->save($article);
 
-        return $this->json($article);
+        return $this->json(null);
     }
 
     #[Route('/{id}', methods: ['DELETE'])]
@@ -102,6 +134,7 @@ class ArticlesController extends AbstractController
     public function importCsv(
         Request $request,
         ArticleImportService $importService,
+        AgentRepository $agentRepository,
     ): JsonResponse {
         // Check if a file was uploaded
         $file = $request->files->get('file');
@@ -112,8 +145,15 @@ class ArticlesController extends AbstractController
         // Get the current user
         $user = $this->getLoggedUserOrFail();
 
+        // Get the first agent for the user
+        $agent = $agentRepository->findOneBy(['user' => $user]);
+
+        if (!$agent) {
+            return $this->json(['error' => 'No agent found for this user'], Response::HTTP_BAD_REQUEST);
+        }
+
         // Import the articles
-        $result = $importService->importFromCsv($file, $user);
+        $result = $importService->importFromCsv($file, $agent);
 
         // Prepare the response
         $response = [
