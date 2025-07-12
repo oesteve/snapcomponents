@@ -54,4 +54,18 @@ class ProductController extends AbstractController
             ]
         );
     }
+
+    #[Route('/providers', methods: ['GET'])]
+    #[IsGranted('AGENT_VIEW', 'agent')]
+    public function getAvailableProvider(
+        Agent $agent,
+        ProductProviderFactory $productProviderFactory,
+    ): JsonResponse {
+        $providers = $productProviderFactory->getAvailableProviders();
+
+        return $this->json(
+            $providers,
+            Response::HTTP_OK,
+        );
+    }
 }

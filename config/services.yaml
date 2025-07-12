@@ -40,6 +40,8 @@ services:
             tags: ["app.chat.tool"]
         App\Service\Chat\Component\ComponentInterface:
             tags: ["app.chat.component"]
+        App\Service\Product\ProductProviderBuilder:
+            tags: ["app.product_provider.builder"]
 
     League\CommonMark\Extension\Table\TableExtension:
         class: League\CommonMark\Extension\Table\TableExtension

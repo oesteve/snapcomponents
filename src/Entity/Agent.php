@@ -6,6 +6,7 @@ use App\Repository\AgentRepository;
 use App\Serializer\SerializerGroups;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\String\ByteString;
@@ -42,6 +43,15 @@ class Agent extends BaseEntity
     private ?ChatConfiguration $chatConfiguration = null;
 
     /**
+     * @var Collection<int, Product>
+     */
+    #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'agent', orphanRemoval: true)]
+    private Collection $products;
+
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private array $attributes = [];
+
+    /**
      * @var Collection<int, Article>
      */
     #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'agent', orphanRemoval: true)]
@@ -57,6 +67,7 @@ class Agent extends BaseEntity
         $this->chats = new ArrayCollection();
         $this->articles = new ArrayCollection();
         $this->products = new ArrayCollection();
+        $this->attributes = [];
     }
 
     public function update(string $name): void
@@ -108,62 +119,27 @@ class Agent extends BaseEntity
     }
 
     /**
-     * @return Collection<int, Article>
+     * @return array<string, mixed>
      */
-    public function getArticles(): Collection
+    public function getAttributes(): array
     {
-        return $this->articles;
+        return $this->attributes;
+    }
+
+    public function setAttribute(string $name, mixed $value): void
+    {
+        $this->attributes[$name] = $value;
     }
 
     /**
-     * @var Collection<int, Product>
+     * @template T
+     *
+     * @param T $default
+     *
+     * @return T
      */
-    #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'agent', orphanRemoval: true)]
-    private Collection $products;
-
-    /**
-     * @return Collection<int, Product>
-     */
-    public function getProducts(): Collection
+    public function getAttribute(string $name, mixed $default)
     {
-        return $this->products;
-    }
-
-    public function addProduct(Product $product): static
-    {
-        if (!$this->products->contains($product)) {
-            $this->products->add($product);
-        }
-
-        return $this;
-    }
-
-    public function removeProduct(Product $product): static
-    {
-        $this->products->removeElement($product);
-
-        return $this;
-    }
-
-    public function addArticle(Article $article): static
-    {
-        if (!$this->articles->contains($article)) {
-            $this->articles->add($article);
-            $article->setAgent($this);
-        }
-
-        return $this;
-    }
-
-    public function removeArticle(Article $article): static
-    {
-        if ($this->articles->removeElement($article)) {
-            // set the owning side to null (unless already changed)
-            if ($article->getAgent() === $this) {
-                $article->setAgent(null);
-            }
-        }
-
-        return $this;
+        return $this->attributes[$name] ?? $default;
     }
 }

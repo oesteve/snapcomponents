@@ -5,13 +5,13 @@ namespace App\Service\Product\ElasticSearch;
 use App\Entity\Agent;
 use App\Repository\ProductRepository;
 use App\Service\Product\ProductProvider;
-use App\Service\Product\ProductProviderFactory;
+use App\Service\Product\ProductProviderBuilder;
 use App\Service\Search\EmbeddingsService;
 use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class ElasticProductProviderFactory implements ProductProviderFactory
+readonly class ElasticProductProviderBuilder implements ProductProviderBuilder
 {
     public function __construct(
         #[Autowire(service: 'fos_elastica.finder.products')]
@@ -22,7 +22,7 @@ class ElasticProductProviderFactory implements ProductProviderFactory
     ) {
     }
 
-    public function forAgent(Agent $agent): ProductProvider
+    public function build(Agent $agent): ProductProvider
     {
         return new ElasticSearchProductProvider(
             $this->finder,
@@ -31,5 +31,10 @@ class ElasticProductProviderFactory implements ProductProviderFactory
             $this->client,
             $agent,
         );
+    }
+
+    public static function getProviderName(): string
+    {
+        return 'Dummy';
     }
 }
