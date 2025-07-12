@@ -3,11 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\ProductRepository;
+use App\Service\Product\ProductInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
-class Product
+class Product implements ProductInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -29,17 +30,17 @@ class Product
     #[ORM\Column(type: Types::FLOAT)]
     private float $price;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'products')]
-    private User $user;
+    #[ORM\ManyToOne(targetEntity: Agent::class, inversedBy: 'products')]
+    private Agent $agent;
 
-    public function __construct(string $name, string $title, string $description, string $image, float $price, User $user)
+    public function __construct(string $name, string $title, string $description, string $image, float $price, Agent $agent)
     {
         $this->name = $name;
         $this->title = $title;
         $this->description = $description;
         $this->image = $image;
         $this->price = $price;
-        $this->user = $user;
+        $this->agent = $agent;
     }
 
     public function update(string $name, string $title, string $description, string $image, float $price): void
@@ -81,8 +82,8 @@ class Product
         return $this->price;
     }
 
-    public function getUser(): User
+    public function getAgent(): Agent
     {
-        return $this->user;
+        return $this->agent;
     }
 }

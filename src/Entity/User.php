@@ -39,12 +39,6 @@ class User implements UserInterface
     private Collection $agents;
 
     /**
-     * @var Collection<int, Product>
-     */
-    #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'user', orphanRemoval: true)]
-    private Collection $products;
-
-    /**
      * @param string[] $roles
      */
     public function __construct(
@@ -59,7 +53,6 @@ class User implements UserInterface
         $this->roles = $roles;
 
         $this->agents = new ArrayCollection();
-        $this->products = new ArrayCollection();
     }
 
     public function getId(): int
@@ -131,13 +124,5 @@ class User implements UserInterface
     public function getAgents(): Collection
     {
         return $this->agents;
-    }
-
-    /**
-     * @return Collection<int, Product>
-     */
-    public function getProducts(): Collection
-    {
-        return $this->products;
     }
 }

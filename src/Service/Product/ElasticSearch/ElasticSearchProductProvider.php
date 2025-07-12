@@ -1,21 +1,28 @@
 <?php
 
-namespace App\Service\Product;
+namespace App\Service\Product\ElasticSearch;
 
+use App\Entity\Agent;
 use App\Entity\Product;
+use App\Repository\ProductRepository;
+use App\Service\Product\ProductProvider;
 use App\Service\Search\EmbeddingsService;
 use Elastica\Document;
 use FOS\ElasticaBundle\Event\PostTransformEvent;
 use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-readonly class ElasticSearchProductSearchService implements ProductSearchService
+readonly class ElasticSearchProductProvider implements ProductProvider
 {
     public function __construct(
         #[Autowire(service: 'fos_elastica.finder.products')]
         private PaginatedFinderInterface $finder,
         private EmbeddingsService $searchService,
+        private ProductRepository $productRepository,
+        private HttpClientInterface $client,
+        private Agent $agent,
     ) {
     }
 
@@ -97,5 +104,66 @@ readonly class ElasticSearchProductSearchService implements ProductSearchService
 
         $document->set('title_vector', $title);
         $document->set('description_vector', $content);
+    }
+
+    /**
+     * @return \Generator<ProductData>
+     */
+    public function getProducts(): \Generator
+    {
+        $responseData = $this->client->request('GET', 'https://dummyjson.com/products?limit=10')
+            ->toArray();
+        foreach (
+            $responseData['products'] as $itemData
+        ) {
+            yield new ProductData(
+                'product_'.$itemData['id'],
+                $itemData['title'],
+                $itemData['description'],
+                $itemData['price'],
+                $itemData['images'][0],
+            );
+        }
+    }
+
+    public function importProducts(Agent $agent): void
+    {
+        foreach ($this->getProducts() as $productData) {
+            $product = $this->productRepository->findOneBy([
+                'agent' => $agent,
+                'name' => $productData->name,
+            ]);
+
+            if (!$product) {
+                $product = new Product(
+                    $productData->name,
+                    $productData->title,
+                    $productData->description,
+                    $productData->image,
+                    $productData->price,
+                    $agent
+                );
+            } else {
+                $product->update(
+                    $productData->name,
+                    $productData->title,
+                    $productData->description,
+                    $productData->image,
+                    $productData->price,
+                );
+            }
+
+            $this->productRepository->save($product);
+        }
+    }
+
+    /**
+     * @return array<Product>
+     */
+    public function list(): array
+    {
+        return $this->productRepository->findBy([
+            'agent' => $this->agent,
+        ]);
     }
 }

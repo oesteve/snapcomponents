@@ -6,6 +6,7 @@ use App\Controller\AbstractController;
 use App\Controller\API\Agents\DTO\AgentData;
 use App\Entity\Agent;
 use App\Repository\AgentRepository;
+use App\Serializer\SerializerGroups;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
@@ -21,9 +22,11 @@ class AgentController extends AbstractController
     public function list(
         AgentRepository $agentRepository,
     ): JsonResponse {
-        // No need for voter validation here as we're listing all agents
-        // The repository should filter based on the current user's permissions
-        return $this->json($agentRepository->findAll());
+        return $this->json($agentRepository->findAll(), Response::HTTP_OK, [], [
+            AbstractNormalizer::GROUPS => [
+                SerializerGroups::API_LIST,
+            ],
+        ]);
     }
 
     #[Route('', methods: ['POST'])]
@@ -41,7 +44,15 @@ class AgentController extends AbstractController
 
         $agentRepository->save($agent);
 
-        return $this->json($agent);
+        return $this->json($agent,
+            Response::HTTP_OK,
+            [],
+            [
+                AbstractNormalizer::GROUPS => [
+                    SerializerGroups::API_LIST,
+                ],
+            ]
+        );
     }
 
     #[Route('/{id}', methods: ['GET'])]
@@ -54,8 +65,8 @@ class AgentController extends AbstractController
             Response::HTTP_OK,
             [],
             [
-                AbstractNormalizer::ALLOW_EXTRA_ATTRIBUTES => [
-                    'chatConfiguration',
+                AbstractNormalizer::GROUPS => [
+                    SerializerGroups::API_LIST,
                 ],
             ]
         );

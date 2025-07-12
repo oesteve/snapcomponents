@@ -3,14 +3,14 @@
 namespace App\Service\Chat\Tool;
 
 use App\Entity\ChatMessage;
-use App\Service\Product\ProductSearchService;
+use App\Service\Product\ProductProvider;
 
 readonly class SearchProduct implements ToolInterface
 {
     public const string NAME = 'search_product';
 
     public function __construct(
-        private ProductSearchService $productSearch,
+        private ProductProvider $productSearch,
     ) {
     }
 

@@ -19,13 +19,15 @@ class Agent extends BaseEntity
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups([SerializerGroups::ELASTICA])]
+    #[Groups([SerializerGroups::ELASTICA, SerializerGroups::API_LIST])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups([SerializerGroups::API_LIST])]
     private string $name;
 
     #[ORM\Column(length: 255)]
+    #[Groups([SerializerGroups::API_LIST])]
     private string $code;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'agents')]
@@ -54,6 +56,7 @@ class Agent extends BaseEntity
         $this->user = $user;
         $this->chats = new ArrayCollection();
         $this->articles = new ArrayCollection();
+        $this->products = new ArrayCollection();
     }
 
     public function update(string $name): void
@@ -110,6 +113,36 @@ class Agent extends BaseEntity
     public function getArticles(): Collection
     {
         return $this->articles;
+    }
+
+    /**
+     * @var Collection<int, Product>
+     */
+    #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'agent', orphanRemoval: true)]
+    private Collection $products;
+
+    /**
+     * @return Collection<int, Product>
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    public function addProduct(Product $product): static
+    {
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Product $product): static
+    {
+        $this->products->removeElement($product);
+
+        return $this;
     }
 
     public function addArticle(Article $article): static

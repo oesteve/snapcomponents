@@ -2,10 +2,8 @@
 
 namespace App\Command;
 
-use App\Entity\Product;
-use App\Repository\ProductRepository;
-use App\Repository\UserRepository;
-use App\Service\Product\ProductProvider;
+use App\Repository\AgentRepository;
+use App\Service\Product\ElasticSearch\ElasticSearchProductProvider;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -21,9 +19,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class ProductsImportCommand extends Command
 {
     public function __construct(
-        private ProductProvider $productProvider,
-        private ProductRepository $productRepository,
-        private UserRepository $userRepository,
+        private readonly ElasticSearchProductProvider $productSearchService,
+        private readonly AgentRepository $agentRepository,
     ) {
         parent::__construct();
     }
@@ -31,43 +28,20 @@ class ProductsImportCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('userId', InputArgument::REQUIRED, 'Id of the user')
+            ->addArgument('agentId', InputArgument::REQUIRED, 'Id of the agent')
             ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
+    protected function execute(
+        InputInterface $input,
+        OutputInterface $output,
+    ): int {
         $io = new SymfonyStyle($input, $output);
-        $userId = (int) $input->getArgument('userId');
+        $agentId = (int) $input->getArgument('agentId');
+        $agent = $this->agentRepository->findOrFail($agentId);
 
-        foreach ($this->productProvider->getProducts() as $productData) {
-            $product = $this->productRepository->findOneBy([
-                'user' => $userId,
-                'name' => $productData->name,
-            ]);
-
-            if (!$product) {
-                $product = new Product(
-                    $productData->name,
-                    $productData->title,
-                    $productData->description,
-                    $productData->image,
-                    $productData->price,
-                    $this->userRepository->findOrFail($userId)
-                );
-            } else {
-                $product->update(
-                    $productData->name,
-                    $productData->title,
-                    $productData->description,
-                    $productData->image,
-                    $productData->price,
-                );
-            }
-
-            $this->productRepository->save($product);
-        }
+        $this->productSearchService->importProducts($agent);
 
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
 

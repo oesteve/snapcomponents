@@ -47,4 +47,4 @@ services:
 
     # Alias for ProductSearchServiceInterface
     App\Service\Product\ProductSearchServiceInterface:
-        alias: App\Service\Product\ElasticSearchProductSearchService
+        alias: ElasticSearchProductProvider

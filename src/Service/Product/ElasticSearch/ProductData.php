@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Product;
+namespace App\Service\Product\ElasticSearch;
 
 readonly class ProductData
 {
