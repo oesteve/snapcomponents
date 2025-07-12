@@ -22,25 +22,26 @@ import {
 } from "@/lib/agents/chat.ts";
 import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
-import { getAgent } from "@/lib/agents/agents.ts";
-import { useLayoutStore } from "@/admin/components/layout/breadcrumb-store.ts";
 
 export const Route = createFileRoute("/admin/agents/$agentId/chat/intents/")({
-    component: CreateIntent,
-    loader: async ({ params: { agentId } }) => {
-        const agent = await getAgent(parseInt(agentId));
-
-        const layout = useLayoutStore.getState();
-
-        layout.setBreadcrumbs([
-            { label: "Admin", href: "/admin" },
-            { label: "Agents", href: "/admin/agents" },
-            { label: agent.name, href: `/admin/agents/${agent.id}/settings` },
-            { label: "Chat", href: `/admin/agents/${agentId}/chat` },
-            { label: "Intents", href: `/admin/agents/${agentId}/intents` },
-            { label: "Create new intent", isActive: true },
-        ]);
+    beforeLoad: ({ context }) => {
+        const agent = context.agent;
+        return {
+            ...context,
+            breadcrumbs: [
+                { label: "Admin", href: "/admin" },
+                { label: "Agents", href: "/admin/agents" },
+                {
+                    label: agent.name,
+                    href: `/admin/agents/${agent.id}/settings`,
+                },
+                { label: "Chat", href: `/admin/agents/${agent.id}/chat` },
+                { label: "Intents", href: `/admin/agents/${agent.id}/intents` },
+                { label: "Create new intent", isActive: true },
+            ],
+        };
     },
+    component: CreateIntent,
 });
 
 function CreateIntent() {

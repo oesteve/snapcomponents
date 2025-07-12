@@ -1,7 +1,5 @@
-import { AgentInstall } from "@/admin/components/agents/agent-install.tsx";
+import { AgentInstall } from "@/admin/modules/agents/agent-install.tsx";
 import { createFileRoute } from "@tanstack/react-router";
-import { useLayoutStore } from "@/admin/components/layout/breadcrumb-store.ts";
-import { getAgent } from "@/lib/agents/agents.ts";
 import {
     Card,
     CardContent,
@@ -9,31 +7,17 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card.tsx";
+import { useCurrentAgent } from "@/admin/modules/agents/hooks/current-agent.tsx";
 
 export const Route = createFileRoute("/admin/agents/$agentId/install")({
+    beforeLoad: () => ({
+        title: "Install",
+    }),
     component: Install,
-    loader: async ({ params: { agentId } }) => {
-        const agent = await getAgent(parseInt(agentId));
-
-        const layout = useLayoutStore.getState();
-
-        layout.setBreadcrumbs([
-            { label: "Admin", href: "/admin" },
-            { label: "Agents", href: "/admin/agents" },
-            { label: agent.name },
-            { label: "Install", isActive: true },
-        ]);
-
-        layout.setAgent(agent);
-
-        return {
-            agent,
-        };
-    },
 });
 
 export function Install() {
-    const { agent } = Route.useLoaderData();
+    const agent = useCurrentAgent();
 
     return (
         <Card className="w-full max-w-4xl">

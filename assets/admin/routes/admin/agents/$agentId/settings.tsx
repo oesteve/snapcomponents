@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { getAgent, updateAgent } from "@/lib/agents/agents";
-import { useLayoutStore } from "@/admin/components/layout/breadcrumb-store.ts";
+import { updateAgent } from "@/lib/agents/agents";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useMemo } from "react";
@@ -17,32 +16,17 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card.tsx";
+import { useCurrentAgent } from "@/admin/modules/agents/hooks/current-agent.tsx";
 
 export const Route = createFileRoute("/admin/agents/$agentId/settings")({
+    beforeLoad: () => ({
+        title: "Settings",
+    }),
     component: Settings,
-    loader: async ({ params: { agentId } }) => {
-        const agent = await getAgent(parseInt(agentId));
-
-        const layout = useLayoutStore.getState();
-
-        layout.setBreadcrumbs([
-            { label: "Admin", href: "/admin" },
-            { label: "Agents", href: "/admin/agents" },
-            { label: agent.name },
-            { label: "Settings", isActive: true },
-        ]);
-
-        layout.setAgent(agent);
-
-        return {
-            agent,
-        };
-    },
 });
 
 export function Settings() {
-    const { agent } = Route.useLoaderData();
-
+    const agent = useCurrentAgent();
     const client = useQueryClient();
 
     const editAgentMutation = useMutation({

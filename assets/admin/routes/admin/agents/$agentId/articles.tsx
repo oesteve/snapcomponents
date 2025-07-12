@@ -1,20 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ArticleList } from "@/admin/articles/components/article-list.tsx";
-import { getAgent } from "@/lib/agents/agents.ts";
+import { ArticleList } from "@/admin/modules/articles/components/article-list.tsx";
+import { useCurrentAgent } from "@/admin/modules/agents/hooks/current-agent.tsx";
 
 export const Route = createFileRoute("/admin/agents/$agentId/articles")({
     component: About,
-    loader: async ({ params: { agentId } }) => {
-        const agent = await getAgent(parseInt(agentId));
-
-        return {
-            agent,
-        };
-    },
 });
 
 function About() {
-    const { agent } = Route.useLoaderData();
-
+    const agent = useCurrentAgent();
     return <ArticleList agent={agent} />;
 }

@@ -28,9 +28,8 @@ import {
     SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
-import { Link } from "@tanstack/react-router";
-import { AgentSwitcher } from "@/admin/components/layout/agent-switcher.tsx";
-import { useLayoutAgent } from "@/admin/components/layout/breadcrumb-store.ts";
+import { Link, useRouteContext } from "@tanstack/react-router";
+import { AgentSwitcher } from "@/admin/modules/layout/components/agent-switcher.tsx";
 
 const agentSettingsData: {
     title: string;
@@ -57,6 +56,11 @@ const agentSettingsData: {
         url: "/admin/agents/$agentId/articles",
         icon: FileText,
     },
+    {
+        title: "Products",
+        url: "/admin/agents/$agentId/products",
+        icon: ShoppingBasket,
+    },
 ];
 
 const navMainData: {
@@ -74,47 +78,43 @@ const navMainData: {
         url: "/admin/agents",
         icon: SquareTerminal,
     },
-    {
-        title: "Products",
-        url: "/admin/products",
-        icon: ShoppingBasket,
-    },
 ];
 
 export function NavMain() {
-    const { agent } = useLayoutAgent();
+    const agent = useRouteContext({
+        from: "/admin",
+        select: (context) => context.agent,
+    });
 
     return (
         <>
-            {agent ? (
-                <SidebarGroup className="mb-8">
-                    <SidebarMenu>
-                        <SidebarHeader className="mb-12">
-                            <AgentSwitcher />
-                        </SidebarHeader>
-                        <SidebarGroupLabel>Agent</SidebarGroupLabel>
-                        {agentSettingsData.map((item) => (
-                            <SidebarMenuSubItem key={item.title}>
-                                <Link
-                                    to={item.url}
-                                    params={{ agentId: agent.id.toString() }}
-                                >
-                                    {({ isActive }) => (
-                                        <SidebarMenuButton
-                                            className={cn(
-                                                isActive && "bg-secondary",
-                                            )}
-                                        >
-                                            <item.icon />
-                                            {item.title}
-                                        </SidebarMenuButton>
-                                    )}
-                                </Link>
-                            </SidebarMenuSubItem>
-                        ))}
-                    </SidebarMenu>
-                </SidebarGroup>
-            ) : null}
+            <SidebarGroup className="mb-8">
+                <SidebarMenu>
+                    <SidebarHeader className="mb-12">
+                        <AgentSwitcher />
+                    </SidebarHeader>
+                    <SidebarGroupLabel>Agent</SidebarGroupLabel>
+                    {agentSettingsData.map((item) => (
+                        <SidebarMenuSubItem key={item.title}>
+                            <Link
+                                to={item.url}
+                                params={{ agentId: agent.id.toString() }}
+                            >
+                                {({ isActive }) => (
+                                    <SidebarMenuButton
+                                        className={cn(
+                                            isActive && "bg-secondary",
+                                        )}
+                                    >
+                                        <item.icon />
+                                        {item.title}
+                                    </SidebarMenuButton>
+                                )}
+                            </Link>
+                        </SidebarMenuSubItem>
+                    ))}
+                </SidebarMenu>
+            </SidebarGroup>
             <SidebarGroup>
                 <SidebarMenu>
                     <SidebarGroupLabel>Global Settings</SidebarGroupLabel>

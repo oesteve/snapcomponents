@@ -1,6 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { getAgent } from "@/lib/agents/agents";
-import { useLayoutStore } from "@/admin/components/layout/breadcrumb-store.ts";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Form } from "@/components/form";
@@ -30,34 +28,38 @@ import { Button } from "@/components/ui/button.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import { FormDescription } from "@/components/form/form-description.tsx";
 import { Plus } from "lucide-react";
+import { useCurrentAgent } from "@/admin/modules/agents/hooks/current-agent.tsx";
 
 export const Route = createFileRoute("/admin/agents/$agentId/chat/")({
     component: ChatRoute,
-    loader: async ({ params: { agentId } }) => {
-        const id = parseInt(agentId);
-        const agent = await getAgent(id);
-        const chatConfig = await getChatConfig(id);
-
-        const layout = useLayoutStore.getState();
-
-        layout.setBreadcrumbs([
-            { label: "Admin", href: "/admin" },
-            { label: "Agents", href: "/admin/agents" },
-            { label: agent.name, href: `/admin/agents/${agent.id}/settings` },
-            { label: "Chat", isActive: true },
-        ]);
-
-        layout.setAgent(agent);
+    beforeLoad: ({ context }) => {
+        const agent = context.agent;
 
         return {
-            agent,
+            ...context,
+            breadcrumbs: [
+                { label: "Admin", href: "/admin" },
+                { label: "Agents", href: "/admin/agents" },
+                {
+                    label: agent.name,
+                    href: `/admin/agents/${agent.id}/settings`,
+                },
+                { label: "Chat", isActive: true },
+            ],
+        };
+    },
+    loader: async ({ params: { agentId } }) => {
+        const id = parseInt(agentId);
+        const chatConfig = await getChatConfig(id);
+        return {
             chatConfig,
         };
     },
 });
 
 export function ChatRoute() {
-    const { agent, chatConfig } = Route.useLoaderData();
+    const agent = useCurrentAgent();
+    const { chatConfig } = Route.useLoaderData();
 
     const updateChatSettingsMutation = useMutation({
         mutationFn: updateChatConfig,

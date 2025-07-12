@@ -23,17 +23,32 @@ import {
 import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
 import { getChatConfig } from "@/lib/agents/chat.ts";
-import { getAgent } from "@/lib/agents/agents";
-import { useLayoutStore } from "@/admin/components/layout/breadcrumb-store.ts";
 import { useMemo } from "react";
+import { useCurrentAgent } from "@/admin/modules/agents/hooks/current-agent.tsx";
 
 export const Route = createFileRoute(
     "/admin/agents/$agentId/chat/intents/$intentId",
 )({
+    beforeLoad: ({ context }) => ({
+        ...context,
+        breadcrumbs: [
+            { label: "Admin", href: "/admin" },
+            { label: "Agents", href: "/admin/agents" },
+            {
+                label: context.agent.name,
+                href: `/admin/agents/${context.agent.id}/settings`,
+            },
+            { label: "Chat", href: `/admin/agents/${context.agent.id}/chat` },
+            {
+                label: "Intents",
+                href: `/admin/agents/${context.agent.id}/intents`,
+            },
+            { label: "configuration", isActive: true },
+        ],
+    }),
     component: UpdateIntent,
     loader: async ({ params: { agentId, intentId } }) => {
         const id = parseInt(agentId);
-        const agent = await getAgent(id);
         const chatConfig = await getChatConfig(id);
 
         // Find the intent with the matching ID
@@ -45,28 +60,15 @@ export const Route = createFileRoute(
             throw new Error(`Intent with ID ${intentId} not found`);
         }
 
-        const layout = useLayoutStore.getState();
-
-        layout.setBreadcrumbs([
-            { label: "Admin", href: "/admin" },
-            { label: "Agents", href: "/admin/agents" },
-            { label: agent.name, href: `/admin/agents/${agent.id}/settings` },
-            { label: "Chat", href: `/admin/agents/${agentId}/chat` },
-            { label: "Intents", href: `/admin/agents/${agentId}/intents` },
-            { label: intent.name, isActive: true },
-        ]);
-
-        layout.setAgent(agent);
-
         return {
-            agent,
             intent,
         };
     },
 });
 
 function UpdateIntent() {
-    const { agent, intent } = Route.useLoaderData();
+    const agent = useCurrentAgent();
+    const { intent } = Route.useLoaderData();
 
     const navigate = useNavigate();
     const { data: tools = [], isLoading: isLoadingTools } = useQueryTools();
