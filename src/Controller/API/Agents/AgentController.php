@@ -21,6 +21,8 @@ class AgentController extends AbstractController
     public function list(
         AgentRepository $agentRepository,
     ): JsonResponse {
+        // No need for voter validation here as we're listing all agents
+        // The repository should filter based on the current user's permissions
         return $this->json($agentRepository->findAll());
     }
 
@@ -30,6 +32,8 @@ class AgentController extends AbstractController
         AgentData $agentData,
         AgentRepository $agentRepository,
     ): JsonResponse {
+        // No need for voter validation here as we're creating a new agent
+        // The user will automatically be the owner of the agent
         $agent = new Agent(
             $agentData->name,
             $this->getLoggedUserOrFail(),
@@ -41,6 +45,7 @@ class AgentController extends AbstractController
     }
 
     #[Route('/{id}', methods: ['GET'])]
+    #[IsGranted('AGENT_VIEW', 'agent')]
     public function get(
         Agent $agent,
     ): JsonResponse {
@@ -57,6 +62,7 @@ class AgentController extends AbstractController
     }
 
     #[Route('/{id}', methods: ['PUT'])]
+    #[IsGranted('AGENT_EDIT', 'agent')]
     public function update(
         Agent $agent,
         AgentRepository $agentRepository,
@@ -73,6 +79,7 @@ class AgentController extends AbstractController
     }
 
     #[Route('/{id}', methods: ['DELETE'])]
+    #[IsGranted('AGENT_EDIT', 'agent')]
     public function remove(Agent $agent, AgentRepository $agentRepository): JsonResponse
     {
         $agentRepository->remove($agent);

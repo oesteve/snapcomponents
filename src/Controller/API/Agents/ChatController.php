@@ -21,6 +21,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ChatController extends AbstractController
 {
     #[Route('', methods: ['GET'])]
+    #[IsGranted('AGENT_VIEW', 'agent')]
     public function list(
         Agent $agent,
     ): JsonResponse {
@@ -28,6 +29,7 @@ class ChatController extends AbstractController
     }
 
     #[Route('', methods: ['POST'])]
+    #[IsGranted('AGENT_EDIT', 'agent')]
     public function create(
         #[MapRequestPayload]
         AgentData $agentData,
@@ -44,6 +46,7 @@ class ChatController extends AbstractController
     }
 
     #[Route('', methods: ['PUT'])]
+    #[IsGranted('AGENT_EDIT', 'agent')]
     public function update(
         Agent $agent,
         #[MapRequestPayload]
