@@ -13,7 +13,9 @@ use App\Service\Chat\Tool\ToolInterface;
 use OpenAI;
 use OpenAI\Responses\Chat\CreateResponse;
 use OpenAI\Responses\Chat\CreateResponseToolCall;
+use Psr\Http\Client\ClientInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 class ChatService
@@ -22,6 +24,7 @@ class ChatService
      * @var array<string, ToolInterface>
      */
     private array $functions = [];
+    private OpenAI\Client $client;
 
     /**
      * @param array<ToolInterface> $functions
@@ -30,15 +33,22 @@ class ChatService
         private readonly ChatRepository $chatRepository,
         private readonly ChatMessageRepository $chatMessageRepository,
         private readonly AgentService $agentService,
-        private readonly OpenAI\Client $client,
         #[AutowireIterator(tag: 'app.chat.tool')]
         iterable $functions,
         private readonly ComponentManager $componentManager,
         private readonly LoggerInterface $logger,
+        #[Autowire(env: 'OPENAI_SECRET_KEY')]
+        string $apiApiKey,
+        ClientInterface $httpClient,
     ) {
         foreach ($functions as $function) {
             $this->functions[$function->getName()] = $function;
         }
+
+        $this->client = \OpenAI::factory()
+            ->withApiKey($apiApiKey)
+            ->withHttpClient($httpClient)
+            ->make();
     }
 
     public function createChat(

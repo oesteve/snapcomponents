@@ -31,10 +31,6 @@ services:
             $properties:
                 "github": "github"
 
-    OpenAI\Client:
-        factory: ["OpenAI", "client"]
-        arguments: ["%env(OPENAI_SECRET_KEY)%"]
-
     _instanceof:
         App\Service\Chat\Tool\ToolInterface:
             tags: ["app.chat.tool"]
