@@ -6,7 +6,10 @@ use App\Entity\Agent;
 
 interface ProductProviderBuilder
 {
-    public function build(Agent $agent): ProductProvider;
+    /**
+     * @param array<string, mixed> $settings
+     */
+    public function build(Agent $agent, ?array $settings): ProductProvider;
 
     public static function getProviderName(): string;
 }

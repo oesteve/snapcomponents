@@ -3,14 +3,14 @@
 namespace App\Service\Chat\Tool;
 
 use App\Entity\ChatMessage;
-use App\Service\Product\ProductProvider;
+use App\Service\Product\ProductService;
 
 readonly class SearchProduct implements ToolInterface
 {
     public const string NAME = 'search_product';
 
     public function __construct(
-        private ProductProvider $productSearch,
+        private ProductService $productService,
     ) {
     }
 
@@ -85,7 +85,8 @@ readonly class SearchProduct implements ToolInterface
         ChatMessage $message,
         array $parameters,
     ): string {
-        $products = $this->productSearch->search(
+        $products = $this->productService->search(
+            $message->getChat()->getAgent(),
             $parameters['query'] ?? null,
             $parameters['filters'] ?? null,
         );

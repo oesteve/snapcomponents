@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/card.tsx";
 import { useCurrentAgent } from "@/admin/modules/agents/hooks/current-agent.tsx";
 
-export const Route = createFileRoute("/admin/agents/$agentId/settings")({
+export const Route = createFileRoute("/admin/agents/$agentId/")({
     beforeLoad: () => ({
         title: "Settings",
     }),

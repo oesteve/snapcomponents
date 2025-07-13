@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ProductsList } from "@/admin/modules/catalog/components/products-list.tsx";
 
-export const Route = createFileRoute("/admin/agents/$agentId/products")({
+export const Route = createFileRoute("/admin/agents/$agentId/products/")({
     beforeLoad: () => ({
-        title: "Products",
+        title: undefined,
     }),
     component: Products,
 });

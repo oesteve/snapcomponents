@@ -4,6 +4,7 @@ namespace App\Command;
 
 use App\Repository\AgentRepository;
 use App\Service\Product\ElasticSearch\ElasticSearchProductProvider;
+use App\Service\Product\ProductService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -19,7 +20,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class ProductsImportCommand extends Command
 {
     public function __construct(
-        private readonly ElasticSearchProductProvider $productSearchService,
+        private readonly ProductService $productService,
         private readonly AgentRepository $agentRepository,
     ) {
         parent::__construct();
@@ -41,7 +42,13 @@ class ProductsImportCommand extends Command
         $agentId = (int) $input->getArgument('agentId');
         $agent = $this->agentRepository->findOrFail($agentId);
 
-        $this->productSearchService->importProducts($agent);
+        $provider = $this->productService->getProvider($agent);
+
+        if (!($provider instanceof ElasticSearchProductProvider)) {
+            throw new \Exception('Provider not found');
+        }
+
+        $provider->importProducts();
 
         $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
 

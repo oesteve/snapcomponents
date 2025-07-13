@@ -7,22 +7,21 @@ use App\Entity\Product;
 use App\Repository\ProductRepository;
 use App\Service\Product\ProductProvider;
 use App\Service\Search\EmbeddingsService;
-use Elastica\Document;
-use FOS\ElasticaBundle\Event\PostTransformEvent;
 use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 readonly class ElasticSearchProductProvider implements ProductProvider
 {
+    /**
+     * @param array<string,mixed> $settings
+     */
     public function __construct(
-        #[Autowire(service: 'fos_elastica.finder.products')]
         private PaginatedFinderInterface $finder,
         private EmbeddingsService $searchService,
         private ProductRepository $productRepository,
         private HttpClientInterface $client,
         private Agent $agent,
+        private array $settings,
     ) {
     }
 
@@ -87,31 +86,12 @@ readonly class ElasticSearchProductProvider implements ProductProvider
         return $results;
     }
 
-    #[AsEventListener(event: PostTransformEvent::class)]
-    public function onPostTransform(PostTransformEvent $event): void
-    {
-        if (false === $event->getObject() instanceof Product) {
-            return;
-        }
-
-        $this->setEmbeddings($event->getDocument());
-    }
-
-    private function setEmbeddings(Document $document): void
-    {
-        $title = $this->searchService->createEmbeddings($document->get('title'));
-        $content = $this->searchService->createEmbeddings($document->get('description'));
-
-        $document->set('title_vector', $title);
-        $document->set('description_vector', $content);
-    }
-
     /**
      * @return \Generator<ProductData>
      */
     public function getProducts(): \Generator
     {
-        $responseData = $this->client->request('GET', 'https://dummyjson.com/products?limit=10')
+        $responseData = $this->client->request('GET', 'https://dummyjson.com/products?limit='.$this->settings['num_of_products'])
             ->toArray();
         foreach (
             $responseData['products'] as $itemData
@@ -126,11 +106,11 @@ readonly class ElasticSearchProductProvider implements ProductProvider
         }
     }
 
-    public function importProducts(Agent $agent): void
+    public function importProducts(): void
     {
         foreach ($this->getProducts() as $productData) {
             $product = $this->productRepository->findOneBy([
-                'agent' => $agent,
+                'agent' => $this->agent,
                 'name' => $productData->name,
             ]);
 
@@ -141,7 +121,7 @@ readonly class ElasticSearchProductProvider implements ProductProvider
                     $productData->description,
                     $productData->image,
                     $productData->price,
-                    $agent
+                    $this->agent
                 );
             } else {
                 $product->update(
@@ -165,5 +145,18 @@ readonly class ElasticSearchProductProvider implements ProductProvider
         return $this->productRepository->findBy([
             'agent' => $this->agent,
         ]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getSettings(): array
+    {
+        return $this->settings;
+    }
+
+    public static function getName(): string
+    {
+        return 'ElasticSearch';
     }
 }

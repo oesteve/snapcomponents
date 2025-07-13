@@ -22,7 +22,17 @@ readonly class ElasticProductProviderBuilder implements ProductProviderBuilder
     ) {
     }
 
-    public function build(Agent $agent): ProductProvider
+    /**
+     * @return array<string, mixed>
+     */
+    private static function getDefaultSettings(): array
+    {
+        return [
+            'num_of_products' => 10,
+        ];
+    }
+
+    public function build(Agent $agent, ?array $settings): ProductProvider
     {
         return new ElasticSearchProductProvider(
             $this->finder,
@@ -30,11 +40,12 @@ readonly class ElasticProductProviderBuilder implements ProductProviderBuilder
             $this->productRepository,
             $this->client,
             $agent,
+            $settings ?? self::getDefaultSettings(),
         );
     }
 
     public static function getProviderName(): string
     {
-        return 'Dummy';
+        return ElasticSearchProductProvider::getName();
     }
 }

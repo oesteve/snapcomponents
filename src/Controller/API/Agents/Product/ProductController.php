@@ -5,10 +5,11 @@ namespace App\Controller\API\Agents\Product;
 use App\Controller\AbstractController;
 use App\Entity\Agent;
 use App\Serializer\SerializerGroups;
-use App\Service\Product\ProductProviderFactory;
+use App\Service\Product\ProductService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
@@ -20,12 +21,12 @@ class ProductController extends AbstractController
     #[IsGranted('AGENT_VIEW', 'agent')]
     public function list(
         Agent $agent,
-        ProductProviderFactory $providerFactory,
+        ProductService $providerFactory,
     ): JsonResponse {
-        $productProvider = $providerFactory->forAgent($agent);
+        $products = $providerFactory->listProducts($agent);
 
         return $this->json(
-            $productProvider->list(),
+            $products,
             Response::HTTP_OK,
             [],
             [
@@ -38,15 +39,17 @@ class ProductController extends AbstractController
     #[IsGranted('AGENT_VIEW', 'agent')]
     public function search(
         Agent $agent,
-        ProductProviderFactory $productProviderFactory,
+        ProductService $productService,
         Request $request,
     ): JsonResponse {
-        $query = $request->query->getString('query');
-
-        $productProvider = $productProviderFactory->forAgent($agent);
+        $products = $productService->search(
+            $agent,
+            $request->query->getString('query'),
+            []
+        );
 
         return $this->json(
-            $productProvider->search($query),
+            $products,
             Response::HTTP_OK,
             [],
             [
@@ -59,13 +62,52 @@ class ProductController extends AbstractController
     #[IsGranted('AGENT_VIEW', 'agent')]
     public function getAvailableProvider(
         Agent $agent,
-        ProductProviderFactory $productProviderFactory,
+        ProductService $productProviderFactory,
     ): JsonResponse {
-        $providers = $productProviderFactory->getAvailableProviders();
+        $providers = array_map(
+            fn (string $provider) => [
+                'name' => $provider,
+            ],
+            $productProviderFactory->getAvailableProviders()
+        );
 
         return $this->json(
             $providers,
             Response::HTTP_OK,
         );
+    }
+
+    #[Route('/provider', methods: ['GET'])]
+    #[IsGranted('AGENT_VIEW', 'agent')]
+    public function getProvider(
+        Agent $agent,
+        ProductService $factory,
+    ): JsonResponse {
+        $provider = $factory->getProvider($agent);
+
+        return $this->json(
+            [
+                'name' => $provider->getName(),
+                'settings' => $provider->getSettings(),
+            ],
+            Response::HTTP_OK,
+        );
+    }
+
+    #[Route('/provider', methods: ['PUT'])]
+    #[IsGranted('AGENT_VIEW', 'agent')]
+    public function setProvider(
+        Agent $agent,
+        ProductService $productService,
+        #[MapRequestPayload]
+        ProviderData $data,
+    ): JsonResponse {
+        $productService->setProvider(
+            $agent,
+            $data->name,
+            $data->settings,
+        );
+
+        return $this->json(null);
     }
 }

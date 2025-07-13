@@ -131,14 +131,7 @@ class Agent extends BaseEntity
         $this->attributes[$name] = $value;
     }
 
-    /**
-     * @template T
-     *
-     * @param T $default
-     *
-     * @return T
-     */
-    public function getAttribute(string $name, mixed $default)
+    public function getAttribute(string $name, mixed $default): mixed
     {
         return $this->attributes[$name] ?? $default;
     }

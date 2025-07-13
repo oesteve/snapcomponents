@@ -14,11 +14,13 @@ import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminAboutRouteImport } from './routes/admin/about'
 import { Route as AdminAgentsIndexRouteImport } from './routes/admin/agents/index'
 import { Route as AdminAgentsAgentIdRouteRouteImport } from './routes/admin/agents/$agentId/route'
-import { Route as AdminAgentsAgentIdSettingsRouteImport } from './routes/admin/agents/$agentId/settings'
-import { Route as AdminAgentsAgentIdProductsRouteImport } from './routes/admin/agents/$agentId/products'
+import { Route as AdminAgentsAgentIdIndexRouteImport } from './routes/admin/agents/$agentId/index'
 import { Route as AdminAgentsAgentIdInstallRouteImport } from './routes/admin/agents/$agentId/install'
 import { Route as AdminAgentsAgentIdArticlesRouteImport } from './routes/admin/agents/$agentId/articles'
+import { Route as AdminAgentsAgentIdProductsRouteRouteImport } from './routes/admin/agents/$agentId/products/route'
+import { Route as AdminAgentsAgentIdProductsIndexRouteImport } from './routes/admin/agents/$agentId/products/index'
 import { Route as AdminAgentsAgentIdChatIndexRouteImport } from './routes/admin/agents/$agentId/chat/index'
+import { Route as AdminAgentsAgentIdProductsProviderRouteImport } from './routes/admin/agents/$agentId/products/provider'
 import { Route as AdminAgentsAgentIdChatIntentsIndexRouteImport } from './routes/admin/agents/$agentId/chat/intents/index'
 import { Route as AdminAgentsAgentIdChatIntentsIntentIdRouteImport } from './routes/admin/agents/$agentId/chat/intents/$intentId'
 
@@ -47,18 +49,11 @@ const AdminAgentsAgentIdRouteRoute = AdminAgentsAgentIdRouteRouteImport.update({
   path: '/agents/$agentId',
   getParentRoute: () => AdminRouteRoute,
 } as any)
-const AdminAgentsAgentIdSettingsRoute =
-  AdminAgentsAgentIdSettingsRouteImport.update({
-    id: '/settings',
-    path: '/settings',
-    getParentRoute: () => AdminAgentsAgentIdRouteRoute,
-  } as any)
-const AdminAgentsAgentIdProductsRoute =
-  AdminAgentsAgentIdProductsRouteImport.update({
-    id: '/products',
-    path: '/products',
-    getParentRoute: () => AdminAgentsAgentIdRouteRoute,
-  } as any)
+const AdminAgentsAgentIdIndexRoute = AdminAgentsAgentIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminAgentsAgentIdRouteRoute,
+} as any)
 const AdminAgentsAgentIdInstallRoute =
   AdminAgentsAgentIdInstallRouteImport.update({
     id: '/install',
@@ -71,11 +66,29 @@ const AdminAgentsAgentIdArticlesRoute =
     path: '/articles',
     getParentRoute: () => AdminAgentsAgentIdRouteRoute,
   } as any)
+const AdminAgentsAgentIdProductsRouteRoute =
+  AdminAgentsAgentIdProductsRouteRouteImport.update({
+    id: '/products',
+    path: '/products',
+    getParentRoute: () => AdminAgentsAgentIdRouteRoute,
+  } as any)
+const AdminAgentsAgentIdProductsIndexRoute =
+  AdminAgentsAgentIdProductsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AdminAgentsAgentIdProductsRouteRoute,
+  } as any)
 const AdminAgentsAgentIdChatIndexRoute =
   AdminAgentsAgentIdChatIndexRouteImport.update({
     id: '/chat/',
     path: '/chat/',
     getParentRoute: () => AdminAgentsAgentIdRouteRoute,
+  } as any)
+const AdminAgentsAgentIdProductsProviderRoute =
+  AdminAgentsAgentIdProductsProviderRouteImport.update({
+    id: '/provider',
+    path: '/provider',
+    getParentRoute: () => AdminAgentsAgentIdProductsRouteRoute,
   } as any)
 const AdminAgentsAgentIdChatIntentsIndexRoute =
   AdminAgentsAgentIdChatIntentsIndexRouteImport.update({
@@ -96,24 +109,26 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/admin/agents/$agentId': typeof AdminAgentsAgentIdRouteRouteWithChildren
   '/admin/agents': typeof AdminAgentsIndexRoute
+  '/admin/agents/$agentId/products': typeof AdminAgentsAgentIdProductsRouteRouteWithChildren
   '/admin/agents/$agentId/articles': typeof AdminAgentsAgentIdArticlesRoute
   '/admin/agents/$agentId/install': typeof AdminAgentsAgentIdInstallRoute
-  '/admin/agents/$agentId/products': typeof AdminAgentsAgentIdProductsRoute
-  '/admin/agents/$agentId/settings': typeof AdminAgentsAgentIdSettingsRoute
+  '/admin/agents/$agentId/': typeof AdminAgentsAgentIdIndexRoute
+  '/admin/agents/$agentId/products/provider': typeof AdminAgentsAgentIdProductsProviderRoute
   '/admin/agents/$agentId/chat': typeof AdminAgentsAgentIdChatIndexRoute
+  '/admin/agents/$agentId/products/': typeof AdminAgentsAgentIdProductsIndexRoute
   '/admin/agents/$agentId/chat/intents/$intentId': typeof AdminAgentsAgentIdChatIntentsIntentIdRoute
   '/admin/agents/$agentId/chat/intents': typeof AdminAgentsAgentIdChatIntentsIndexRoute
 }
 export interface FileRoutesByTo {
   '/admin/about': typeof AdminAboutRoute
   '/admin': typeof AdminIndexRoute
-  '/admin/agents/$agentId': typeof AdminAgentsAgentIdRouteRouteWithChildren
   '/admin/agents': typeof AdminAgentsIndexRoute
   '/admin/agents/$agentId/articles': typeof AdminAgentsAgentIdArticlesRoute
   '/admin/agents/$agentId/install': typeof AdminAgentsAgentIdInstallRoute
-  '/admin/agents/$agentId/products': typeof AdminAgentsAgentIdProductsRoute
-  '/admin/agents/$agentId/settings': typeof AdminAgentsAgentIdSettingsRoute
+  '/admin/agents/$agentId': typeof AdminAgentsAgentIdIndexRoute
+  '/admin/agents/$agentId/products/provider': typeof AdminAgentsAgentIdProductsProviderRoute
   '/admin/agents/$agentId/chat': typeof AdminAgentsAgentIdChatIndexRoute
+  '/admin/agents/$agentId/products': typeof AdminAgentsAgentIdProductsIndexRoute
   '/admin/agents/$agentId/chat/intents/$intentId': typeof AdminAgentsAgentIdChatIntentsIntentIdRoute
   '/admin/agents/$agentId/chat/intents': typeof AdminAgentsAgentIdChatIntentsIndexRoute
 }
@@ -124,11 +139,13 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/admin/agents/$agentId': typeof AdminAgentsAgentIdRouteRouteWithChildren
   '/admin/agents/': typeof AdminAgentsIndexRoute
+  '/admin/agents/$agentId/products': typeof AdminAgentsAgentIdProductsRouteRouteWithChildren
   '/admin/agents/$agentId/articles': typeof AdminAgentsAgentIdArticlesRoute
   '/admin/agents/$agentId/install': typeof AdminAgentsAgentIdInstallRoute
-  '/admin/agents/$agentId/products': typeof AdminAgentsAgentIdProductsRoute
-  '/admin/agents/$agentId/settings': typeof AdminAgentsAgentIdSettingsRoute
+  '/admin/agents/$agentId/': typeof AdminAgentsAgentIdIndexRoute
+  '/admin/agents/$agentId/products/provider': typeof AdminAgentsAgentIdProductsProviderRoute
   '/admin/agents/$agentId/chat/': typeof AdminAgentsAgentIdChatIndexRoute
+  '/admin/agents/$agentId/products/': typeof AdminAgentsAgentIdProductsIndexRoute
   '/admin/agents/$agentId/chat/intents/$intentId': typeof AdminAgentsAgentIdChatIntentsIntentIdRoute
   '/admin/agents/$agentId/chat/intents/': typeof AdminAgentsAgentIdChatIntentsIndexRoute
 }
@@ -140,24 +157,26 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/admin/agents/$agentId'
     | '/admin/agents'
+    | '/admin/agents/$agentId/products'
     | '/admin/agents/$agentId/articles'
     | '/admin/agents/$agentId/install'
-    | '/admin/agents/$agentId/products'
-    | '/admin/agents/$agentId/settings'
+    | '/admin/agents/$agentId/'
+    | '/admin/agents/$agentId/products/provider'
     | '/admin/agents/$agentId/chat'
+    | '/admin/agents/$agentId/products/'
     | '/admin/agents/$agentId/chat/intents/$intentId'
     | '/admin/agents/$agentId/chat/intents'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/admin/about'
     | '/admin'
-    | '/admin/agents/$agentId'
     | '/admin/agents'
     | '/admin/agents/$agentId/articles'
     | '/admin/agents/$agentId/install'
-    | '/admin/agents/$agentId/products'
-    | '/admin/agents/$agentId/settings'
+    | '/admin/agents/$agentId'
+    | '/admin/agents/$agentId/products/provider'
     | '/admin/agents/$agentId/chat'
+    | '/admin/agents/$agentId/products'
     | '/admin/agents/$agentId/chat/intents/$intentId'
     | '/admin/agents/$agentId/chat/intents'
   id:
@@ -167,11 +186,13 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/admin/agents/$agentId'
     | '/admin/agents/'
+    | '/admin/agents/$agentId/products'
     | '/admin/agents/$agentId/articles'
     | '/admin/agents/$agentId/install'
-    | '/admin/agents/$agentId/products'
-    | '/admin/agents/$agentId/settings'
+    | '/admin/agents/$agentId/'
+    | '/admin/agents/$agentId/products/provider'
     | '/admin/agents/$agentId/chat/'
+    | '/admin/agents/$agentId/products/'
     | '/admin/agents/$agentId/chat/intents/$intentId'
     | '/admin/agents/$agentId/chat/intents/'
   fileRoutesById: FileRoutesById
@@ -217,18 +238,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAgentsAgentIdRouteRouteImport
       parentRoute: typeof AdminRouteRoute
     }
-    '/admin/agents/$agentId/settings': {
-      id: '/admin/agents/$agentId/settings'
-      path: '/settings'
-      fullPath: '/admin/agents/$agentId/settings'
-      preLoaderRoute: typeof AdminAgentsAgentIdSettingsRouteImport
-      parentRoute: typeof AdminAgentsAgentIdRouteRoute
-    }
-    '/admin/agents/$agentId/products': {
-      id: '/admin/agents/$agentId/products'
-      path: '/products'
-      fullPath: '/admin/agents/$agentId/products'
-      preLoaderRoute: typeof AdminAgentsAgentIdProductsRouteImport
+    '/admin/agents/$agentId/': {
+      id: '/admin/agents/$agentId/'
+      path: '/'
+      fullPath: '/admin/agents/$agentId/'
+      preLoaderRoute: typeof AdminAgentsAgentIdIndexRouteImport
       parentRoute: typeof AdminAgentsAgentIdRouteRoute
     }
     '/admin/agents/$agentId/install': {
@@ -245,12 +259,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAgentsAgentIdArticlesRouteImport
       parentRoute: typeof AdminAgentsAgentIdRouteRoute
     }
+    '/admin/agents/$agentId/products': {
+      id: '/admin/agents/$agentId/products'
+      path: '/products'
+      fullPath: '/admin/agents/$agentId/products'
+      preLoaderRoute: typeof AdminAgentsAgentIdProductsRouteRouteImport
+      parentRoute: typeof AdminAgentsAgentIdRouteRoute
+    }
+    '/admin/agents/$agentId/products/': {
+      id: '/admin/agents/$agentId/products/'
+      path: '/'
+      fullPath: '/admin/agents/$agentId/products/'
+      preLoaderRoute: typeof AdminAgentsAgentIdProductsIndexRouteImport
+      parentRoute: typeof AdminAgentsAgentIdProductsRouteRoute
+    }
     '/admin/agents/$agentId/chat/': {
       id: '/admin/agents/$agentId/chat/'
       path: '/chat'
       fullPath: '/admin/agents/$agentId/chat'
       preLoaderRoute: typeof AdminAgentsAgentIdChatIndexRouteImport
       parentRoute: typeof AdminAgentsAgentIdRouteRoute
+    }
+    '/admin/agents/$agentId/products/provider': {
+      id: '/admin/agents/$agentId/products/provider'
+      path: '/provider'
+      fullPath: '/admin/agents/$agentId/products/provider'
+      preLoaderRoute: typeof AdminAgentsAgentIdProductsProviderRouteImport
+      parentRoute: typeof AdminAgentsAgentIdProductsRouteRoute
     }
     '/admin/agents/$agentId/chat/intents/': {
       id: '/admin/agents/$agentId/chat/intents/'
@@ -269,11 +304,28 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminAgentsAgentIdProductsRouteRouteChildren {
+  AdminAgentsAgentIdProductsProviderRoute: typeof AdminAgentsAgentIdProductsProviderRoute
+  AdminAgentsAgentIdProductsIndexRoute: typeof AdminAgentsAgentIdProductsIndexRoute
+}
+
+const AdminAgentsAgentIdProductsRouteRouteChildren: AdminAgentsAgentIdProductsRouteRouteChildren =
+  {
+    AdminAgentsAgentIdProductsProviderRoute:
+      AdminAgentsAgentIdProductsProviderRoute,
+    AdminAgentsAgentIdProductsIndexRoute: AdminAgentsAgentIdProductsIndexRoute,
+  }
+
+const AdminAgentsAgentIdProductsRouteRouteWithChildren =
+  AdminAgentsAgentIdProductsRouteRoute._addFileChildren(
+    AdminAgentsAgentIdProductsRouteRouteChildren,
+  )
+
 interface AdminAgentsAgentIdRouteRouteChildren {
+  AdminAgentsAgentIdProductsRouteRoute: typeof AdminAgentsAgentIdProductsRouteRouteWithChildren
   AdminAgentsAgentIdArticlesRoute: typeof AdminAgentsAgentIdArticlesRoute
   AdminAgentsAgentIdInstallRoute: typeof AdminAgentsAgentIdInstallRoute
-  AdminAgentsAgentIdProductsRoute: typeof AdminAgentsAgentIdProductsRoute
-  AdminAgentsAgentIdSettingsRoute: typeof AdminAgentsAgentIdSettingsRoute
+  AdminAgentsAgentIdIndexRoute: typeof AdminAgentsAgentIdIndexRoute
   AdminAgentsAgentIdChatIndexRoute: typeof AdminAgentsAgentIdChatIndexRoute
   AdminAgentsAgentIdChatIntentsIntentIdRoute: typeof AdminAgentsAgentIdChatIntentsIntentIdRoute
   AdminAgentsAgentIdChatIntentsIndexRoute: typeof AdminAgentsAgentIdChatIntentsIndexRoute
@@ -281,10 +333,11 @@ interface AdminAgentsAgentIdRouteRouteChildren {
 
 const AdminAgentsAgentIdRouteRouteChildren: AdminAgentsAgentIdRouteRouteChildren =
   {
+    AdminAgentsAgentIdProductsRouteRoute:
+      AdminAgentsAgentIdProductsRouteRouteWithChildren,
     AdminAgentsAgentIdArticlesRoute: AdminAgentsAgentIdArticlesRoute,
     AdminAgentsAgentIdInstallRoute: AdminAgentsAgentIdInstallRoute,
-    AdminAgentsAgentIdProductsRoute: AdminAgentsAgentIdProductsRoute,
-    AdminAgentsAgentIdSettingsRoute: AdminAgentsAgentIdSettingsRoute,
+    AdminAgentsAgentIdIndexRoute: AdminAgentsAgentIdIndexRoute,
     AdminAgentsAgentIdChatIndexRoute: AdminAgentsAgentIdChatIndexRoute,
     AdminAgentsAgentIdChatIntentsIntentIdRoute:
       AdminAgentsAgentIdChatIntentsIntentIdRoute,

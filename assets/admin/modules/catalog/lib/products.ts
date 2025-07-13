@@ -57,3 +57,29 @@ export function updateProduct({
         price,
     });
 }
+
+export type Provider = {
+    name: string;
+    settings: Record<string, unknown>;
+};
+
+export function getProvider(agentId: Agent["id"]) {
+    return client.get<Provider>(`/api/agents/${agentId}/products/provider`);
+}
+
+export function getProviders(agentId: Agent["id"]) {
+    return client.get<{ name: string }[]>(
+        `/api/agents/${agentId}/products/providers`,
+    );
+}
+
+export function setProvider(provider: {
+    agentId: Agent["id"];
+    name: string;
+    settings: Record<string, unknown>;
+}) {
+    return client.put<Provider>(
+        `/api/agents/${provider.agentId}/products/provider`,
+        provider,
+    );
+}

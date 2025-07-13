@@ -20,6 +20,7 @@ export const Route = createRootRouteWithContext<AdminContext>()({
         return {
             agent: agents[0],
             queryClient,
+            title: undefined,
         };
     },
     loader: async ({ context }) => {

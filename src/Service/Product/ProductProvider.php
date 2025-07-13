@@ -27,4 +27,11 @@ interface ProductProvider
         ?string $query,
         ?array $filters = null,
     ): array;
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getSettings(): array;
+
+    public static function getName(): string;
 }

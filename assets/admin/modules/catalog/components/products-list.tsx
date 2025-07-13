@@ -9,6 +9,9 @@ import { CreateProductDialog } from "@/admin/modules/catalog/components/create-p
 import { RemoveProductDialog } from "@/admin/modules/catalog/components/remove-product-dialog.tsx";
 import { EditProductDialog } from "@/admin/modules/catalog/components/edit-product-dialog.tsx";
 import { useCurrentAgent } from "@/admin/modules/agents/hooks/current-agent.tsx";
+import { Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button.tsx";
+import { Settings } from "lucide-react";
 
 export function ProductsList() {
     const agent = useCurrentAgent();
@@ -109,7 +112,17 @@ export function ProductsList() {
 
     return (
         <div className="w-full max-w-6xl flex flex-col gap-4">
-            <div className="flex flex-row justify-end">
+            <div className="flex flex-row justify-end gap-2">
+                <Link
+                    to="/admin/agents/$agentId/products/provider"
+                    params={{ agentId: agent.id.toString() }}
+                >
+                    <Button variant="outline">
+                        <Settings />
+                        Settings
+                    </Button>
+                </Link>
+
                 <CreateProductDialog onCreated={refresh} />
             </div>
             <DataTable columns={columns} data={productsList.data ?? []} />
