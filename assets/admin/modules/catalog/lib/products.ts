@@ -10,12 +10,20 @@ export type Product = {
     price: number;
 };
 
-/**
- * Fetches all products from the catalog
- * @returns Promise with the list of products
- */
 export function getProducts({ agentId }: { agentId: Agent["id"] }) {
     return client.get<Product[]>(`/api/agents/${agentId}/products`);
+}
+
+export function searchProducts({
+    agentId,
+    query,
+}: {
+    agentId: Agent["id"];
+    query: string | undefined;
+}) {
+    return client.post<Product[]>(`/api/agents/${agentId}/products/search`, {
+        query,
+    });
 }
 
 export type ProductData = {

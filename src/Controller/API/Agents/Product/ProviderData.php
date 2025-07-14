@@ -6,7 +6,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class ProviderData
 {
-    #[Assert\NotBlank()]
+    #[Assert\NotBlank]
     public string $name;
 
     /**

@@ -35,16 +35,18 @@ class ProductController extends AbstractController
         );
     }
 
-    #[Route('/search', methods: ['GET'])]
+    #[Route('/search', methods: ['POST'])]
     #[IsGranted('AGENT_VIEW', 'agent')]
     public function search(
         Agent $agent,
         ProductService $productService,
         Request $request,
+        #[MapRequestPayload]
+        Search $search,
     ): JsonResponse {
         $products = $productService->search(
             $agent,
-            $request->query->getString('query'),
+            $search->query,
             []
         );
 

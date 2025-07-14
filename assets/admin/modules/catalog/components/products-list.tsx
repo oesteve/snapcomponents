@@ -1,19 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";
 import {
-    type Product,
     getProducts,
+    type Product,
 } from "@/admin/modules/catalog/lib/products.ts";
 import { DataTable } from "@/admin/modules/agents/data-table.tsx";
 import { CreateProductDialog } from "@/admin/modules/catalog/components/create-product-dialog.tsx";
 import { RemoveProductDialog } from "@/admin/modules/catalog/components/remove-product-dialog.tsx";
 import { EditProductDialog } from "@/admin/modules/catalog/components/edit-product-dialog.tsx";
 import { useCurrentAgent } from "@/admin/modules/agents/hooks/current-agent.tsx";
-import { Link } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button.tsx";
-import { Settings } from "lucide-react";
+import { useEffect, useState } from "react";
+import { SearchToolbar } from "@/admin/modules/catalog/components/search-toolbar.tsx";
 
 export function ProductsList() {
+    const [products, setProducts] = useState<Product[]>([]);
     const agent = useCurrentAgent();
 
     const productsList = useQuery({
@@ -106,26 +106,30 @@ export function ProductsList() {
         },
     ];
 
+    useEffect(() => {
+        setProducts(productsList.data ?? []);
+    }, [productsList.data]);
+
     function refresh() {
         productsList.refetch();
     }
 
+    function handleSearchReset() {
+        if (productsList.data) {
+            setProducts(productsList.data);
+        }
+    }
+
     return (
         <div className="w-full max-w-6xl flex flex-col gap-4">
-            <div className="flex flex-row justify-end gap-2">
-                <Link
-                    to="/admin/agents/$agentId/products/provider"
-                    params={{ agentId: agent.id.toString() }}
-                >
-                    <Button variant="outline">
-                        <Settings />
-                        Settings
-                    </Button>
-                </Link>
-
+            <div className="flex flex-row gap-2">
+                <SearchToolbar
+                    onResults={setProducts}
+                    onReset={handleSearchReset}
+                />
                 <CreateProductDialog onCreated={refresh} />
             </div>
-            <DataTable columns={columns} data={productsList.data ?? []} />
+            <DataTable columns={columns} data={products ?? []} />
         </div>
     );
 }
