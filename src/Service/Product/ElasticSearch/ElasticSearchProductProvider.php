@@ -6,7 +6,7 @@ use App\Entity\Agent;
 use App\Entity\Product;
 use App\Repository\ProductRepository;
 use App\Service\Product\ProductProvider;
-use App\Service\Search\EmbeddingsService;
+use App\Service\Search\Embedder;
 use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -17,7 +17,7 @@ readonly class ElasticSearchProductProvider implements ProductProvider
      */
     public function __construct(
         private PaginatedFinderInterface $finder,
-        private EmbeddingsService $searchService,
+        private Embedder $searchService,
         private ProductRepository $productRepository,
         private HttpClientInterface $client,
         private Agent $agent,
@@ -47,7 +47,7 @@ readonly class ElasticSearchProductProvider implements ProductProvider
             $queryVector = $this->searchService->createEmbeddings($query);
             $request = [
                 'knn' => [
-                    'field' => 'title_vector',
+                    'field' => 'vector',
                     'query_vector' => $queryVector,
                     'k' => 10,
                     'num_candidates' => 100,

@@ -58,13 +58,7 @@ fos_elastica:
                 image: ~
                 price: ~
                 user_id: ~
-
-                title_vector:
-                    type: dense_vector
-                    dims: 1536
-                    index: true
-                    similarity: cosine
-                description_vector:
+                vector:
                     type: dense_vector
                     dims: 1536
                     index: true

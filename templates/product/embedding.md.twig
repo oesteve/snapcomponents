@@ -1,0 +1,10 @@
+# {{ product.getTitle() }}
+
+{% if product.getReferenceCode() %}**Reference Code:** {{ product.getReferenceCode() }}{% endif %}
+{% if product.getSKU() %}**SKU:** {{ product.getSKU() }}{% endif %}
+{% if product.getBrand() %}**Brand:** {{ product.getBrand() }}{% endif %}
+
+{% if product.getDescription() %}
+## Description
+{{ product.getDescription() }}
+{% endif %}

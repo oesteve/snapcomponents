@@ -3,7 +3,7 @@
 namespace App\Service\Product\ElasticSearch;
 
 use App\Entity\Product;
-use App\Service\Search\EmbeddingsService;
+use App\Service\Search\ProductEmbedder;
 use Elastica\Document;
 use FOS\ElasticaBundle\Event\PostTransformEvent;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -11,26 +11,25 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 readonly class EmbeddingIndexer
 {
     public function __construct(
-        private EmbeddingsService $embeddingsService,
+        private ProductEmbedder $embeddingsService,
     ) {
     }
 
     #[AsEventListener(event: PostTransformEvent::class)]
     public function onPostTransform(PostTransformEvent $event): void
     {
-        if (false === $event->getObject() instanceof Product) {
+        $object = $event->getObject();
+
+        if (!($object instanceof Product)) {
             return;
         }
 
-        $this->setEmbeddings($event->getDocument());
+        $this->setEmbeddings($object, $event->getDocument());
     }
 
-    private function setEmbeddings(Document $document): void
+    private function setEmbeddings(Product $product, Document $document): void
     {
-        $title = $this->embeddingsService->createEmbeddings($document->get('title'));
-        $content = $this->embeddingsService->createEmbeddings($document->get('description'));
-
-        $document->set('title_vector', $title);
-        $document->set('description_vector', $content);
+        $vectors = $this->embeddingsService->createEmbeddings($product);
+        $document->set('vector', $vectors);
     }
 }

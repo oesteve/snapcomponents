@@ -4,7 +4,7 @@ namespace App\Service\Articles;
 
 use App\Entity\Agent;
 use App\Entity\Article;
-use App\Service\Search\EmbeddingsService;
+use App\Service\Search\Embedder;
 use Elastica\Aggregation\Terms;
 use Elastica\Document;
 use Elastica\Query;
@@ -19,7 +19,7 @@ readonly class ArticleSearchService
     public function __construct(
         #[Autowire(service: 'fos_elastica.finder.articles')]
         private PaginatedFinderInterface $finder,
-        private EmbeddingsService $searchService,
+        private Embedder $searchService,
     ) {
     }
 

@@ -3,16 +3,16 @@
 namespace App\Service\Search;
 
 use OpenAI\Client;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-readonly class EmbeddingsService
+readonly class Embedder
 {
     private Client $client;
 
     public function __construct(
-        private LoggerInterface $logger,
+        private CacheItemPoolInterface $cache,
         #[Autowire(env: 'OPENAI_SECRET_KEY')]
         string $apiApiKey,
         ClientInterface $httpClient,
@@ -28,7 +28,15 @@ readonly class EmbeddingsService
      */
     public function createEmbeddings(string $text): array
     {
-        $start = microtime(true);
+        // Create a cache key based on the text
+        $cacheKey = 'embedding_'.md5($text);
+
+        // Try to get from cache
+        $cacheItem = $this->cache->getItem($cacheKey);
+
+        if ($cacheItem->isHit()) {
+            return $cacheItem->get();
+        }
 
         $res = $this->client->embeddings()->create([
             'input' => $text,
@@ -36,14 +44,14 @@ readonly class EmbeddingsService
             'encoding_format' => 'float',
         ]);
 
-        $this->logger->notice(
-            'OpenAI Embeddings request',
-            [
-                'duration' => (int) ((microtime(true) - $start) * 1000),
-                'text' => $text,
-            ]
-        );
+        $embeddings = $res['data'][0]['embedding'];
 
-        return $res['data'][0]['embedding'];
+        // Store in cache
+        $cacheItem->set($embeddings);
+        // Cache for 30 days (embeddings don't change for the same text)
+        $cacheItem->expiresAfter(30 * 24 * 60 * 60);
+        $this->cache->save($cacheItem);
+
+        return $embeddings;
     }
 }

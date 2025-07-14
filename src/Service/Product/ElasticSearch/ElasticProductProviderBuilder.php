@@ -6,7 +6,7 @@ use App\Entity\Agent;
 use App\Repository\ProductRepository;
 use App\Service\Product\ProductProvider;
 use App\Service\Product\ProductProviderBuilder;
-use App\Service\Search\EmbeddingsService;
+use App\Service\Search\Embedder;
 use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -16,7 +16,7 @@ readonly class ElasticProductProviderBuilder implements ProductProviderBuilder
     public function __construct(
         #[Autowire(service: 'fos_elastica.finder.products')]
         private PaginatedFinderInterface $finder,
-        private EmbeddingsService $searchService,
+        private Embedder $searchService,
         private ProductRepository $productRepository,
         private HttpClientInterface $client,
     ) {

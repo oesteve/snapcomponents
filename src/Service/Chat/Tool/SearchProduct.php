@@ -85,7 +85,7 @@ readonly class SearchProduct implements ToolInterface
         ChatMessage $message,
         array $parameters,
     ): string {
-        $products = $this->productService->search(
+        $products = $this->productService->list(
             $message->getChat()->getAgent(),
             $parameters['query'] ?? null,
             $parameters['filters'] ?? null,
