@@ -28,3 +28,6 @@ phpstan.neon
 
 ### IDE
 /.idea
+
+### Tanstack
+/.tanstack
