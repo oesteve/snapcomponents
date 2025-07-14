@@ -46,7 +46,7 @@ export function EditProductDialog({
     const defaultData = useMemo(
         () => ({
             id: product.id,
-            name: product.name,
+            referenceCode: product.referenceCode,
             title: product.title,
             description: product.description,
             image: product.image,
@@ -82,7 +82,7 @@ export function EditProductDialog({
                     <DevFormData />
 
                     <TextInputWidget
-                        name={"name"}
+                        name={"referenceCode"}
                         label={"Name"}
                         description={"Name used to identify the product"}
                     />

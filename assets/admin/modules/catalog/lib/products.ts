@@ -3,9 +3,11 @@ import type { Agent } from "@/lib/agents/agents.ts";
 
 export type Product = {
     id: number;
-    name: string;
+    referenceCode: string;
     title: string;
     description: string;
+    sku: string | null;
+    brand: string | null;
     image: string;
     price: number;
 };
@@ -44,21 +46,21 @@ export function removeProduct(id: Product["id"]) {
 
 export function updateProduct({
     id,
-    name,
+    referenceCode,
     title,
     description,
     image,
     price,
 }: {
     id: Product["id"];
-    name: Product["name"];
+    referenceCode: Product["referenceCode"];
     title: Product["title"];
     description: Product["description"];
     image: Product["image"];
     price: Product["price"];
 }) {
     return client.put<Product>(`/api/products/${id}`, {
-        name,
+        referenceCode,
         title,
         description,
         image,

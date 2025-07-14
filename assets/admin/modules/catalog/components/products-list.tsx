@@ -11,6 +11,9 @@ import { EditProductDialog } from "@/admin/modules/catalog/components/edit-produ
 import { useCurrentAgent } from "@/admin/modules/agents/hooks/current-agent.tsx";
 import { useEffect, useState } from "react";
 import { SearchToolbar } from "@/admin/modules/catalog/components/search-toolbar.tsx";
+import { Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button.tsx";
+import { Settings } from "lucide-react";
 
 export function ProductsList() {
     const [products, setProducts] = useState<Product[]>([]);
@@ -32,7 +35,7 @@ export function ProductsList() {
                         {product.image && (
                             <img
                                 src={product.image}
-                                alt={product.name}
+                                alt={product.title}
                                 className="object-cover w-full h-full rounded border"
                             />
                         )}
@@ -42,7 +45,7 @@ export function ProductsList() {
         },
         {
             accessorKey: "name",
-            header: "Name",
+            header: "Reference",
             cell: ({ row }) => {
                 const product = row.original;
                 return (
@@ -51,7 +54,7 @@ export function ProductsList() {
                         onEdited={refresh}
                         trigger={
                             <span className="font-medium hover:underline cursor-pointer">
-                                {product.name}
+                                {product.referenceCode}
                             </span>
                         }
                     />
@@ -127,6 +130,15 @@ export function ProductsList() {
                     onResults={setProducts}
                     onReset={handleSearchReset}
                 />
+                <Link
+                    to="/admin/agents/$agentId/products/provider"
+                    params={{ agentId: agent.id.toString() }}
+                >
+                    <Button variant="outline">
+                        <Settings />
+                        Settings
+                    </Button>
+                </Link>
                 <CreateProductDialog onCreated={refresh} />
             </div>
             <DataTable columns={columns} data={products ?? []} />
