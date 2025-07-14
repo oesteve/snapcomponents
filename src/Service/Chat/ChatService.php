@@ -104,7 +104,7 @@ class ChatService
         $message = new ChatMessage(
             $message->getChat(),
             $responseMessage->role,
-            $responseMessage->content,
+            $responseMessage->content ?? '',
         );
 
         $message->getChat()->addMessage($message);
@@ -112,6 +112,9 @@ class ChatService
         $this->chatMessageRepository->save($message);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function handleToolCalls(
         ChatMessage $message,
         CreateResponseToolCall $responseToolCall,
@@ -154,7 +157,7 @@ class ChatService
     }
 
     /**
-     * @return array[]
+     * @return array<string, mixed>
      */
     private function getToolsDefinitions(ChatMessage $message): array
     {
@@ -269,16 +272,14 @@ MD;
                 );
             }
 
-            if (count($toolCallsResults)) {
-                return $this->getResponse(
-                    $message,
-                    [
-                        ...$context,
-                        $responseMessage->toArray(),
-                        ...$toolCallsResults,
-                    ]
-                );
-            }
+            return $this->getResponse(
+                $message,
+                [
+                    ...$context,
+                    $responseMessage->toArray(),
+                    ...$toolCallsResults,
+                ]
+            );
         }
 
         return $response;
