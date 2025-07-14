@@ -48,9 +48,15 @@ class ProductsImportCommand extends Command
             throw new \Exception('Provider not found');
         }
 
-        $provider->importProducts();
+        $io->createProgressBar($provider->getSettings()['num_of_products']);
+        $io->progressStart();
 
-        $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
+        foreach ($provider->importProducts() as $product) {
+            $io->progressAdvance();
+        }
+
+        $io->progressFinish();
+        $io->success('Products imported');
 
         return Command::SUCCESS;
     }

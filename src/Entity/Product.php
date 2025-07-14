@@ -10,19 +10,28 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product implements ProductInterface
 {
+    /**
+     * @phpstan-ignore-next-line
+     */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\Column(length: 255)]
-    private string $name;
+    private string $referenceCode;
 
     #[ORM\Column(length: 255)]
     private string $title;
 
     #[ORM\Column(length: 255)]
     private string $description;
+
+    #[ORM\Column(length: 255)]
+    private string $sku;
+
+    #[ORM\Column(length: 255)]
+    private string $brand;
 
     #[ORM\Column(length: 500)]
     private string $image;
@@ -33,33 +42,52 @@ class Product implements ProductInterface
     #[ORM\ManyToOne(targetEntity: Agent::class, inversedBy: 'products')]
     private Agent $agent;
 
-    public function __construct(string $name, string $title, string $description, string $image, float $price, Agent $agent)
-    {
-        $this->name = $name;
+    public function __construct(
+        string $referenceCode,
+        string $title,
+        string $description,
+        string $sku,
+        string $brand,
+        string $image,
+        float $price,
+        Agent $agent,
+    ) {
+        $this->referenceCode = $referenceCode;
         $this->title = $title;
         $this->description = $description;
+        $this->sku = $sku;
+        $this->brand = $brand;
         $this->image = $image;
         $this->price = $price;
         $this->agent = $agent;
     }
 
-    public function update(string $name, string $title, string $description, string $image, float $price): void
-    {
-        $this->name = $name;
+    public function update(
+        string $referenceCode,
+        string $title,
+        string $description,
+        string $sku,
+        string $brand,
+        string $image,
+        float $price,
+    ): void {
+        $this->referenceCode = $referenceCode;
         $this->title = $title;
         $this->description = $description;
+        $this->sku = $sku;
+        $this->brand = $brand;
         $this->image = $image;
         $this->price = $price;
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getName(): string
+    public function getReferenceCode(): string
     {
-        return $this->name;
+        return $this->referenceCode;
     }
 
     public function getTitle(): string
@@ -70,6 +98,16 @@ class Product implements ProductInterface
     public function getDescription(): string
     {
         return $this->description;
+    }
+
+    public function getSku(): string
+    {
+        return $this->sku;
+    }
+
+    public function getBrand(): string
+    {
+        return $this->brand;
     }
 
     public function getImage(): string

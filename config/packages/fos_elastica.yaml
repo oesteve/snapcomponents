@@ -46,10 +46,15 @@ fos_elastica:
                 provider: ~
                 finder: ~
             properties:
-                id: ~
-                name: ~
+                id:
+                referenceCode:
+                    type: keyword
                 title: ~
                 description: ~
+                sku:
+                    type: keyword
+                brand:
+                    type: keyword
                 image: ~
                 price: ~
                 user_id: ~

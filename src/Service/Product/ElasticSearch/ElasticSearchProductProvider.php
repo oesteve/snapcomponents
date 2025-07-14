@@ -98,42 +98,53 @@ readonly class ElasticSearchProductProvider implements ProductProvider
         ) {
             yield new ProductData(
                 'product_'.$itemData['id'],
+                $itemData['sku'],
                 $itemData['title'],
                 $itemData['description'],
+                $itemData['brand'],
                 $itemData['price'],
                 $itemData['images'][0],
             );
         }
     }
 
-    public function importProducts(): void
+    /**
+     * @return \generator<Product>
+     */
+    public function importProducts(): \Generator
     {
         foreach ($this->getProducts() as $productData) {
             $product = $this->productRepository->findOneBy([
                 'agent' => $this->agent,
-                'name' => $productData->name,
+                'referenceCode' => $productData->referenceCode,
             ]);
 
             if (!$product) {
                 $product = new Product(
-                    $productData->name,
+                    $productData->referenceCode,
                     $productData->title,
                     $productData->description,
+                    $productData->sku,
+                    $productData->brand,
                     $productData->image,
                     $productData->price,
                     $this->agent
                 );
             } else {
                 $product->update(
-                    $productData->name,
+                    $productData->referenceCode,
                     $productData->title,
                     $productData->description,
+                    $productData->sku,
+                    $productData->brand,
                     $productData->image,
                     $productData->price,
                 );
             }
 
             $this->productRepository->save($product);
+
+            yield $product;
         }
     }
 

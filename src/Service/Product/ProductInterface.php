@@ -8,10 +8,19 @@ use Symfony\Component\Serializer\Attribute\Groups;
 interface ProductInterface
 {
     #[Groups([SerializerGroups::API_LIST])]
-    public function getName(): string;
+    public function getId(): int;
 
     #[Groups([SerializerGroups::API_LIST])]
-    public function getTitle(): ?string;
+    public function getReferenceCode(): ?string;
+
+    #[Groups([SerializerGroups::API_LIST])]
+    public function getTitle(): string;
+
+    #[Groups([SerializerGroups::API_LIST])]
+    public function getSKU(): ?string;
+
+    #[Groups([SerializerGroups::API_LIST])]
+    public function getBrand(): ?string;
 
     #[Groups([SerializerGroups::API_LIST])]
     public function getDescription(): ?string;
