@@ -73,14 +73,6 @@ readonly class ProductService
     }
 
     /**
-     * @return array<Product>
-     */
-    public function listProducts(Agent $agent): array
-    {
-        return $this->getProvider($agent)->list();
-    }
-
-    /**
      * @param array<string,array{
      *      field: string,
      *      operator: string,
@@ -89,7 +81,7 @@ readonly class ProductService
      *
      * @return array<Product>
      */
-    public function search(Agent $agent, ?string $query, ?array $filters): array
+    public function list(Agent $agent, ?string $query = null, ?array $filters = null): array
     {
         return $this->getProvider($agent)->search($query, $filters);
     }

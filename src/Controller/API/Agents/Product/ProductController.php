@@ -23,7 +23,7 @@ class ProductController extends AbstractController
         Agent $agent,
         ProductService $providerFactory,
     ): JsonResponse {
-        $products = $providerFactory->listProducts($agent);
+        $products = $providerFactory->list($agent);
 
         return $this->json(
             $products,
@@ -44,7 +44,7 @@ class ProductController extends AbstractController
         #[MapRequestPayload]
         Search $search,
     ): JsonResponse {
-        $products = $productService->search(
+        $products = $productService->list(
             $agent,
             $search->query,
             []
