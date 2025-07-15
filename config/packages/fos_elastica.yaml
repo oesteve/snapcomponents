@@ -27,13 +27,7 @@ fos_elastica:
                     properties:
                         name:
                             type: keyword
-
-                title_vector:
-                    type: dense_vector
-                    dims: 1536
-                    index: true
-                    similarity: cosine
-                content_vector:
+                vector:
                     type: dense_vector
                     dims: 1536
                     index: true

@@ -11,16 +11,24 @@ import { EditArticleDialog } from "@/admin/modules/articles/components/edit-arti
 import { ImportArticlesDialog } from "@/admin/modules/articles/components/import-articles-dialog.tsx";
 import type { Agent } from "@/lib/agents/agents.ts";
 import { articlesKey } from "@/admin/modules/articles/hooks/query-keys.ts";
+import { SearchArticles } from "@/admin/modules/articles/components/search-articles.tsx";
+import { useEffect, useState } from "react";
 
 interface ArticleListProps {
     agent: Agent;
 }
 
 export function ArticleList({ agent }: ArticleListProps) {
+    const [articles, setArticles] = useState<Article[]>([]);
+
     const articlesQuery = useQuery({
         queryKey: articlesKey(agent),
         queryFn: () => getArticles({ agentId: agent.id }),
     });
+
+    useEffect(() => {
+        setArticles(articlesQuery.data ?? []);
+    }, [articlesQuery.data]);
 
     const columns: ColumnDef<Article>[] = [
         {
@@ -85,13 +93,25 @@ export function ArticleList({ agent }: ArticleListProps) {
         articlesQuery.refetch();
     }
 
+    function handleSearchReset() {
+        setArticles(articlesQuery.data ?? []);
+    }
+
+    function handleSearchResults(articles: Article[]) {
+        setArticles(articles);
+    }
+
     return (
         <div className="w-full max-w-6xl flex flex-col gap-4">
             <div className="flex flex-row justify-end space-x-2">
+                <SearchArticles
+                    onResults={handleSearchResults}
+                    onReset={handleSearchReset}
+                />
                 <ImportArticlesDialog onImported={refresh} agentId={agent.id} />
                 <CreateArticleDialog onCreated={refresh} agentId={agent.id} />
             </div>
-            <DataTable columns={columns} data={articlesQuery.data ?? []} />
+            <DataTable columns={columns} data={articles} />
         </div>
     );
 }

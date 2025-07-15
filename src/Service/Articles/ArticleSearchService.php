@@ -6,7 +6,6 @@ use App\Entity\Agent;
 use App\Entity\Article;
 use App\Service\Search\Embedder;
 use Elastica\Aggregation\Terms;
-use Elastica\Document;
 use Elastica\Query;
 use FOS\ElasticaBundle\Event\PostTransformEvent;
 use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
@@ -19,40 +18,40 @@ readonly class ArticleSearchService
     public function __construct(
         #[Autowire(service: 'fos_elastica.finder.articles')]
         private PaginatedFinderInterface $finder,
-        private Embedder $searchService,
+        private Embedder $embbder,
+        private ArticleEmbedder $articleEmbedder,
     ) {
     }
 
     /**
      * Search for articles using Elasticsearch.
      *
-     * @param Agent  $agent The agent to filter articles by
-     * @param string $query The search query
-     *
      * @return Article[] The search results
      */
     public function search(
         Agent $agent,
-        string $query,
+        ?string $query,
     ): array {
-        $queryVector = $this->searchService->createEmbeddings(
-            $query,
-        );
-
-        $searchParams = [
-            'knn' => [
-                'field' => 'title_vector',
-                'query_vector' => $queryVector,
-                'k' => 10,
-                'num_candidates' => 100,
-            ],
-        ];
-
         $searchParams['post_filter'] = [
             'term' => [
                 'agent.id' => $agent->getId(),
             ],
         ];
+
+        if ($query) {
+            $queryVector = $this
+                ->embbder
+                ->createEmbeddings(
+                    $query,
+                );
+
+            $searchParams['knn'] = [
+                'field' => 'vector',
+                'query_vector' => $queryVector,
+                'k' => 10,
+                'num_candidates' => 100,
+            ];
+        }
 
         /** @var Article[] $results */
         $results = $this->finder->find($searchParams);
@@ -63,11 +62,16 @@ readonly class ArticleSearchService
     #[AsEventListener(event: PostTransformEvent::class)]
     public function onPostTransform(PostTransformEvent $event): void
     {
-        if (false === $event->getObject() instanceof Article) {
+        $object = $event->getObject();
+
+        if (!($object instanceof Article)) {
             return;
         }
 
-        $this->setEmbeddings($event->getDocument());
+        $event->getDocument()->set(
+            'vector',
+            $this->articleEmbedder->createEmbeddings($object),
+        );
     }
 
     /**
@@ -92,14 +96,5 @@ readonly class ArticleSearchService
             fn (array $item) => $item['key'],
             $aggregationData['categories']['buckets']
         );
-    }
-
-    private function setEmbeddings(Document $document): void
-    {
-        $title = $this->searchService->createEmbeddings($document->get('title'));
-        $content = $this->searchService->createEmbeddings($document->get('content'));
-
-        $document->set('title_vector', $title);
-        $document->set('content_vector', $content);
     }
 }

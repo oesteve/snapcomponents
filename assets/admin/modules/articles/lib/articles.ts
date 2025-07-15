@@ -18,6 +18,18 @@ export function getArticles({ agentId }: { agentId: Agent["id"] }) {
     return client.get<Article[]>(`/api/agents/${agentId}/articles`);
 }
 
+export function searchArticles({
+    agentId,
+    query,
+}: {
+    agentId: Agent["id"];
+    query: string | undefined;
+}) {
+    return client.post<Article[]>(`/api/agents/${agentId}/articles/search`, {
+        query,
+    });
+}
+
 export type ImportResult = {
     articles: Article[];
     success: number;

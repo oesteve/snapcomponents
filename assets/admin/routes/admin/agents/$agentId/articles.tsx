@@ -3,6 +3,9 @@ import { ArticleList } from "@/admin/modules/articles/components/article-list.ts
 import { useCurrentAgent } from "@/admin/modules/agents/hooks/current-agent.tsx";
 
 export const Route = createFileRoute("/admin/agents/$agentId/articles")({
+    beforeLoad: () => ({
+        title: "Articles",
+    }),
     component: About,
 });
 

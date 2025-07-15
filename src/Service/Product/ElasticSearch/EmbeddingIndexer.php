@@ -3,7 +3,7 @@
 namespace App\Service\Product\ElasticSearch;
 
 use App\Entity\Product;
-use App\Service\Search\ProductEmbedder;
+use App\Service\Product\ProductEmbedder;
 use Elastica\Document;
 use FOS\ElasticaBundle\Event\PostTransformEvent;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;

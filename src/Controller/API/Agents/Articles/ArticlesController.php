@@ -3,7 +3,6 @@
 namespace App\Controller\API\Agents\Articles;
 
 use App\Controller\AbstractController;
-use App\Controller\API\Agents\Articles\DTO\ArticleData;
 use App\Entity\Agent;
 use App\Entity\Article;
 use App\Repository\AgentRepository;
@@ -15,7 +14,6 @@ use App\Service\Articles\Import\ArticleImportService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -39,25 +37,20 @@ class ArticlesController extends AbstractController
         ]);
     }
 
-    #[Route('/search', methods: ['GET'])]
+    #[Route('/search', methods: ['POST'])]
     #[IsGranted('AGENT_VIEW', 'agent')]
     public function get(
         ArticleSearchService $articleService,
         Agent $agent,
-        #[MapQueryParameter]
-        string $query,
+        #[MapRequestPayload]
+        Search $search,
     ): JsonResponse {
         $results = $articleService->search(
             $agent,
-            $query,
+            $search->query,
         );
 
-        $data = [
-            'results' => $results,
-            'categories' => $articleService->getCategories(),
-        ];
-
-        return $this->json($data,
+        return $this->json($results,
             Response::HTTP_OK,
             [],
             [
@@ -131,9 +124,12 @@ class ArticlesController extends AbstractController
     }
 
     #[Route('/{id}', methods: ['DELETE'])]
-    #[IsGranted('AGENT_EDIT', 'article.agent')]
-    public function remove(Article $article, ArticleRepository $articleRepository): JsonResponse
-    {
+    #[IsGranted('AGENT_EDIT', 'agent')]
+    public function remove(
+        Article $article,
+        Agent $agent,
+        ArticleRepository $articleRepository,
+    ): JsonResponse {
         $articleRepository->remove($article);
 
         return $this->json(null, Response::HTTP_NO_CONTENT);

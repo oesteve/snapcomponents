@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Service\Search;
+namespace App\Service\Product;
 
-use App\Entity\Product;
-use App\Service\Product\ProductInterface;
+use App\Service\Search\Embedder;
 use Twig\Environment;
 
 readonly class ProductEmbedder
