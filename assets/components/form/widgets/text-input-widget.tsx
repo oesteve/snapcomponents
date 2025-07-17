@@ -9,7 +9,7 @@ import {
 import { FormDescription } from "@/components/form/form-description";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React, { type ComponentProps, type FC, useRef } from "react";
+import React, { type ComponentProps, type FC, useEffect, useRef } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -47,6 +47,14 @@ export default function TextInputWidget({
 
         setFieldValue(name, value);
     }
+
+    useEffect(() => {
+        if (!inputRef.current) {
+            return;
+        }
+
+        inputRef.current.value = defaultFieldData ?? "";
+    }, [defaultFieldData]);
 
     return (
         <div className={cn("flex flex-col gap-2", containerClassName)}>

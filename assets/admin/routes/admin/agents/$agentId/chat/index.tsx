@@ -22,7 +22,10 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table.tsx";
-import { getChatConfig, updateChatConfig } from "@/lib/agents/chat.ts";
+import {
+    getChatConfig,
+    setChatSettings,
+} from "@/admin/modules/chat/lib/chat.ts";
 import { useMemo } from "react";
 import { Button } from "@/components/ui/button.tsx";
 import { Label } from "@/components/ui/label.tsx";
@@ -32,20 +35,9 @@ import { useCurrentAgent } from "@/admin/modules/agents/hooks/current-agent.tsx"
 
 export const Route = createFileRoute("/admin/agents/$agentId/chat/")({
     component: ChatRoute,
-    beforeLoad: ({ context }) => {
-        const agent = context.agent;
-
+    beforeLoad: () => {
         return {
-            ...context,
-            breadcrumbs: [
-                { label: "Admin", href: "/admin" },
-                { label: "Agents", href: "/admin/agents" },
-                {
-                    label: agent.name,
-                    href: `/admin/agents/${agent.id}/settings`,
-                },
-                { label: "Chat", isActive: true },
-            ],
+            title: "Chat",
         };
     },
     loader: async ({ params: { agentId } }) => {
@@ -62,7 +54,7 @@ export function ChatRoute() {
     const { chatConfig } = Route.useLoaderData();
 
     const updateChatSettingsMutation = useMutation({
-        mutationFn: updateChatConfig,
+        mutationFn: setChatSettings,
         onSuccess: () => {
             toast.success("Agent updated successfully");
         },
@@ -133,7 +125,7 @@ export function ChatRoute() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {chatConfig.intents.map((intent) => (
+                                {chatConfig?.intents.map((intent) => (
                                     <TableRow key={intent.id}>
                                         <TableCell>
                                             <Button

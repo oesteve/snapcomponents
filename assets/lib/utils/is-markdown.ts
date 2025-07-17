@@ -13,7 +13,5 @@ export function isMarkdown(text: string) {
 
     const b = markdownIndicators.some((pattern) => pattern.test(text));
 
-    console.log("is markdown?", b, text);
-
     return b;
 }

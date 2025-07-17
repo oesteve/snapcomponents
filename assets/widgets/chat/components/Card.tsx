@@ -27,7 +27,6 @@ const Card: React.FC<ChatCardProps> = ({ onClose }) => {
 
     const resizeObserver = useMemo(() => {
         return new ResizeObserver(() => {
-            console.log("Size changed");
             scrollToBottom();
         });
     }, []);
@@ -47,18 +46,12 @@ const Card: React.FC<ChatCardProps> = ({ onClose }) => {
             setChat(chat);
             setMessage("");
         },
-        onError: (error) => {
-            console.error("Error creating chat:", error);
-        },
     });
 
     const sendMessageMutation = useMutation({
         mutationFn: sendMessage,
         onSuccess: (chat) => {
             setChat(chat);
-        },
-        onError: (error) => {
-            console.error("Error sending message:", error);
         },
     });
 

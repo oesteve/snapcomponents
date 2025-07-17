@@ -12,20 +12,27 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar.tsx";
 import { useAgents } from "@/admin/modules/agents/agent-list.tsx";
-import { useRouteContext } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
+import type { Agent } from "@/lib/agents/agents.ts";
+import { useCurrentAgent } from "@/admin/modules/agents/hooks/current-agent.tsx";
 
 export function AgentSwitcher() {
-    const agent = useRouteContext({
-        from: "/admin",
-        select: (context) => context.agent,
-    });
-
-    console.log("Agent", agent);
+    const navigate = useNavigate();
+    const agent = useCurrentAgent();
 
     const agentList = useAgents();
 
     if (!agentList.data || !agent) {
         return null;
+    }
+
+    function handleSelectAgent(agent: Agent) {
+        navigate({
+            to: "/admin/agents/$agentId",
+            params: {
+                agentId: agent.id.toString(),
+            },
+        });
     }
 
     return (
@@ -52,7 +59,10 @@ export function AgentSwitcher() {
                         align="start"
                     >
                         {agentList.data.map((item) => (
-                            <DropdownMenuItem key={item.id}>
+                            <DropdownMenuItem
+                                key={item.id}
+                                onClick={() => handleSelectAgent(item)}
+                            >
                                 {item.name}
                                 {item.id === agent.id && (
                                     <Check className="ml-auto" />

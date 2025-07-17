@@ -36,7 +36,7 @@ class ChatIntent
     private array $widgets;
 
     #[ORM\ManyToOne(inversedBy: 'intents')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ChatConfiguration $configuration;
 
     /**

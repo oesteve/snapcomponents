@@ -37,7 +37,7 @@ export const Route = createFileRoute(
 });
 
 function ProductsSettingsPage() {
-    const agent = useCurrentAgent();
+    const agent = useCurrentAgent()!;
     const router = useRouter();
 
     const updateProviderMutation = useMutation({

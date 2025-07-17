@@ -7,15 +7,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class ChatConfigData
 {
-    #[Assert\Positive]
-    public int $agentId;
-
-    #[Assert\NotBlank(allowNull: false)]
-    public string $name;
-
-    #[Assert\NotBlank(allowNull: false)]
-    public string $description;
-
     #[Assert\NotBlank(allowNull: false)]
     public string $instructions;
 
@@ -32,17 +23,5 @@ class ChatConfigData
             'widgets' => [new Assert\Optional([new Assert\Type('array'), new Assert\All([new Assert\NotBlank()])])],
         ]),
     ])]
-    public array $intents;
-
-    /**
-     * @var array<string>
-     */
-    #[Assert\All([new Assert\NotBlank(allowNull: false)])]
-    public array $tools;
-
-    /**
-     * @var array<string>
-     */
-    #[Assert\All([new Assert\NotBlank(allowNull: false)])]
-    public array $widgets;
+    public array $intents = [];
 }

@@ -28,8 +28,9 @@ import {
     SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
-import { Link, useRouteContext } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { AgentSwitcher } from "@/admin/modules/layout/components/agent-switcher.tsx";
+import { useSelectedAgent } from "@/admin/modules/agents/hooks/current-agent.tsx";
 
 const agentSettingsData: {
     title: string;
@@ -38,7 +39,7 @@ const agentSettingsData: {
 }[] = [
     {
         title: "Settings",
-        url: "/admin/agents/$agentId/settings",
+        url: "/admin/agents/$agentId",
         icon: Settings,
     },
     {
@@ -81,40 +82,39 @@ const navMainData: {
 ];
 
 export function NavMain() {
-    const agent = useRouteContext({
-        from: "/admin",
-        select: (context) => context.agent,
-    });
+    const agent = useSelectedAgent();
 
     return (
         <>
-            <SidebarGroup className="mb-8">
-                <SidebarMenu>
-                    <SidebarHeader className="mb-12">
-                        <AgentSwitcher />
-                    </SidebarHeader>
-                    <SidebarGroupLabel>Agent</SidebarGroupLabel>
-                    {agentSettingsData.map((item) => (
-                        <SidebarMenuSubItem key={item.title}>
-                            <Link
-                                to={item.url}
-                                params={{ agentId: agent.id.toString() }}
-                            >
-                                {({ isActive }) => (
-                                    <SidebarMenuButton
-                                        className={cn(
-                                            isActive && "bg-secondary",
-                                        )}
-                                    >
-                                        <item.icon />
-                                        {item.title}
-                                    </SidebarMenuButton>
-                                )}
-                            </Link>
-                        </SidebarMenuSubItem>
-                    ))}
-                </SidebarMenu>
-            </SidebarGroup>
+            {agent && (
+                <SidebarGroup className="mb-8">
+                    <SidebarMenu>
+                        <SidebarHeader className="mb-12">
+                            <AgentSwitcher />
+                        </SidebarHeader>
+                        <SidebarGroupLabel>Agent</SidebarGroupLabel>
+                        {agentSettingsData.map((item) => (
+                            <SidebarMenuSubItem key={item.title}>
+                                <Link
+                                    to={item.url}
+                                    params={{ agentId: agent.id.toString() }}
+                                >
+                                    {({ isActive }) => (
+                                        <SidebarMenuButton
+                                            className={cn(
+                                                isActive && "bg-secondary",
+                                            )}
+                                        >
+                                            <item.icon />
+                                            {item.title}
+                                        </SidebarMenuButton>
+                                    )}
+                                </Link>
+                            </SidebarMenuSubItem>
+                        ))}
+                    </SidebarMenu>
+                </SidebarGroup>
+            )}
             <SidebarGroup>
                 <SidebarMenu>
                     <SidebarGroupLabel>Global Settings</SidebarGroupLabel>

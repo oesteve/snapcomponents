@@ -1,10 +1,6 @@
 "use client";
 
-import {
-    type FormElementProps,
-    useFieldErrors,
-    useFieldValue,
-} from "@/components/form";
+import { type FormElementProps, useFieldErrors } from "@/components/form";
 import { FormDescription } from "@/components/form/form-description";
 import { Label } from "@/components/ui/label";
 import { type ComponentProps, type FC } from "react";
@@ -26,10 +22,7 @@ export default function DimensionWidget({
     dimensionLevels,
     required,
 }: DimensionWidgetProps) {
-    const fieldValue = useFieldValue(name);
     const fieldErrors = useFieldErrors(name);
-
-    console.log(fieldValue);
 
     return (
         <div className={cn("flex flex-col gap-2")}>

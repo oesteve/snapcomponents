@@ -16,7 +16,6 @@ if (import.meta.hot) {
         if (newModule) {
             // Update the stylesheet with the new CSS content
             styleSheet.replaceSync(newModule.default);
-            console.log("CSS hot-reloaded");
         }
     });
 }
@@ -147,6 +146,5 @@ export function createWebComponent<P extends object>(
     // Register the custom element
     if (!customElements.get(tagName)) {
         customElements.define(tagName, ReactWebComponent);
-        console.log(`Web component registered: ${tagName}`);
     }
 }

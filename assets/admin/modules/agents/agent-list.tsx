@@ -26,7 +26,7 @@ export function AgentList() {
                 return (
                     <Button asChild variant="link">
                         <Link
-                            to={`/admin/agents/$agentId/settings`}
+                            to={`/admin/agents/$agentId`}
                             params={{ agentId: agent.id.toString() }}
                         >
                             {agent.name}

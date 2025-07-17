@@ -115,8 +115,6 @@ export function createFormStore(
                 }
             },
             reset: (data) => {
-                console.log("reset", data);
-
                 const defaultData = data ?? getState().defaultData;
                 set({
                     defaultData: {
@@ -375,10 +373,8 @@ export function Form<T>(props: FormProps<T>) {
                 error: null,
             });
             rs.catch((error) => {
-                console.error("error", error);
                 setError(error);
             }).finally(() => {
-                console.log("finally");
                 formStore.setState({ loading: false });
             });
         }

@@ -12,7 +12,10 @@ import TextInputWidget from "@/components/form/widgets/text-input-widget.tsx";
 import TextareaInputWidget from "@/components/form/widgets/textarea-input-widget.tsx";
 import { TagInputWidget } from "@/components/form/widgets/tag-input-widget.tsx";
 import { useEffect, useState } from "react";
-import { useQueryTools, useQueryComponents } from "@/lib/agents/chat.ts";
+import {
+    useQueryTools,
+    useQueryComponents,
+} from "@/admin/modules/chat/lib/chat.ts";
 
 interface EditIntentDialogProps {
     name: string;

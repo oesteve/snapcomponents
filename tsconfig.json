@@ -10,5 +10,6 @@
             "@/translations/*": ["./var/translations/*"],
             "@/*": ["./assets/*"]
         }
-    }
+    },
+    "include": ["assets", "assets/global"]
 }

@@ -19,37 +19,28 @@ import {
     createIntent,
     useQueryComponents,
     useQueryTools,
-} from "@/lib/agents/chat.ts";
+} from "@/admin/modules/chat/lib/chat.ts";
 import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
+import { useMemo } from "react";
+import { useCurrentAgent } from "@/admin/modules/agents/hooks/current-agent";
 
 export const Route = createFileRoute("/admin/agents/$agentId/chat/intents/")({
-    beforeLoad: ({ context }) => {
-        const agent = context.agent;
-        return {
-            ...context,
-            breadcrumbs: [
-                { label: "Admin", href: "/admin" },
-                { label: "Agents", href: "/admin/agents" },
-                {
-                    label: agent.name,
-                    href: `/admin/agents/${agent.id}/settings`,
-                },
-                { label: "Chat", href: `/admin/agents/${agent.id}/chat` },
-                { label: "Intents", href: `/admin/agents/${agent.id}/intents` },
-                { label: "Create new intent", isActive: true },
-            ],
-        };
-    },
+    beforeLoad: () => ({
+        title: "Create new Intents",
+    }),
     component: CreateIntent,
 });
 
 function CreateIntent() {
-    const { agentId } = Route.useParams();
+    const agent = useCurrentAgent();
+
     const navigate = useNavigate();
-    const { data: tools = [], isLoading: isLoadingTools } = useQueryTools();
+    const { data: tools = [], isLoading: isLoadingTools } = useQueryTools(
+        agent.id,
+    );
     const { data: components = {}, isLoading: isLoadingComponents } =
-        useQueryComponents();
+        useQueryComponents(agent.id);
 
     // Convert tools to options array for TagInputWidget
     const toolOptions = tools.map((tool) => tool.name);
@@ -61,18 +52,21 @@ function CreateIntent() {
         mutationFn: createIntent,
         onSuccess: () => {
             toast.success("Intent created successfully");
-            navigate({ to: `/admin/agents/${agentId}/chat` });
+            navigate({ to: `/admin/agents/${agent.id}/chat` });
         },
     });
 
-    const defaultData = {
-        configurationId: parseInt(agentId),
-        name: "",
-        description: "",
-        instructions: "",
-        tools: [],
-        widgets: [],
-    };
+    const defaultData = useMemo(
+        () => ({
+            agentId: agent.id,
+            name: "",
+            description: "",
+            instructions: "",
+            tools: [],
+            widgets: [],
+        }),
+        [],
+    );
 
     return (
         <Form

@@ -1,3 +1,5 @@
+import type { ErrorInterface } from "@/lib/error";
+
 const { baseUrl, token } = window.__snapComponents || {};
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
@@ -123,7 +125,7 @@ export class RestClient {
      * @param url - The URL to request
      * @param options - Request options
      * @returns Promise with the response data of type ResponseType
-     * @throws {HttpError} If the response status is not in the 2XX range
+     * @throws {HttpError|ValidationError} If the response status is not in the 2XX range
      */
     private async request<ResponseType>(
         method: HttpMethod,
@@ -133,8 +135,6 @@ export class RestClient {
         // Build the full URL with query parameters
         const queryParams = new URLSearchParams(params).toString();
         const fullUrl = `${this.baseUrl}${url}${queryParams ? `?${queryParams}` : ""}`;
-
-        console.log(this.token);
 
         // Prepare request options
         const requestOptions: RequestInit = {
@@ -163,18 +163,23 @@ export class RestClient {
         // Check if the response status is not in the 2XX range
         if (response.status < 200 || response.status >= 300) {
             let errorMessage = `HTTP Error ${response.status}: ${response.statusText}`;
+            let errorData: ErrorInterface | null = null;
 
             // Try to extract more detailed error message from response if possible
             try {
                 const contentType = response.headers.get("content-type");
                 if (contentType && contentType.includes("application/json")) {
-                    const errorData = await response.json();
-                    if (errorData.message) {
+                    errorData = await response.json();
+                    if (errorData && errorData.message) {
                         errorMessage = errorData.message;
                     }
                 }
             } catch {
                 // If we can't parse the error response, just use the default error message
+            }
+
+            if (errorData) {
+                throw errorData;
             }
 
             // Import dynamically to avoid circular dependencies

@@ -44,7 +44,7 @@ export function Settings() {
             id: agent.id,
             name: agent.name,
         }),
-        [agent],
+        [agent.id],
     );
 
     return (

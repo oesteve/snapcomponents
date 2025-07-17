@@ -4,6 +4,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import symfonyPlugin from "vite-plugin-symfony";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
+import checker from 'vite-plugin-checker'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -37,6 +38,11 @@ export default defineConfig({
             generatedRouteTree: "assets/admin/routeTree.gen.ts",
         }),
         react(),
+        checker({
+            typescript: {
+                tsconfigPath: './tsconfig.app.json',
+            }
+        }),
     ],
     resolve: {
         alias: {

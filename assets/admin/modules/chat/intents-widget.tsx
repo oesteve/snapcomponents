@@ -14,7 +14,7 @@ import {
     useFieldData,
     useSetFieldValue,
 } from "@/components/form";
-import type { ChatIntent } from "@/lib/agents/chat.ts";
+import type { ChatIntent } from "@/admin/modules/chat/lib/chat.ts";
 import { useState } from "react";
 
 export function IntentsWidget(props: FormElementProps) {

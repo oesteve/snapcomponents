@@ -52,7 +52,7 @@ export function RemoveProductDialog({
                     <DialogTitle>Remove Product</DialogTitle>
                     <DialogDescription>
                         Are you sure you want to remove the product &quot;
-                        {product.name}&quot;? This action cannot be undone.
+                        {product.title}&quot;? This action cannot be undone.
                     </DialogDescription>
                 </DialogHeader>
                 <Form

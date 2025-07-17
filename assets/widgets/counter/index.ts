@@ -15,5 +15,3 @@ createWebComponent({
         return { initialValue };
     },
 });
-
-console.log("SimpleCounter web component registered as wg-counter");

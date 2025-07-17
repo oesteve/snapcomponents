@@ -7,7 +7,6 @@ export function useBreadcrumbs(): BreadcrumbItem[] {
     );
 
     return matches.map(({ pathname, context }, idx): BreadcrumbItem => {
-        console.log("breadcrumb", pathname, context);
         return {
             label: context.title!,
             href: pathname,

@@ -24,7 +24,15 @@ export default defineConfig([
             }
         }
     },
-    { files: ["**/*.{jsx,tsx}"], rules: { "react/react-in-jsx-scope": "off", "react/no-unescaped-entities": "off" } },
+    {
+        rules: {
+            "no-console": "error"
+        }
+    },
+    {
+        files: ["**/*.{jsx,tsx}"],
+        rules: { "react/react-in-jsx-scope": "off", "react/no-unescaped-entities": "off" }
+    },
     {
         files: ["**/*.{ts,mts,cts,tsx}"],
         rules: { "@typescript-eslint/no-explicit-any": "off" },

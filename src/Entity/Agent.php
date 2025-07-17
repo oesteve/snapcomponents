@@ -21,7 +21,7 @@ class Agent extends BaseEntity
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups([SerializerGroups::ELASTICA, SerializerGroups::API_LIST])]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\Column(length: 255)]
     #[Groups([SerializerGroups::API_LIST])]
@@ -35,6 +35,9 @@ class Agent extends BaseEntity
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
+    /**
+     * @var Collection<int,Chat>
+     */
     #[ORM\OneToMany(targetEntity: Chat::class, mappedBy: 'agent', orphanRemoval: true)]
     #[ORM\OrderBy(['createdAt' => 'DESC'])]
     private Collection $chats;
@@ -48,6 +51,9 @@ class Agent extends BaseEntity
     #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'agent', orphanRemoval: true)]
     private Collection $products;
 
+    /**
+     * @var array<string, mixed>
+     */
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private array $attributes = [];
 

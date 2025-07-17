@@ -26,7 +26,4 @@ class CreateIntent
      */
     #[Assert\NotNull]
     public array $widgets = [];
-
-    #[Assert\NotBlank(allowNull: false)]
-    public int $configurationId;
 }

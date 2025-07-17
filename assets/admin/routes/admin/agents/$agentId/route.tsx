@@ -11,6 +11,7 @@ export const Route = createFileRoute("/admin/agents/$agentId")({
         });
 
         return {
+            agent,
             title: `${agent.name}`,
         };
     },

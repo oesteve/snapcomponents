@@ -86,7 +86,16 @@ class AgentController extends AbstractController
 
         $agentRepository->save($agent);
 
-        return $this->json($agent);
+        return $this->json(
+            $agent,
+            Response::HTTP_OK,
+            [],
+            [
+                AbstractNormalizer::GROUPS => [
+                    SerializerGroups::API_LIST,
+                ],
+            ]
+        );
     }
 
     #[Route('/{id}', methods: ['DELETE'])]

@@ -19,10 +19,10 @@ import {
     updateIntent,
     useQueryComponents,
     useQueryTools,
-} from "@/lib/agents/chat.ts";
+} from "@/admin/modules/chat/lib/chat.ts";
 import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
-import { getChatConfig } from "@/lib/agents/chat.ts";
+import { getChatConfig } from "@/admin/modules/chat/lib/chat.ts";
 import { useMemo } from "react";
 import { useCurrentAgent } from "@/admin/modules/agents/hooks/current-agent.tsx";
 
@@ -51,6 +51,10 @@ export const Route = createFileRoute(
         const id = parseInt(agentId);
         const chatConfig = await getChatConfig(id);
 
+        if (!chatConfig) {
+            throw new Error(`Chat configuration not found for agent ${id}`);
+        }
+
         // Find the intent with the matching ID
         const intent = chatConfig.intents.find(
             (intent) => intent.id === parseInt(intentId),
@@ -71,9 +75,11 @@ function UpdateIntent() {
     const { intent } = Route.useLoaderData();
 
     const navigate = useNavigate();
-    const { data: tools = [], isLoading: isLoadingTools } = useQueryTools();
+    const { data: tools = [], isLoading: isLoadingTools } = useQueryTools(
+        agent.id,
+    );
     const { data: components = {}, isLoading: isLoadingComponents } =
-        useQueryComponents();
+        useQueryComponents(agent.id);
 
     // Convert tools to options array for TagInputWidget
     const toolOptions = tools.map((tool) => tool.name);
@@ -92,6 +98,7 @@ function UpdateIntent() {
     const defaultData = useMemo(
         () => ({
             id: intent.id,
+            agentId: agent.id,
             name: intent.name,
             description: intent.description,
             instructions: intent.instructions,

@@ -22,8 +22,6 @@ createWebComponent({
 
             // Dispatch the event
             el.dispatchEvent(addToCartEvent);
-
-            console.log("onAddProductToCart");
         };
 
         const props: ProductCardProps = {
@@ -36,5 +34,3 @@ createWebComponent({
         return props;
     },
 });
-
-console.log("ProductCard web component registered as wg-product-card");

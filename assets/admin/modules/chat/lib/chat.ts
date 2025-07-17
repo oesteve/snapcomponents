@@ -28,43 +28,47 @@ export type ChatComponent = {
 };
 
 export function getChatConfig(id: Agent["id"]) {
-    return client.get<ChatConfig>(`/api/agents/${id}/chat`);
+    return client.get<ChatConfig | null>(`/api/agents/${id}/chats/settings`);
 }
 
-export function updateChatConfig(
+export function setChatSettings(
     chatConfig: { agentId: Agent["id"] } & ChatConfig,
 ) {
     return client.put<ChatConfig>(
-        `/api/agents/${chatConfig.agentId}/chat`,
+        `/api/agents/${chatConfig.agentId}/chats/settings`,
         chatConfig,
     );
 }
 
-export function getTools() {
-    return client.get<ChatTool[]>("/api/chats/tools");
+export function getTools({ agentId }: { agentId: Agent["id"] }) {
+    return client.get<ChatTool[]>(
+        `/api/agents/${agentId}/chats/settings/tools`,
+    );
 }
 
-export function getComponents() {
-    return client.get<Record<string, ChatComponent>>("/api/chats/components");
+export function getComponents({ agentId }: { agentId: Agent["id"] }) {
+    return client.get<Record<string, ChatComponent>>(
+        `/api/agents/${agentId}/chats/settings/components`,
+    );
 }
 
 /**
  * React Query hook for fetching available chat tools
  */
-export function useQueryTools() {
+export function useQueryTools(agentId: Agent["id"]) {
     return useQuery({
         queryKey: ["chat-tools"],
-        queryFn: () => getTools(),
+        queryFn: () => getTools({ agentId }),
     });
 }
 
 /**
  * React Query hook for fetching available chat components
  */
-export function useQueryComponents() {
+export function useQueryComponents(agentId: Agent["id"]) {
     return useQuery({
         queryKey: ["chat-components"],
-        queryFn: () => getComponents(),
+        queryFn: () => getComponents({ agentId }),
     });
 }
 
@@ -72,6 +76,7 @@ export function useQueryComponents() {
  * Create a new intent for a chat configuration
  */
 export function createIntent(intent: {
+    agentId: Agent["id"];
     name: string;
     description: string;
     instructions: string;
@@ -79,13 +84,17 @@ export function createIntent(intent: {
     widgets: string[];
     configurationId: number;
 }) {
-    return client.post<ChatIntent>("/api/chats/intents", intent);
+    return client.post<ChatIntent>(
+        `/api/agents/${intent.agentId}/chats/settings/intents`,
+        intent,
+    );
 }
 
 /**
  * Update an existing intent
  */
 export function updateIntent(intent: {
+    agentId: Agent["id"];
     id: ChatIntent["id"];
     name: string;
     description: string;
@@ -93,5 +102,8 @@ export function updateIntent(intent: {
     tools: string[];
     widgets: string[];
 }) {
-    return client.put<ChatIntent>(`/api/chats/intents/${intent.id}`, intent);
+    return client.put<ChatIntent>(
+        `/api/agents/${intent.agentId}/chats/settings/intents/${intent.id}`,
+        intent,
+    );
 }

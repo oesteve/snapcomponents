@@ -17,7 +17,7 @@ export const Route = createFileRoute("/admin/agents/$agentId/install")({
 });
 
 export function Install() {
-    const agent = useCurrentAgent();
+    const agent = useCurrentAgent()!;
 
     return (
         <Card className="w-full max-w-4xl">
