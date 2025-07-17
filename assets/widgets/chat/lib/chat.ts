@@ -6,6 +6,9 @@ export type CreateChatRequest = {
 
 export type Chat = {
     id: number;
+    configuration: {
+        name: string;
+    };
     messages: {
         id: number;
         role: "user" | "assistant";

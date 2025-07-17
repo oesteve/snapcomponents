@@ -12,12 +12,15 @@ use App\Entity\ChatIntent;
 use App\Repository\ChatConfigurationRepository;
 use App\Repository\ChatIntentRepository;
 use App\Security\Voter\AgentVoter;
+use App\Serializer\SerializerGroups;
 use App\Service\Chat\Component\ComponentManager;
 use App\Service\Chat\Tool\ToolManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 #[Route('/api/agents/{agentId:agent.id}/chats/settings', format: 'json')]
 #[IsGranted('ROLE_ADMIN')]
@@ -28,7 +31,16 @@ class ChatSettingsController extends AbstractController
     public function list(
         Agent $agent,
     ): JsonResponse {
-        return $this->json($agent->getChatConfiguration());
+        return $this->json(
+            $agent->getChatConfiguration(),
+            Response::HTTP_OK,
+            [],
+            [
+                AbstractNormalizer::GROUPS => [
+                    SerializerGroups::API_LIST,
+                ],
+            ]
+        );
     }
 
     #[Route('', methods: ['PUT'])]
@@ -54,7 +66,7 @@ class ChatSettingsController extends AbstractController
             $agent->setChatConfiguration($chatConfiguration);
         } else {
             $chatConfiguration->update(
-                $chatConfiguration->getName(),
+                $chatConfigData->name,
                 $chatConfiguration->getDescription(),
                 $chatConfigData->instructions,
             );
@@ -105,7 +117,16 @@ class ChatSettingsController extends AbstractController
             $chatIntentRepository->save($intent);
         }
 
-        return $this->json($chatConfiguration);
+        return $this->json(
+            $chatConfiguration,
+            Response::HTTP_OK,
+            [],
+            [
+                AbstractNormalizer::GROUPS => [
+                    SerializerGroups::API_LIST,
+                ],
+            ]
+        );
     }
 
     #[Route('/tools', methods: ['GET'])]
@@ -117,7 +138,14 @@ class ChatSettingsController extends AbstractController
         $tools = $toolManager->getTools(ToolManager::CHAT_SCOPE);
 
         return $this->json(
-            $tools
+            $tools,
+            Response::HTTP_OK,
+            [],
+            [
+                AbstractNormalizer::GROUPS => [
+                    SerializerGroups::API_LIST,
+                ],
+            ]
         );
     }
 
@@ -127,7 +155,16 @@ class ChatSettingsController extends AbstractController
         Agent $agent,
         ComponentManager $widgetProvider,
     ): JsonResponse {
-        return $this->json($widgetProvider->getComponents());
+        return $this->json(
+            $widgetProvider->getComponents(),
+            Response::HTTP_OK,
+            [],
+            [
+                AbstractNormalizer::GROUPS => [
+                    SerializerGroups::API_LIST,
+                ],
+            ]
+        );
     }
 
     #[Route('/intents', methods: ['POST'])]
@@ -155,7 +192,16 @@ class ChatSettingsController extends AbstractController
 
         $chatIntentRepository->save($intent);
 
-        return $this->json($intent);
+        return $this->json(
+            $intent,
+            Response::HTTP_OK,
+            [],
+            [
+                AbstractNormalizer::GROUPS => [
+                    SerializerGroups::API_LIST,
+                ],
+            ]
+        );
     }
 
     #[Route('/intents/{id}', methods: ['PUT'])]
@@ -175,7 +221,16 @@ class ChatSettingsController extends AbstractController
 
         $chatIntentRepository->save($intent);
 
-        return $this->json($intent);
+        return $this->json(
+            $intent,
+            Response::HTTP_OK,
+            [],
+            [
+                AbstractNormalizer::GROUPS => [
+                    SerializerGroups::API_LIST,
+                ],
+            ]
+        );
     }
 
     #[Route('/intents/{id}', methods: ['DELETE'])]

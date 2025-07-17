@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button.tsx";
-import { X } from "lucide-react";
-import { Input } from "@/components/ui/input.tsx";
+import { ArrowUp, CircleEllipsis, X } from "lucide-react";
 import { type Chat, createChat, sendMessage } from "@/widgets/chat/lib/chat.ts";
 import { useMutation } from "@tanstack/react-query";
 import { Message } from "@/widgets/chat/components/Message.tsx";
@@ -65,6 +64,9 @@ const Card: React.FC<ChatCardProps> = ({ onClose }) => {
         if (!chat) {
             setChat({
                 id: 0,
+                configuration: {
+                    name: "",
+                },
                 messages: [
                     {
                         id: 0,
@@ -112,8 +114,10 @@ const Card: React.FC<ChatCardProps> = ({ onClose }) => {
                 <X />
             </Button>
 
-            <div className="p-4 flex-col gap-4 flex flex-1 h-full">
-                <h2 className="text-2xl font-medium mb-4">Chat Widget</h2>
+            <div className="p-4 flex-col gap-4 flex flex-1 h-full text-sm">
+                <h2 className="text-2xl font-medium mb-4">
+                    {chat?.configuration.name ?? ""}
+                </h2>
                 <div className="grow overflow-y-auto" ref={chatContainerRef}>
                     <div
                         ref={messagesContainerRef}
@@ -122,10 +126,16 @@ const Card: React.FC<ChatCardProps> = ({ onClose }) => {
                         {chat?.messages.map((message) => (
                             <Message {...message} key={message.id} />
                         ))}
+                        {isLoading && (
+                            <div className="animate-pulse text-muted-foreground">
+                                <CircleEllipsis />
+                            </div>
+                        )}
                     </div>
                 </div>
-                <div className="flex gap-2">
-                    <Input
+                <div className="flex gap-2 bg-secondary p-2 rounded-full">
+                    <input
+                        className="grow px-3 focus:outline-none"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         onKeyPress={(e) =>
@@ -133,9 +143,12 @@ const Card: React.FC<ChatCardProps> = ({ onClose }) => {
                         }
                         placeholder="Type your message..."
                     />
-                    <Button onClick={handleSendMessage} loading={isLoading}>
-                        Send
-                    </Button>
+                    <button
+                        onClick={handleSendMessage}
+                        className="bg-primary hover:bg-primary/90 size-9 p-1 text-white rounded-full text-center flex items-center justify-center gap-1"
+                    >
+                        <ArrowUp className="size-6" />
+                    </button>
                 </div>
             </div>
         </div>

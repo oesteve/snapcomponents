@@ -3,23 +3,29 @@
 namespace App\Entity;
 
 use App\Repository\ChatIntentRepository;
+use App\Serializer\SerializerGroups;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute as Serializer;
 
 #[ORM\Entity(repositoryClass: ChatIntentRepository::class)]
 class ChatIntent
 {
+    #[Serializer\Groups([SerializerGroups::API_LIST])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Serializer\Groups([SerializerGroups::API_LIST])]
     #[ORM\Column(length: 255)]
     private string $name;
 
+    #[Serializer\Groups([SerializerGroups::API_LIST])]
     #[ORM\Column(type: Types::TEXT)]
     private string $description;
 
+    #[Serializer\Groups([SerializerGroups::API_LIST])]
     #[ORM\Column(type: Types::TEXT)]
     private string $instructions;
 

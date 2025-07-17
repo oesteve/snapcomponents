@@ -8,6 +8,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 class ChatConfigData
 {
     #[Assert\NotBlank(allowNull: false)]
+    public string $name;
+
+    #[Assert\NotBlank(allowNull: false)]
     public string $instructions;
 
     /**

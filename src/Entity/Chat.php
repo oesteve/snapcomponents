@@ -3,13 +3,16 @@
 namespace App\Entity;
 
 use App\Repository\ChatRepository;
+use App\Serializer\SerializerGroups;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute as Serializer;
 
 #[ORM\Entity(repositoryClass: ChatRepository::class)]
 class Chat extends BaseEntity
 {
+    #[Serializer\Groups([SerializerGroups::CHAT])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -18,6 +21,7 @@ class Chat extends BaseEntity
     /**
      * @var Collection<int, ChatMessage>
      */
+    #[Serializer\Groups([SerializerGroups::CHAT])]
     #[ORM\OneToMany(targetEntity: ChatMessage::class, mappedBy: 'chat', orphanRemoval: true)]
     private Collection $messages;
 
@@ -28,6 +32,7 @@ class Chat extends BaseEntity
     #[ORM\ManyToOne]
     private ?ChatIntent $intent = null;
 
+    #[Serializer\Groups([SerializerGroups::CHAT])]
     #[ORM\ManyToOne(targetEntity: ChatConfiguration::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ChatConfiguration $configuration;

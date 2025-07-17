@@ -21,6 +21,9 @@ class Agent extends BaseEntity
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups([SerializerGroups::ELASTICA, SerializerGroups::API_LIST])]
+    /**
+     * @phpstan-ignore-next-line
+     */
     private int $id;
 
     #[ORM\Column(length: 255)]
@@ -46,22 +49,10 @@ class Agent extends BaseEntity
     private ?ChatConfiguration $chatConfiguration = null;
 
     /**
-     * @var Collection<int, Product>
-     */
-    #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'agent', orphanRemoval: true)]
-    private Collection $products;
-
-    /**
      * @var array<string, mixed>
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private array $attributes = [];
-
-    /**
-     * @var Collection<int, Article>
-     */
-    #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'agent', orphanRemoval: true)]
-    private Collection $articles;
 
     public function __construct(
         string $name,
@@ -71,8 +62,6 @@ class Agent extends BaseEntity
         $this->code = $this->generateCode();
         $this->user = $user;
         $this->chats = new ArrayCollection();
-        $this->articles = new ArrayCollection();
-        $this->products = new ArrayCollection();
         $this->attributes = [];
     }
 

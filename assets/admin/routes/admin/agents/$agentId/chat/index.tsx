@@ -32,6 +32,7 @@ import { Label } from "@/components/ui/label.tsx";
 import { FormDescription } from "@/components/form/form-description.tsx";
 import { Plus } from "lucide-react";
 import { useCurrentAgent } from "@/admin/modules/agents/hooks/current-agent.tsx";
+import TextInputWidget from "@/components/form/widgets/text-input-widget";
 
 export const Route = createFileRoute("/admin/agents/$agentId/chat/")({
     component: ChatRoute,
@@ -88,6 +89,12 @@ export function ChatRoute() {
                 <CardContent className="grid gap-4">
                     <FormError />
                     <DevFormData />
+
+                    <TextInputWidget
+                        name={"name"}
+                        label={"Name"}
+                        description={"The title shown in the chat panel"}
+                    />
 
                     <TextareaInputWidget
                         name={"instructions"}
