@@ -18,7 +18,7 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar";
 import { useQuery } from "@tanstack/react-query";
-import { getUser } from "@/lib/user/profile.tsx";
+import { getUser } from "@/lib/user/user.tsx";
 
 export function NavUser() {
     const { isMobile } = useSidebar();

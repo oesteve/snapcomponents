@@ -1,21 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";
-import { type Agent, getAgents } from "@/lib/agents/agents.ts";
+import { type Agent } from "@/lib/agents/agents.ts";
 import { DataTable } from "@/admin/modules/agents/data-table.tsx";
 import { CreateAgentDialog } from "@/admin/modules/agents/create-agent-dialog.tsx";
 import { RemoveAgentDialog } from "@/admin/modules/agents/remove-agent-dialog.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Link } from "@tanstack/react-router";
-
-export function useAgents() {
-    return useQuery({
-        queryKey: ["agents"],
-        queryFn: getAgents,
-    });
-}
+import { availableAgents } from "@/admin/modules/agents/hooks/agent-query-key";
 
 export function AgentList() {
-    const agentsQuery = useAgents();
+    const agentsQuery = availableAgents();
 
     const columns: ColumnDef<Agent>[] = [
         {

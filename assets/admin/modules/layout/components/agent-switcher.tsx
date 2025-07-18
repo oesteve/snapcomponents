@@ -11,16 +11,16 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar.tsx";
-import { useAgents } from "@/admin/modules/agents/agent-list.tsx";
 import { useNavigate } from "@tanstack/react-router";
 import type { Agent } from "@/lib/agents/agents.ts";
 import { useCurrentAgent } from "@/admin/modules/agents/hooks/current-agent.tsx";
+import { availableAgents } from "@/admin/modules/agents/hooks/agent-query-key";
 
 export function AgentSwitcher() {
     const navigate = useNavigate();
     const agent = useCurrentAgent();
 
-    const agentList = useAgents();
+    const agentList = availableAgents();
 
     if (!agentList.data || !agent) {
         return null;

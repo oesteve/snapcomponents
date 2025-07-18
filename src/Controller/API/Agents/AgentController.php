@@ -22,7 +22,12 @@ class AgentController extends AbstractController
     public function list(
         AgentRepository $agentRepository,
     ): JsonResponse {
-        return $this->json($agentRepository->findAll(), Response::HTTP_OK, [], [
+        $user = $this->getLoggedUserOrFail();
+        $agents = $agentRepository->findBy([
+            'user' => $user,
+        ]);
+
+        return $this->json($agents, Response::HTTP_OK, [], [
             AbstractNormalizer::GROUPS => [
                 SerializerGroups::API_LIST,
             ],

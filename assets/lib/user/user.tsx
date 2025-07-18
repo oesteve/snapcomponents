@@ -1,6 +1,7 @@
 import client from "@/lib/client.ts";
 
-export type Profile = {
+export type User = {
+    id: number;
     name: string;
     email: string;
     picture: string;
@@ -9,5 +10,5 @@ export type Profile = {
 };
 
 export function getUser() {
-    return client.get<Profile>("/api/user");
+    return client.get<User>("/api/user");
 }
