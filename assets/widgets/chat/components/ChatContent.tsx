@@ -2,12 +2,20 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button.tsx";
 import { MessageCircle } from "lucide-react";
 import Card from "./Card.tsx";
+import { useChat } from "@/widgets/chat/hooks/useChat";
+import { cn } from "@/lib/utils";
 
 const ChatContent: React.FC = () => {
+    const { chat } = useChat();
     const [open, setOpen] = useState(false);
 
     return (
-        <>
+        <div
+            className={cn(
+                "opacity-0 transition-opacity",
+                chat && "opacity-100",
+            )}
+        >
             {!open ? (
                 <Button
                     onClick={() => setOpen(true)}
@@ -20,7 +28,7 @@ const ChatContent: React.FC = () => {
             ) : (
                 <Card onClose={() => setOpen(false)} />
             )}
-        </>
+        </div>
     );
 };
 

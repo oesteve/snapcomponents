@@ -51,9 +51,8 @@ class ChatService
             ->make();
     }
 
-    public function createChat(
-        string $content,
-    ): Chat {
+    public function createChat(?string $content = null): Chat
+    {
         $agent = $this->agentService->getAgentOrFail();
         $sessionId = $this->agentService->getSessionId();
         $chatConfiguration = $agent->getChatConfiguration();
@@ -70,16 +69,18 @@ class ChatService
 
         $this->chatRepository->save($chat);
 
-        $message = new ChatMessage(
-            $chat,
-            ChatMessage::ROLE_USER,
-            $content,
-        );
+        if ($content) {
+            $message = new ChatMessage(
+                $chat,
+                ChatMessage::ROLE_USER,
+                $content,
+            );
 
-        $this->chatMessageRepository->save($message);
-        $chat->addMessage($message);
+            $this->chatMessageRepository->save($message);
+            $chat->addMessage($message);
 
-        $this->handleChatMessage($message);
+            $this->handleChatMessage($message);
+        }
 
         return $chat;
     }
@@ -295,6 +296,8 @@ MD;
         $chat = $this->chatRepository->findOneBy([
             'sessionId' => $sessionId,
             'agent' => $agent,
+        ], [
+            'createdAt' => 'DESC',
         ]);
 
         if (!$chat) {

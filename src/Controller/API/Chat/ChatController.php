@@ -33,6 +33,24 @@ class ChatController extends AbstractController
         );
     }
 
+    #[Route('/new', methods: ['POST'])]
+    public function newChat(
+        ChatService $chatService,
+    ): JsonResponse {
+        $chat = $chatService->createChat();
+
+        return $this->json(
+            $chat,
+            Response::HTTP_OK,
+            [],
+            [
+                AbstractNormalizer::GROUPS => [
+                    SerializerGroups::CHAT,
+                ],
+            ]
+        );
+    }
+
     #[Route('/messages', methods: ['POST'])]
     public function addMessage(
         #[MapRequestPayload]

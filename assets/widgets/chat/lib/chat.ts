@@ -25,3 +25,11 @@ export function sendMessage(request: { content: string }) {
         content: request.content,
     });
 }
+
+export function createNewChat() {
+    return client.post<Chat>("/api/chat/new");
+}
+
+export function clearMessages() {
+    return client.post<Chat>("/api/chat/messages/clear");
+}

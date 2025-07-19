@@ -1,20 +1,25 @@
-import React, { useState, useRef, useEffect, useMemo } from "react";
-import { Button } from "@/components/ui/button.tsx";
-import { ArrowUp, CircleEllipsis, X } from "lucide-react";
+import React, { useRef, useEffect, useMemo } from "react";
 import { Message } from "@/widgets/chat/components/Message.tsx";
 import { useChat } from "@/widgets/chat/hooks/useChat.ts";
-import { useSendMessage } from "@/widgets/chat/hooks/useSendMessage.ts";
+import { useStyleProperty } from "@/widgets/chat/hooks/useStyleProperty.ts";
+import ChatLoading from "@/widgets/chat/components/ChatLoading.tsx";
+import CardFooter, {
+    type CardFooterProps,
+} from "@/widgets/chat/components/CardFooter.tsx";
+import CardHeader, {
+    type CardHeaderProps,
+} from "@/widgets/chat/components/CardHeader.tsx";
 
 interface ChatCardProps {
     onClose: () => void;
 }
 
 const Card: React.FC<ChatCardProps> = ({ onClose }) => {
-    const [message, setMessage] = useState("");
+    const ref = useRef<HTMLDivElement>(null);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
     const chatContainerRef = useRef<HTMLDivElement>(null);
 
-    const { chat } = useChat();
+    const { chat, isLoading } = useChat();
 
     function scrollToBottom() {
         if (chatContainerRef.current) {
@@ -40,67 +45,44 @@ const Card: React.FC<ChatCardProps> = ({ onClose }) => {
         resizeObserver.observe(messagesContainerRef.current);
     }, [messagesContainerRef.current, resizeObserver]);
 
-    const { sendMessage, isLoading } = useSendMessage();
+    if (!chat) {
+        return null;
+    }
 
-    const handleSendMessage = () => {
-        if (!message.trim()) {
-            return;
-        }
+    const footerVariant = useStyleProperty<CardFooterProps["variant"]>(
+        ref,
+        "card-footer-variant",
+    );
 
-        setMessage("");
-
-        sendMessage({
-            content: message,
-        });
-    };
+    const headerVariant = useStyleProperty<CardHeaderProps["variant"]>(
+        ref,
+        "card-header-variant",
+    );
 
     return (
-        <div className="h-[600px] border border-border rounded-2xl relative w-[500px] shadow-lg bg-background">
-            <Button
-                size="icon"
-                variant="ghost"
-                className="absolute top-2 right-2"
-                onClick={onClose}
-            >
-                <X />
-            </Button>
-
-            <div className="p-4 flex-col gap-4 flex flex-1 h-full text-sm">
-                <h2 className="text-2xl font-medium mb-4">
-                    {chat?.configuration.name ?? ""}
-                </h2>
-                <div className="grow overflow-y-auto" ref={chatContainerRef}>
+        <div
+            className="h-[700px] border border-border rounded-2xl relative w-[500px] shadow-lg bg-background overflow-hidden"
+            ref={ref}
+        >
+            <div className="flex-col flex flex-1 h-full text-sm">
+                <CardHeader variant={headerVariant} onClose={onClose} />
+                <div
+                    className="grow overflow-y-auto p-3"
+                    ref={chatContainerRef}
+                >
                     <div
                         ref={messagesContainerRef}
                         className="flex flex-col gap-6 text-sm"
                     >
-                        {chat?.messages.map((message) => (
+                        {chat.messages.map((message) => (
                             <Message {...message} key={message.id} />
                         ))}
-                        {isLoading && (
-                            <div className="animate-pulse text-muted-foreground">
-                                <CircleEllipsis />
-                            </div>
+                        {isLoading && chat.messages.length > 0 && (
+                            <ChatLoading />
                         )}
                     </div>
                 </div>
-                <div className="flex gap-2 bg-secondary p-2 rounded-full">
-                    <input
-                        className="grow px-3 focus:outline-none"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        onKeyPress={(e) =>
-                            e.key === "Enter" && handleSendMessage()
-                        }
-                        placeholder="Type your message..."
-                    />
-                    <button
-                        onClick={handleSendMessage}
-                        className="bg-primary hover:bg-primary/90 size-9 p-1 text-white rounded-full text-center flex items-center justify-center gap-1"
-                    >
-                        <ArrowUp className="size-6" />
-                    </button>
-                </div>
+                <CardFooter variant={footerVariant} />
             </div>
         </div>
     );
