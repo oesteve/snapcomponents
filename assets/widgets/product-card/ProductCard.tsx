@@ -2,13 +2,17 @@ export interface ProductCardProps {
     title: string;
     price: number;
     image: string;
+    currency: string;
     onAddProductToCart: () => void;
 }
+
+import PriceDisplay from "./PriceDisplay";
 
 export default function ProductCard({
     title,
     price,
     image,
+    currency,
     onAddProductToCart,
 }: ProductCardProps) {
     function handleAddToCart(
@@ -86,9 +90,7 @@ export default function ProductCard({
                     </span>
                 </div>
                 <div className="flex items-center justify-between">
-                    <span className="text-3xl font-bold text-gray-900 dark:text-white">
-                        ${price}
-                    </span>
+                    <PriceDisplay price={price} currency={currency} />
                     <a
                         href="#"
                         onClick={handleAddToCart}

@@ -39,6 +39,9 @@ class Product implements ProductInterface
     #[ORM\Column(type: Types::FLOAT)]
     private float $price;
 
+    #[ORM\Column(type: Types::STRING, length: 3, nullable: false)]
+    private string $currency;
+
     #[ORM\ManyToOne(targetEntity: Agent::class, inversedBy: 'products')]
     private Agent $agent;
 
@@ -50,6 +53,7 @@ class Product implements ProductInterface
         string $brand,
         string $image,
         float $price,
+        string $currency,
         Agent $agent,
     ) {
         $this->referenceCode = $referenceCode;
@@ -59,6 +63,7 @@ class Product implements ProductInterface
         $this->brand = $brand;
         $this->image = $image;
         $this->price = $price;
+        $this->currency = $currency;
         $this->agent = $agent;
     }
 
@@ -70,6 +75,7 @@ class Product implements ProductInterface
         string $brand,
         string $image,
         float $price,
+        string $currency,
     ): void {
         $this->referenceCode = $referenceCode;
         $this->title = $title;
@@ -78,6 +84,7 @@ class Product implements ProductInterface
         $this->brand = $brand;
         $this->image = $image;
         $this->price = $price;
+        $this->currency = $currency;
     }
 
     public function getId(): int
@@ -118,6 +125,11 @@ class Product implements ProductInterface
     public function getPrice(): float
     {
         return $this->price;
+    }
+
+    public function getCurrency(): string
+    {
+        return $this->currency;
     }
 
     public function getAgent(): Agent

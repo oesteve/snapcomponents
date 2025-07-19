@@ -103,6 +103,7 @@ readonly class ElasticSearchProductProvider implements ProductProvider
                 $itemData['description'],
                 $itemData['brand'],
                 $itemData['price'],
+                'EUR',
                 $itemData['images'][0],
             );
         }
@@ -128,6 +129,7 @@ readonly class ElasticSearchProductProvider implements ProductProvider
                     $productData->brand,
                     $productData->image,
                     $productData->price,
+                    'EUR',
                     $this->agent
                 );
             } else {
@@ -139,6 +141,7 @@ readonly class ElasticSearchProductProvider implements ProductProvider
                     $productData->brand,
                     $productData->image,
                     $productData->price,
+                    $productData->currency,
                 );
             }
 

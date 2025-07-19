@@ -29,5 +29,8 @@ interface ProductInterface
     public function getPrice(): float;
 
     #[Groups([SerializerGroups::API_LIST])]
+    public function getCurrency(): string;
+
+    #[Groups([SerializerGroups::API_LIST])]
     public function getImage(): string;
 }

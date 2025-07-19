@@ -17,6 +17,7 @@ createWebComponent({
                     title: attr.getNamedItem("title")!.value,
                     image: attr.getNamedItem("image")!.value,
                     price: parseFloat(attr.getNamedItem("price")!.value),
+                    currency: attr.getNamedItem("currency")?.value || "USD", // Default to USD if not provided
                 },
             });
 
@@ -28,6 +29,7 @@ createWebComponent({
             title: attr.getNamedItem("title")!.value,
             image: attr.getNamedItem("image")!.value,
             price: parseFloat(attr.getNamedItem("price")!.value),
+            currency: attr.getNamedItem("currency")?.value || "USD", // Default to USD if not provided
             onAddProductToCart,
         };
 

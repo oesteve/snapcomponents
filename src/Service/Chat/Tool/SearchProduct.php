@@ -3,7 +3,10 @@
 namespace App\Service\Chat\Tool;
 
 use App\Entity\ChatMessage;
+use App\Serializer\SerializerGroups;
 use App\Service\Product\ProductService;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 readonly class SearchProduct implements ToolInterface
 {
@@ -11,6 +14,7 @@ readonly class SearchProduct implements ToolInterface
 
     public function __construct(
         private ProductService $productService,
+        private SerializerInterface $serializer,
     ) {
     }
 
@@ -95,13 +99,15 @@ readonly class SearchProduct implements ToolInterface
             return 'No products found';
         }
 
-        $result = "These are the products that match your search: \n";
-
-        foreach ($products as $product) {
-            $result .= "<wg-product-card title=\"{$product->getTitle()}\" image=\"{$product->getImage()}\" price=\"{$product->getPrice()}\" ></wg-product-card>\n";
-        }
-
-        return $result;
+        return $this->serializer->serialize(
+            $products,
+            'json',
+            [
+                AbstractNormalizer::GROUPS => [
+                    SerializerGroups::API_LIST,
+                ],
+            ]
+        );
     }
 
     public function support(string $scope): bool

@@ -11,6 +11,7 @@ readonly class ProductData
         public string $description,
         public string $brand,
         public float $price,
+        public string $currency,
         public string $image,
     ) {
     }
