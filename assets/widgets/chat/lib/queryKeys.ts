@@ -1,8 +1,2 @@
-/**
- * React Query keys used in the chat widget
- */
-
-export const chatKeys = {
-    all: ["chat"] as const,
-    chat: () => [...chatKeys.all] as const,
-};
+// This file is intentionally left empty as we've migrated to using the Zustand store
+// in useChatStore.ts instead of React Query hooks.

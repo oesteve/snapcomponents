@@ -1,37 +1,38 @@
-import { useQuery } from "@tanstack/react-query";
-import { getChat } from "@/widgets/chat/lib/chat.ts";
-import { chatKeys } from "@/widgets/chat/lib/queryKeys.ts";
-import { useNewChat } from "@/widgets/chat/hooks/useNewChat.ts";
-import { useSendMessage } from "@/widgets/chat/hooks/useSendMessage.ts";
+import { useChatStore } from "@/widgets/chat/store/useChatStore.ts";
+import { useEffect } from "react";
 
 export function useChat() {
-    const chatQuery = useQuery({
-        queryFn: () => getChat(),
-        queryKey: chatKeys.chat(),
-    });
-
     const {
-        createChat,
-        isLoading: isCreatingChat,
-        isError: isCreateError,
-        error: createError,
+        chat,
         newChat,
-    } = useNewChat();
-
-    const {
+        isLoading,
+        isError,
+        error,
+        isOpen,
+        fetchChat,
         sendMessage,
-        isLoading: isSendingMessage,
-        isError: isSendError,
-        error: sendError,
-    } = useSendMessage();
+        createChat,
+        clearMessages,
+        openChat,
+        closeChat,
+    } = useChatStore();
+
+    // Fetch chat data on component mount
+    useEffect(() => {
+        fetchChat();
+    }, [fetchChat]);
 
     return {
-        chat: chatQuery.data || newChat,
-        isLoading: chatQuery.isLoading || isCreatingChat || isSendingMessage,
-        isError: chatQuery.isError || isCreateError || isSendError,
-        error: chatQuery.error || createError || sendError,
-        refetch: chatQuery.refetch,
+        chat: chat || newChat,
+        isLoading,
+        isError,
+        error,
+        isOpen,
+        refetch: fetchChat,
         createChat,
         sendMessage,
+        clearMessages,
+        openChat,
+        closeChat,
     };
 }

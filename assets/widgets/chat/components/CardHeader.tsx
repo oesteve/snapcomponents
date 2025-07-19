@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Minimize2, Plus } from "lucide-react";
 import { useChat } from "@/widgets/chat/hooks/useChat";
+import { useChatStore } from "@/widgets/chat/store/useChatStore";
 
 const headerVariants = cva("flex p-3", {
     variants: {
@@ -17,11 +18,11 @@ const headerVariants = cva("flex p-3", {
     },
 });
 
-export type CardHeaderProps = VariantProps<typeof headerVariants> & {
-    onClose: () => void;
-};
+export type CardHeaderProps = VariantProps<typeof headerVariants>;
 
-const CardHeader: React.FC<CardHeaderProps> = ({ variant, onClose }) => {
+const CardHeader: React.FC<CardHeaderProps> = ({ variant }) => {
+    const onClose = useChatStore((state) => state.closeChat);
+
     const { chat, createChat } = useChat();
     const handleNewChat = (e: MouseEvent) => {
         e.preventDefault();
