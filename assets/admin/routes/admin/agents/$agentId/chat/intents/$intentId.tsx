@@ -75,11 +75,8 @@ function UpdateIntent() {
     const { intent } = Route.useLoaderData();
 
     const navigate = useNavigate();
-    const { data: tools = [], isLoading: isLoadingTools } = useQueryTools(
-        agent.id,
-    );
-    const { data: components = {}, isLoading: isLoadingComponents } =
-        useQueryComponents(agent.id);
+    const { data: tools = [] } = useQueryTools(agent.id);
+    const { data: components = {} } = useQueryComponents(agent.id);
 
     // Convert tools to options array for TagInputWidget
     const toolOptions = tools.map((tool) => tool.name);
@@ -150,11 +147,7 @@ function UpdateIntent() {
                     <TagInputWidget
                         name={"tools"}
                         label={"Tools"}
-                        description={
-                            isLoadingTools
-                                ? "Loading tools..."
-                                : "Select the tools that can be used in this intent."
-                        }
+                        description="Select the tools that can be used in this intent."
                         options={toolOptions}
                         placeholder="Search for a tool..."
                     />
@@ -162,11 +155,7 @@ function UpdateIntent() {
                     <TagInputWidget
                         name={"widgets"}
                         label={"Components"}
-                        description={
-                            isLoadingComponents
-                                ? "Loading components..."
-                                : "Select the UI components that can be used in this intent."
-                        }
+                        description="Select the UI components that can be used in this intent."
                         options={componentOptions}
                         placeholder="Search for a component..."
                     />

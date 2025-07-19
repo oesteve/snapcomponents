@@ -107,3 +107,15 @@ export function updateIntent(intent: {
         intent,
     );
 }
+
+export function removeIntent({
+    agentId,
+    id,
+}: {
+    agentId: Agent["id"];
+    id: ChatIntent["id"];
+}) {
+    return client.delete<ChatIntent>(
+        `/api/agents/${agentId}/chats/settings/intents/${id}`,
+    );
+}

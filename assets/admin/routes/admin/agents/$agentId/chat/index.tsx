@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Form } from "@/components/form";
@@ -24,13 +24,14 @@ import {
 } from "@/components/ui/table.tsx";
 import {
     getChatConfig,
+    removeIntent,
     setChatSettings,
 } from "@/admin/modules/chat/lib/chat.ts";
-import { useMemo } from "react";
+import { type MouseEvent, useMemo } from "react";
 import { Button } from "@/components/ui/button.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import { FormDescription } from "@/components/form/form-description.tsx";
-import { Plus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { useCurrentAgent } from "@/admin/modules/agents/hooks/current-agent.tsx";
 import TextInputWidget from "@/components/form/widgets/text-input-widget";
 
@@ -51,6 +52,7 @@ export const Route = createFileRoute("/admin/agents/$agentId/chat/")({
 });
 
 export function ChatRoute() {
+    const route = useRouter();
     const agent = useCurrentAgent();
     const { chatConfig } = Route.useLoaderData();
 
@@ -60,6 +62,25 @@ export function ChatRoute() {
             toast.success("Agent updated successfully");
         },
     });
+
+    const removeIntentMutation = useMutation({
+        mutationFn: removeIntent,
+        onSuccess: () => {
+            route.invalidate();
+            toast.success("Intent removed successfully");
+        },
+        onError: (error) => {
+            toast.error(error.message);
+        },
+    });
+
+    function handleRemoveIntent(e: MouseEvent, id: number) {
+        e.preventDefault();
+        removeIntentMutation.mutate({
+            agentId: agent.id,
+            id,
+        });
+    }
 
     const defaultData = useMemo(
         () => ({
@@ -123,43 +144,59 @@ export function ChatRoute() {
                                 </Link>
                             </Button>
                         </div>
-
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Name</TableHead>
-                                    <TableHead>Description</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {chatConfig?.intents.map((intent) => (
-                                    <TableRow key={intent.id}>
-                                        <TableCell>
-                                            <Button
-                                                variant="link"
-                                                asChild
-                                                size="sm"
-                                            >
-                                                <Link
-                                                    to="/admin/agents/$agentId/chat/intents/$intentId"
-                                                    params={{
-                                                        agentId:
-                                                            agent.id.toString(),
-                                                        intentId:
-                                                            intent.id.toString(),
-                                                    }}
-                                                >
-                                                    {intent.name}
-                                                </Link>
-                                            </Button>
-                                        </TableCell>
-                                        <TableCell>
-                                            {intent.description}
-                                        </TableCell>
+                        <div className="w-full">
+                            <Table className="max-w-full">
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Name</TableHead>
+                                        <TableHead>Description</TableHead>
+                                        <TableHead></TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                    {chatConfig?.intents.map((intent) => (
+                                        <TableRow key={intent.id}>
+                                            <TableCell>
+                                                <Button
+                                                    variant="link"
+                                                    asChild
+                                                    size="sm"
+                                                >
+                                                    <Link
+                                                        to="/admin/agents/$agentId/chat/intents/$intentId"
+                                                        params={{
+                                                            agentId:
+                                                                agent.id.toString(),
+                                                            intentId:
+                                                                intent.id.toString(),
+                                                        }}
+                                                    >
+                                                        {intent.name}
+                                                    </Link>
+                                                </Button>
+                                            </TableCell>
+                                            <TableCell className="overflow-ellipsis whitespace-normal">
+                                                {intent.description}
+                                            </TableCell>
+                                            <TableCell className="text-end">
+                                                <Button
+                                                    size="icon"
+                                                    variant="destructive"
+                                                    onClick={(e) =>
+                                                        handleRemoveIntent(
+                                                            e,
+                                                            intent.id,
+                                                        )
+                                                    }
+                                                >
+                                                    <Trash2 />
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
                     </div>
                 </CardContent>
             </Card>

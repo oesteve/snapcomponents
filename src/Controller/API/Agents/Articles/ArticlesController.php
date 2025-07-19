@@ -136,25 +136,17 @@ class ArticlesController extends AbstractController
     }
 
     #[Route('/import/csv', methods: ['POST'])]
+    #[IsGranted('AGENT_EDIT', 'agent')]
     public function importCsv(
         Request $request,
         ArticleImportService $importService,
         AgentRepository $agentRepository,
+        Agent $agent,
     ): JsonResponse {
         // Check if a file was uploaded
         $file = $request->files->get('file');
         if (!$file) {
             return $this->json(['error' => 'No file uploaded'], Response::HTTP_BAD_REQUEST);
-        }
-
-        // Get the current user
-        $user = $this->getLoggedUserOrFail();
-
-        // Get the first agent for the user
-        $agent = $agentRepository->findOneBy(['user' => $user]);
-
-        if (!$agent) {
-            return $this->json(['error' => 'No agent found for this user'], Response::HTTP_BAD_REQUEST);
         }
 
         // Check if the user has edit permission for the agent
