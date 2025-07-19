@@ -138,14 +138,7 @@ class ChatSettingsController extends AbstractController
         $tools = $toolManager->getTools(ToolManager::CHAT_SCOPE);
 
         return $this->json(
-            $tools,
-            Response::HTTP_OK,
-            [],
-            [
-                AbstractNormalizer::GROUPS => [
-                    SerializerGroups::API_LIST,
-                ],
-            ]
+            $tools
         );
     }
 
@@ -157,13 +150,6 @@ class ChatSettingsController extends AbstractController
     ): JsonResponse {
         return $this->json(
             $widgetProvider->getComponents(),
-            Response::HTTP_OK,
-            [],
-            [
-                AbstractNormalizer::GROUPS => [
-                    SerializerGroups::API_LIST,
-                ],
-            ]
         );
     }
 

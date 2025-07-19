@@ -32,12 +32,14 @@ class ChatIntent
     /**
      * @var array<string>
      */
+    #[Serializer\Groups([SerializerGroups::API_LIST])]
     #[ORM\Column]
     private array $tools;
 
     /**
      * @var string[]
      */
+    #[Serializer\Groups([SerializerGroups::API_LIST])]
     #[ORM\Column]
     private array $widgets;
 

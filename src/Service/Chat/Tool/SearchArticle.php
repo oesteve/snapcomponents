@@ -3,7 +3,9 @@
 namespace App\Service\Chat\Tool;
 
 use App\Entity\ChatMessage;
+use App\Serializer\SerializerGroups;
 use App\Service\Articles\ArticleSearchService;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class SearchArticle implements ToolInterface
@@ -61,7 +63,15 @@ class SearchArticle implements ToolInterface
         $agent = $message->getChat()->getAgent();
         $articles = $this->searchService->search($agent, $parameters['query']);
 
-        return $this->serializer->serialize($articles, 'json');
+        return $this->serializer->serialize(
+            $articles,
+            'json',
+            [
+                AbstractNormalizer::GROUPS => [
+                    SerializerGroups::ELASTICA,
+                ],
+            ]
+        );
     }
 
     public function getDisplayName(): string

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ArticleRepository;
 use App\Serializer\SerializerGroups;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
@@ -26,14 +27,14 @@ class Article extends BaseEntity
     ])]
     private string $title;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: Types::TEXT)]
     #[Groups([
         SerializerGroups::ELASTICA,
         SerializerGroups::API_LIST,
     ])]
     private string $description;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: Types::TEXT)]
     #[Groups([
         SerializerGroups::ELASTICA,
         SerializerGroups::API_LIST,
