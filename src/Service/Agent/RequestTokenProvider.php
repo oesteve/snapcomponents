@@ -4,7 +4,7 @@ namespace App\Service\Agent;
 
 use Symfony\Component\HttpFoundation\RequestStack;
 
-readonly class RequestAgentIdentifierService implements AgentIdentifierService
+readonly class RequestTokenProvider implements TokenProvider
 {
     public function __construct(
         private RequestStack $requestStack,

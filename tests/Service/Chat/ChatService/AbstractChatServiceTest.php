@@ -10,10 +10,12 @@ use App\Kernel;
 use App\Repository\AgentRepository;
 use App\Repository\ChatConfigurationRepository;
 use App\Repository\UserRepository;
-use App\Service\Agent\AgentIdentifierService;
+use App\Service\Agent\SessionProvider;
+use App\Service\Agent\TokenProvider;
 use App\Service\Authentication\AuthenticationTokenService;
 use App\Tests\BaseTestCase;
-use App\Tests\Service\Agent\DummyAgentIdentifierService;
+use App\Tests\Service\Agent\DummySessionProvider;
+use App\Tests\Service\Agent\DummyTokenProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -47,10 +49,15 @@ abstract class AbstractChatServiceTest extends BaseTestCase
             /* @phpstan-ignore-next-line */
             ->generateToken(['id' => $agent->getId(), 'code' => $agent->getCode()]);
 
-        /** @var DummyAgentIdentifierService $identifier */
-        $identifier = $this->getService(AgentIdentifierService::class);
+        /** @var DummyTokenProvider $identifier */
+        $identifier = $this->getService(TokenProvider::class);
         $identifier
             ->setToken($token);
+
+        /** @var DummySessionProvider $sessionProvider */
+        $sessionProvider = $this->getService(SessionProvider::class);
+        $sessionProvider
+            ->setSessionId('test-session');
 
         $em->flush();
     }

@@ -2,7 +2,7 @@
 
 namespace App\Service\Agent;
 
-interface AgentIdentifierService
+interface TokenProvider
 {
     /**
      * Get the agent token from the request.

@@ -18,6 +18,10 @@ class Chat extends BaseEntity
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Serializer\Groups([SerializerGroups::CHAT])]
+    #[ORM\Column(length: 255, nullable: false)]
+    private string $sessionId;
+
     /**
      * @var Collection<int, ChatMessage>
      */
@@ -43,10 +47,12 @@ class Chat extends BaseEntity
     public function __construct(
         Agent $agent,
         ChatConfiguration $configuration,
+        string $sessionId,
         array $messages = [],
     ) {
         $this->agent = $agent;
         $this->configuration = $configuration;
+        $this->sessionId = $sessionId;
         $this->messages = new ArrayCollection($messages);
     }
 
@@ -86,5 +92,10 @@ class Chat extends BaseEntity
     public function getIntent(): ?ChatIntent
     {
         return $this->intent;
+    }
+
+    public function getSessionId(): string
+    {
+        return $this->sessionId;
     }
 }

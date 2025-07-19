@@ -1,19 +1,20 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button.tsx";
 import { ArrowUp, CircleEllipsis, X } from "lucide-react";
-import { type Chat, createChat, sendMessage } from "@/widgets/chat/lib/chat.ts";
-import { useMutation } from "@tanstack/react-query";
 import { Message } from "@/widgets/chat/components/Message.tsx";
+import { useChat } from "@/widgets/chat/hooks/useChat.ts";
+import { useSendMessage } from "@/widgets/chat/hooks/useSendMessage.ts";
 
 interface ChatCardProps {
     onClose: () => void;
 }
 
 const Card: React.FC<ChatCardProps> = ({ onClose }) => {
-    const [chat, setChat] = useState<Chat>();
     const [message, setMessage] = useState("");
     const messagesContainerRef = useRef<HTMLDivElement>(null);
     const chatContainerRef = useRef<HTMLDivElement>(null);
+
+    const { chat } = useChat();
 
     function scrollToBottom() {
         if (chatContainerRef.current) {
@@ -39,20 +40,7 @@ const Card: React.FC<ChatCardProps> = ({ onClose }) => {
         resizeObserver.observe(messagesContainerRef.current);
     }, [messagesContainerRef.current, resizeObserver]);
 
-    const createChatMutation = useMutation({
-        mutationFn: createChat,
-        onSuccess: (chat) => {
-            setChat(chat);
-            setMessage("");
-        },
-    });
-
-    const sendMessageMutation = useMutation({
-        mutationFn: sendMessage,
-        onSuccess: (chat) => {
-            setChat(chat);
-        },
-    });
+    const { sendMessage, isLoading } = useSendMessage();
 
     const handleSendMessage = () => {
         if (!message.trim()) {
@@ -61,47 +49,10 @@ const Card: React.FC<ChatCardProps> = ({ onClose }) => {
 
         setMessage("");
 
-        if (!chat) {
-            setChat({
-                id: 0,
-                configuration: {
-                    name: "",
-                },
-                messages: [
-                    {
-                        id: 0,
-                        content: message,
-                        role: "user",
-                    },
-                ],
-            });
-
-            createChatMutation.mutate({
-                content: message,
-            });
-            return;
-        }
-
-        sendMessageMutation.mutate({
-            chatId: chat.id,
+        sendMessage({
             content: message,
         });
-
-        setChat((chat) => ({
-            ...chat!,
-            messages: [
-                ...chat!.messages,
-                {
-                    id: chat!.messages.length,
-                    content: message,
-                    role: "user",
-                },
-            ],
-        }));
     };
-
-    const isLoading =
-        createChatMutation.isPending || sendMessageMutation.isPending;
 
     return (
         <div className="h-[600px] border border-border rounded-2xl relative w-[500px] shadow-lg bg-background">

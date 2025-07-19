@@ -19,7 +19,8 @@ class ChatMessage extends BaseEntity
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    /** @phpstan-ignore-next-line */
+    private int $id;
 
     #[Serializer\Groups([SerializerGroups::CHAT])]
     #[ORM\Column(length: 64)]
@@ -30,7 +31,7 @@ class ChatMessage extends BaseEntity
     private string $content;
 
     #[ORM\ManyToOne(inversedBy: 'messages')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private Chat $chat;
 
     public function __construct(

@@ -13,8 +13,9 @@ readonly class AgentService
     public function __construct(
         private AgentRepository $agentRepository,
         private RouterInterface $router,
-        private AgentIdentifierService $agentIdentifierProvider,
+        private TokenProvider $agentIdentifierProvider,
         private AuthenticationTokenService $authenticationTokenService,
+        private SessionProvider $sessionProvider,
     ) {
     }
 
@@ -52,5 +53,10 @@ readonly class AgentService
         return $this->router->generate('app_agent', [
             'code' => $agent->getCode(),
         ], RouterInterface::ABSOLUTE_URL);
+    }
+
+    public function getSessionId(): string
+    {
+        return $this->sessionProvider->getSessionId();
     }
 }

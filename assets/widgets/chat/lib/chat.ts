@@ -16,12 +16,12 @@ export type Chat = {
     }[];
 };
 
-export function createChat(request: CreateChatRequest) {
-    return client.post<Chat>("/api/chats", request);
+export function getChat() {
+    return client.get<Chat>("/api/chat");
 }
 
-export function sendMessage(request: { chatId: number; content: string }) {
-    return client.post<Chat>(`/api/chats/${request.chatId}/messages`, {
+export function sendMessage(request: { content: string }) {
+    return client.post<Chat>(`/api/chat/messages`, {
         content: request.content,
     });
 }

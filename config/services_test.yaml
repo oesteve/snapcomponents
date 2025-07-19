@@ -5,6 +5,10 @@ services:
     App\Service\Authentication\AuthenticationTokenService:
         class: App\Tests\Service\Authentication\DummyAuthenticationTokenService
 
-    # Override the AgentIdentifierProvider with the dummy implementation for tests
-    App\Service\Agent\AgentIdentifierService:
-        class: App\Tests\Service\Agent\DummyAgentIdentifierService
+    # Override the TokenProvider with the dummy implementation for tests
+    App\Service\Agent\TokenProvider:
+        class: App\Tests\Service\Agent\DummyTokenProvider
+
+    # Override the SessionProvider with the dummy implementation for tests
+    App\Service\Agent\SessionProvider:
+        class: App\Tests\Service\Agent\DummySessionProvider

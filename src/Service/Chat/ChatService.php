@@ -55,6 +55,7 @@ class ChatService
         string $content,
     ): Chat {
         $agent = $this->agentService->getAgentOrFail();
+        $sessionId = $this->agentService->getSessionId();
         $chatConfiguration = $agent->getChatConfiguration();
 
         if (!$chatConfiguration) {
@@ -63,7 +64,8 @@ class ChatService
 
         $chat = new Chat(
             $agent,
-            $chatConfiguration
+            $chatConfiguration,
+            $sessionId
         );
 
         $this->chatRepository->save($chat);
@@ -283,5 +285,22 @@ MD;
         }
 
         return $response;
+    }
+
+    public function getOrCreateChat(): Chat
+    {
+        $agent = $this->agentService->getAgentOrFail();
+        $sessionId = $this->agentService->getSessionId();
+
+        $chat = $this->chatRepository->findOneBy([
+            'sessionId' => $sessionId,
+            'agent' => $agent,
+        ]);
+
+        if (!$chat) {
+            $chat = $this->createChat('Hi !');
+        }
+
+        return $chat;
     }
 }

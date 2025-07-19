@@ -2,9 +2,9 @@
 
 namespace App\Tests\Service\Agent;
 
-use App\Service\Agent\AgentIdentifierService;
+use App\Service\Agent\TokenProvider;
 
-class DummyAgentIdentifierService implements AgentIdentifierService
+class DummyTokenProvider implements TokenProvider
 {
     private ?string $token = null;
 
