@@ -74,49 +74,6 @@ class ChatSettingsController extends AbstractController
 
         $chatConfigurationRepository->save($chatConfiguration);
 
-        // Remove any intents not in the updated list
-        $existentIntents = $chatIntentRepository->findBy([
-            'configuration' => $chatConfiguration,
-        ]);
-
-        $newIntentIds = array_map(fn (array $intentData) => $intentData['id'] ?? null, $chatConfigData->intents);
-
-        foreach ($existentIntents as $existingIntent) {
-            if (in_array($existingIntent->getId(), $newIntentIds)) {
-                continue;
-            }
-            $chatIntentRepository->remove($existingIntent);
-        }
-
-        // update or create intents
-        foreach ($chatConfigData->intents as $intentData) {
-            $intent = $chatIntentRepository->findOneBy([
-                'id' => $intentData['id'] ?? null,
-                'configuration' => $chatConfiguration,
-            ]);
-
-            if ($intent) {
-                $intent->update(
-                    $intentData['name'],
-                    $intentData['description'],
-                    $intentData['instructions'],
-                    $intentData['widgets'] ?? [],
-                    $intentData['tools'] ?? [],
-                );
-            } else {
-                $intent = new ChatIntent(
-                    $intentData['name'],
-                    $intentData['description'],
-                    $intentData['instructions'],
-                    $intentData['tools'] ?? [],
-                    $intentData['widgets'] ?? [],
-                    $chatConfiguration,
-                );
-            }
-
-            $chatIntentRepository->save($intent);
-        }
-
         return $this->json(
             $chatConfiguration,
             Response::HTTP_OK,

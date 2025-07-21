@@ -59,7 +59,7 @@ readonly class JWTAuthenticationTokenService implements AuthenticationTokenServi
                 if ($expiresAt) {
                     $builder = $builder->expiresAt($expiresAt);
                 } else {
-                    $builder = $builder->expiresAt($issuedAt->modify('+10 minutes'));
+                    $builder = $builder->expiresAt($issuedAt->modify('+1 hour'));
                 }
 
                 return $builder;

@@ -42,6 +42,7 @@ readonly class AgentService
 
     public function generateAgentToken(Agent $agent): string
     {
+        /* @phpstan-ignore-next-line */
         return $this->authenticationTokenService->generateToken([
             'id' => $agent->getId(),
             'code' => $agent->getCode(),

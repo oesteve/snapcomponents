@@ -12,8 +12,9 @@ use Symfony\Component\Serializer\Attribute as Serializer;
 class ChatMessage extends BaseEntity
 {
     public const string ROLE_USER = 'user';
-    public const string ROLE_AGENT = 'agent';
+    public const string ROLE_ASSISTANT = 'assistant';
     public const string ROLE_SYSTEM = 'system';
+    public const string ROLE_TOOL = 'tool';
 
     #[Serializer\Groups([SerializerGroups::CHAT])]
     #[ORM\Id]

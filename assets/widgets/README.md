@@ -54,12 +54,12 @@ The `createWebComponent` function accepts a configuration object with the follow
 ### Chat Widget
 
 ```typescript
-import ChatComponent from "./ChatComponent";
+import Chat from "./components/Chat";
 import { createWebComponent } from "../utils/createWebComponent";
 
 createWebComponent({
     tagName: "wg-chat",
-    component: ChatComponent,
+    component: Chat,
     observedAttributes: ["initial-count"],
     mapAttributesToProps: (el) => {
         const initialCount = el.hasAttribute("initial-count")

@@ -135,6 +135,21 @@ class ChatService
             $parameters
         );
 
+        $content = json_encode([
+            'tool' => $function->name,
+            'parameters' => $parameters,
+            'result' => $executionResult,
+        ]) ?: '';
+
+        $chatMessage = new ChatMessage(
+            $message->getChat(),
+            ChatMessage::ROLE_TOOL,
+            $content,
+        );
+
+        $this->chatMessageRepository->save($chatMessage);
+        $message->getChat()->addMessage($chatMessage);
+
         return [
             'role' => 'tool',
             'tool_call_id' => $responseToolCall->id,
@@ -145,6 +160,11 @@ class ChatService
     private function processChatInteraction(ChatMessage $message): CreateResponse
     {
         $context = $message->getChat()->getMessages()
+            ->filter(fn (ChatMessage $chatMessage) => in_array(
+                $chatMessage->getRole(),
+                [ChatMessage::ROLE_USER, ChatMessage::ROLE_ASSISTANT],
+                true
+            ))
             ->map(function (ChatMessage $message) {
                 return [
                     'role' => $message->getRole(),
@@ -199,7 +219,7 @@ class ChatService
 
 MD;
 
-        $prompt .= $configuration->getInstructions().".\n\n";
+        $prompt .= $configuration->getInstructions();
 
         // Context definition instructions
         if (!$configuration->getIntents()->isEmpty()) {
@@ -221,7 +241,8 @@ MD;
 You ara able to use components en your response.
   - Send them as regular content like MDX.
   - Don't put the components inside a code snippet.
-  - These are the available elements: \n"
+  - These are the available elements:
+
 MD;
                     foreach ($intent->getWidgets() as $widget) {
                         $prompt .= $this->componentManager->getDefinition($widget);
@@ -275,13 +296,15 @@ MD;
                 );
             }
 
+            $contextWithToolsResults = [
+                ...$context,
+                $responseMessage->toArray(),
+                ...$toolCallsResults,
+            ];
+
             return $this->getResponse(
                 $message,
-                [
-                    ...$context,
-                    $responseMessage->toArray(),
-                    ...$toolCallsResults,
-                ]
+                $contextWithToolsResults
             );
         }
 

@@ -14,6 +14,7 @@ interface ChatState {
     error: Error | null;
     newChat: Chat | null;
     isOpen: boolean;
+    isExpanded: boolean;
 
     // Actions
     fetchChat: () => Promise<void>;
@@ -22,15 +23,19 @@ interface ChatState {
     clearMessages: () => Promise<void>;
     openChat: () => void;
     closeChat: () => void;
+    expandChat: () => void;
+    collapseChat: () => void;
+    toggleExpanded: () => void;
 }
 
-export const useChatStore = create<ChatState>((set, get) => ({
+export const useChatStoreBase = create<ChatState>((set, get) => ({
     chat: null,
     isLoading: false,
     isError: false,
     error: null,
     newChat: null,
     isOpen: false,
+    isExpanded: false,
 
     fetchChat: async () => {
         set({ isError: false, error: null });
@@ -120,6 +125,18 @@ export const useChatStore = create<ChatState>((set, get) => ({
     },
 
     closeChat: () => {
-        set({ isOpen: false });
+        set({ isOpen: false, isExpanded: false });
+    },
+
+    expandChat: () => {
+        set({ isExpanded: true });
+    },
+
+    collapseChat: () => {
+        set({ isExpanded: false });
+    },
+
+    toggleExpanded: () => {
+        set((state) => ({ isExpanded: !state.isExpanded }));
     },
 }));

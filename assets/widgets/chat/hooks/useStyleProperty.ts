@@ -37,7 +37,21 @@ export function useStyleProperty<T>(
             return (value.trim().toLowerCase() === "true") as unknown as T;
         }
 
+        // Remove quotes and double quotes from the value if it's a string
+        let processedValue = value;
+        if (typeof defaultValue === "string" || defaultValue === undefined) {
+            // Check if the value starts and ends with quotes and remove them
+            processedValue = processedValue.trim();
+            if (
+                (processedValue.startsWith('"') &&
+                    processedValue.endsWith('"')) ||
+                (processedValue.startsWith("'") && processedValue.endsWith("'"))
+            ) {
+                processedValue = processedValue.slice(1, -1);
+            }
+        }
+
         // Return as string or the original type
-        return value as unknown as T;
+        return processedValue as unknown as T;
     }, [ref.current, propertyName, defaultValue]);
 }
