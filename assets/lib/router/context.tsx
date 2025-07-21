@@ -3,7 +3,7 @@ import { queryClient } from "@/lib/react-query/client";
 import { QueryClient } from "@tanstack/react-query";
 
 export interface AdminContext {
-    agent: Agent;
+    agent?: Agent;
     queryClient: QueryClient;
     title?: string;
 }

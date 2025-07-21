@@ -7,8 +7,12 @@ import { useChatStoreBase } from "@/widgets/chat/store/useChatStore";
 const footerVariants = cva("flex gap-2 bg-secondary p-2", {
     variants: {
         variant: {
-            flat: "border rounded",
+            flat: "border-t",
             default: "rounded-full m-2",
+        },
+        variantExpanded: {
+            flat: "border rounded-lg md:my-4",
+            default: "md:my-4",
         },
     },
     defaultVariants: {
@@ -50,13 +54,13 @@ const Footer: React.FC<FooterProps> = ({ placeholder, variant }) => {
     }, [isOpen, isExpanded, inputRef.current, chatId]);
 
     return (
-        <div
-            className={cn("w-full max-w-3xl mx-auto", isExpanded && "md:my-4")}
-        >
+        <div className={cn("w-full max-w-3xl mx-auto")}>
             <div
                 className={cn(
-                    footerVariants({ variant }),
-                    !isExpanded && "border-b-0 border-x-0 rounded-none",
+                    footerVariants({
+                        variant,
+                        variantExpanded: isExpanded ? variant : undefined,
+                    }),
                 )}
             >
                 <input
