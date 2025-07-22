@@ -5,6 +5,7 @@ namespace App\Service\Agent;
 use App\Entity\Agent;
 use App\Repository\AgentRepository;
 use App\Service\Authentication\AuthenticationTokenService;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -16,6 +17,8 @@ readonly class AgentService
         private TokenProvider $agentIdentifierProvider,
         private AuthenticationTokenService $authenticationTokenService,
         private SessionProvider $sessionProvider,
+        #[Autowire(param: '%kernel.debug%')]
+        private bool $kernelDebugEnabled,
     ) {
     }
 
@@ -59,5 +62,15 @@ readonly class AgentService
     public function getSessionId(): string
     {
         return $this->sessionProvider->getSessionId();
+    }
+
+    public function isDebugEnabled(): bool
+    {
+        return $this->kernelDebugEnabled || $this->sessionProvider->isDebugEnabled();
+    }
+
+    public function setDebugEnabled(bool $enabled = true): void
+    {
+        $this->sessionProvider->setDebugEnabled($enabled);
     }
 }

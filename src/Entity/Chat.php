@@ -74,9 +74,20 @@ class Chat extends BaseEntity
     /**
      * @return Collection<int, ChatMessage>
      */
-    public function getMessages(): Collection
+    public function getMessages(bool $isDebug = false): Collection
     {
-        return $this->messages;
+        if ($isDebug) {
+            return $this->messages;
+        }
+
+        $values = $this->messages->filter(function (ChatMessage $message) {
+            return in_array($message->getRole(), [
+                ChatMessage::ROLE_USER,
+                ChatMessage::ROLE_ASSISTANT,
+            ], true);
+        })->getValues();
+
+        return new ArrayCollection($values);
     }
 
     public function addMessage(ChatMessage $message): void
